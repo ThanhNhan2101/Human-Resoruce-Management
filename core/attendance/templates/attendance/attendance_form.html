@@ -1,0 +1,100 @@
+{% extends 'base.html' %} {% block title %}{{ title }}{% endblock %} {% block
+content %}
+<div class="container-fluid">
+  <div class="page-header">
+    <a
+      href="{% url 'attendance:attendance_list' %}"
+      class="text-decoration-none"
+    >
+      <i class="fas fa-arrow-left"></i> Quay lại
+    </a>
+    <h1 class="mt-2">{{ title }}</h1>
+  </div>
+
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <div class="card">
+        <div class="card-body">
+          <form method="post" novalidate>
+            {% csrf_token %}
+
+            <div class="mb-3">
+              {{ form.employee.label_tag }} {{ form.employee }} {% if
+              form.employee.errors %}
+              <div class="text-danger small">{{ form.employee.errors }}</div>
+              {% endif %}
+            </div>
+
+            <div class="mb-3">
+              {{ form.date.label_tag }} {{ form.date }} {% if form.date.errors
+              %}
+              <div class="text-danger small">{{ form.date.errors }}</div>
+              {% endif %}
+            </div>
+
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                {{ form.check_in_time.label_tag }} {{ form.check_in_time }} {%
+                if form.check_in_time.errors %}
+                <div class="text-danger small">
+                  {{ form.check_in_time.errors }}
+                </div>
+                {% endif %}
+              </div>
+              <div class="col-md-6 mb-3">
+                {{ form.check_out_time.label_tag }} {{ form.check_out_time }} {%
+                if form.check_out_time.errors %}
+                <div class="text-danger small">
+                  {{ form.check_out_time.errors }}
+                </div>
+                {% endif %}
+              </div>
+            </div>
+
+            <div class="mb-3">
+              {{ form.status.label_tag }} {{ form.status }} {% if
+              form.status.errors %}
+              <div class="text-danger small">{{ form.status.errors }}</div>
+              {% endif %}
+            </div>
+
+            <div class="mb-3">
+              {{ form.notes.label_tag }} {{ form.notes }} {% if
+              form.notes.errors %}
+              <div class="text-danger small">{{ form.notes.errors }}</div>
+              {% endif %}
+            </div>
+
+            <div class="d-grid gap-2 mt-4">
+              <button type="submit" class="btn btn-primary">
+                <i class="fas fa-save"></i> {{ button_text }}
+              </button>
+              <a
+                href="{% url 'attendance:attendance_list' %}"
+                class="btn btn-secondary"
+              >
+                <i class="fas fa-times"></i> Hủy
+              </a>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .form-control,
+  .form-select,
+  textarea {
+    border: 1px solid #ddd;
+    border-radius: 6px;
+  }
+
+  .form-label {
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #333;
+  }
+</style>
+{% endblock %}

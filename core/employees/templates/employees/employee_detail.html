@@ -1,0 +1,186 @@
+{% extends 'base.html' %} {% block title %}{{ employee.full_name }}{% endblock
+%} {% block content %}
+<div class="container-fluid">
+  <div class="page-header">
+    <a href="{% url 'employees:employee_list' %}" class="text-decoration-none">
+      <i class="fas fa-arrow-left"></i> Quay lại
+    </a>
+    <h1 class="mt-2">{{ employee.full_name }}</h1>
+  </div>
+
+  <div class="row">
+    <!-- Employee Info -->
+    <div class="col-md-4">
+      <div class="card">
+        <div class="card-header">
+          <h5 class="mb-0">Thông tin cá nhân</h5>
+        </div>
+        <div class="card-body">
+          {% if employee.avatar %}
+          <img
+            src="{{ employee.avatar.url }}"
+            alt="{{ employee.full_name }}"
+            class="img-fluid rounded mb-3"
+          />
+          {% else %}
+          <div class="bg-light rounded p-5 text-center mb-3">
+            <i class="fas fa-user fa-3x text-muted"></i>
+          </div>
+          {% endif %}
+
+          <p><strong>Tên:</strong> {{ employee.full_name }}</p>
+          <p>
+            <strong>Email:</strong>
+            <a href="mailto:{{ employee.email }}">{{ employee.email }}</a>
+          </p>
+          <p><strong>Số điện thoại:</strong> {{ employee.phone }}</p>
+          <p>
+            <strong>Ngày sinh:</strong> {{ employee.date_of_birth|date:"d/m/Y"
+            }}
+          </p>
+          <p><strong>Giới tính:</strong> {{ employee.get_gender_display }}</p>
+          <p><strong>Địa chỉ:</strong> {{ employee.address }}</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <h5 class="mb-0">Thông tin tuyển dụng</h5>
+        </div>
+        <div class="card-body">
+          <p><strong>ID Nhân viên:</strong> {{ employee.employee_id }}</p>
+          <p><strong>Phòng ban:</strong> {{ employee.department.name }}</p>
+          <p><strong>Chức vụ:</strong> {{ employee.position.name }}</p>
+          <p>
+            <strong>Ngày tuyển dụng:</strong> {{ employee.hire_date|date:"d/m/Y"
+            }}
+          </p>
+          <p>
+            <strong>Kinh nghiệm:</strong> {{ employee.years_of_service }} năm
+          </p>
+          <p>
+            <strong>Trạng thái:</strong>
+            <span class="status-badge status-{{ employee.status|lower }}">
+              {{ employee.get_status_display }}
+            </span>
+          </p>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <h5 class="mb-0">Thông tin lương</h5>
+        </div>
+        <div class="card-body">
+          <p>
+            <strong>Lương cơ bản:</strong> {{ employee.base_salary|floatformat:0
+            }} VND
+          </p>
+          <p>
+            <strong>Phụ cấp:</strong> {{ employee.allowance|floatformat:0 }} VND
+          </p>
+          <p>
+            <strong>Tổng lương:</strong> {{ total_salary|floatformat:0 }} VND
+          </p>
+        </div>
+      </div>
+
+      <div class="d-grid gap-2">
+        <a
+          href="{% url 'employees:employee_edit' employee.pk %}"
+          class="btn btn-warning"
+        >
+          <i class="fas fa-edit"></i> Chỉnh sửa
+        </a>
+        <a
+          href="{% url 'employees:employee_delete' employee.pk %}"
+          class="btn btn-danger"
+        >
+          <i class="fas fa-trash"></i> Xóa
+        </a>
+      </div>
+    </div>
+
+    <!-- Activity & History -->
+    <div class="col-md-8">
+      <div class="card">
+        <div class="card-header">
+          <h5 class="mb-0">Chấm công gần đây</h5>
+        </div>
+        <div class="table-responsive">
+          <table class="table table-sm mb-0">
+            <thead class="table-light">
+              <tr>
+                <th>Ngày</th>
+                <th>Vào</th>
+                <th>Ra</th>
+                <th>Trạng thái</th>
+                <th>Giờ làm</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% if attendances %} {% for att in attendances %}
+              <tr>
+                <td>{{ att.date|date:"d/m/Y" }}</td>
+                <td>{{ att.check_in_time|time:"H:i" }}</td>
+                <td>{{ att.check_out_time|time:"H:i" }}</td>
+                <td>
+                  <span class="badge bg-info"
+                    >{{ att.get_status_display }}</span
+                  >
+                </td>
+                <td>{{ att.working_hours|default:"-" }}</td>
+              </tr>
+              {% endfor %} {% else %}
+              <tr>
+                <td colspan="5" class="text-center text-muted">
+                  Chưa có dữ liệu chấm công
+                </td>
+              </tr>
+              {% endif %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card mt-3">
+        <div class="card-header">
+          <h5 class="mb-0">Đơn nghỉ phép gần đây</h5>
+        </div>
+        <div class="table-responsive">
+          <table class="table table-sm mb-0">
+            <thead class="table-light">
+              <tr>
+                <th>Loại phép</th>
+                <th>Từ ngày</th>
+                <th>Đến ngày</th>
+                <th>Trạng thái</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% if leaves %} {% for leave in leaves %}
+              <tr>
+                <td>{{ leave.leave_type.name }}</td>
+                <td>{{ leave.start_date|date:"d/m/Y" }}</td>
+                <td>{{ leave.end_date|date:"d/m/Y" }}</td>
+                <td>
+                  <span class="badge bg-{{ leave.status|lower }}"
+                    >{{ leave.get_status_display }}</span
+                  >
+                </td>
+              </tr>
+              {% endfor %} {% else %}
+              <tr>
+                <td colspan="4" class="text-center text-muted">
+                  Chưa có dữ liệu nghỉ phép
+                </td>
+              </tr>
+              {% endif %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

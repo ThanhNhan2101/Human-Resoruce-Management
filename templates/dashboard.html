@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Bảng điều khiển
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+  <div class="page-header">
+    <h1>Bảng điều khiển</h1>
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item active">Bảng điều khiển</li>
+      </ol>
+    </nav>
+  </div>
+
+  <div class="row">
+    <div class="col-md-3">
+      <div class="stat-card">
+        <h3>{{ total_employees }}</h3>
+        <p><i class="fas fa-users"></i> Tổng nhân viên</p>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="stat-card">
+        <h3>{{ active_employees }}</h3>
+        <p><i class="fas fa-check-circle"></i> Đang làm việc</p>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="stat-card">
+        <h3>{{ total_departments }}</h3>
+        <p><i class="fas fa-sitemap"></i> Phòng ban</p>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="stat-card">
+        <h3>{{ total_positions }}</h3>
+        <p><i class="fas fa-briefcase"></i> Chức vụ</p>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
