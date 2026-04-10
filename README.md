@@ -64,6 +64,16 @@ python scripts/seed_data.py
 python manage.py runserver
 ```
 
+Open **http://localhost:8000** and log in with `admin` / `admin123`.
+
+## � Default Credentials
+
+| Role         | Username | Password   | URL                         |
+| ------------ | -------- | ---------- | --------------------------- |
+| Admin        | `admin`  | `admin123` | http://localhost:8000       |
+| Django Admin | `admin`  | `admin123` | http://localhost:8000/admin |
+
+
 ## 📁 Project Structure
 
 ```
