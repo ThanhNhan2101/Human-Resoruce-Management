@@ -1,183 +1,166 @@
-{% extends 'base.html' %} {% block title %}{{ employee.full_name }}{% endblock
-%} {% block content %}
-<div class="container-fluid">
-  <div class="page-header">
-    <a href="{% url 'employees:employee_list' %}" class="text-decoration-none">
-      <i class="fas fa-arrow-left"></i> Back
-    </a>
-    <h1 class="mt-2">{{ employee.full_name }}</h1>
-  </div>
+﻿{% extends 'base.html' %}
+{% block title %}{{ employee.full_name }}{% endblock %}
 
-  <div class="row">
-    <!-- Employee Info -->
-    <div class="col-md-4">
-      <div class="card">
-        <div class="card-header">
-          <h5 class="mb-0">Personal Information</h5>
-        </div>
-        <div class="card-body">
+{% block content %}
+<div class="page-header">
+  <a href="{% url 'employees:employee_list' %}" class="back-link"><i class="fas fa-arrow-left"></i> Back to Employees</a>
+  <h1 style="margin-top:8px"><i class="fas fa-user"></i> Employee Profile</h1>
+</div>
+
+<div class="row g-3">
+  <!-- Left col -->
+  <div class="col-lg-4">
+    <!-- Profile card -->
+    <div class="card mb-0">
+      <div class="profile-header">
+        <div class="avatar-xl">
           {% if employee.avatar %}
-          <img
-            src="{{ employee.avatar.url }}"
-            alt="{{ employee.full_name }}"
-            class="img-fluid rounded mb-3"
-          />
+            <img src="{{ employee.avatar.url }}" alt="{{ employee.full_name }}">
           {% else %}
-          <div class="bg-light rounded p-5 text-center mb-3">
-            <i class="fas fa-user fa-3x text-muted"></i>
-          </div>
+            {{ employee.first_name|first|upper }}{{ employee.last_name|first|upper }}
           {% endif %}
-
-          <p><strong>Name:</strong> {{ employee.full_name }}</p>
-          <p>
-            <strong>Email:</strong>
-            <a href="mailto:{{ employee.email }}">{{ employee.email }}</a>
-          </p>
-          <p><strong>Phone Number:</strong> {{ employee.phone }}</p>
-          <p>
-            <strong>Date of Birth:</strong> {{
-            employee.date_of_birth|date:"d/m/Y" }}
-          </p>
-          <p><strong>Gender:</strong> {{ employee.get_gender_display }}</p>
-          <p><strong>Address:</strong> {{ employee.address }}</p>
+        </div>
+        <div class="profile-info">
+          <h2>{{ employee.full_name }}</h2>
+          <p>{{ employee.position }} &middot; {{ employee.department.name }}</p>
+          <span class="status-badge status-{{ employee.status|lower }} mt-1">{{ employee.get_status_display }}</span>
         </div>
       </div>
-
-      <div class="card">
-        <div class="card-header">
-          <h5 class="mb-0">Employment Information</h5>
+      <div class="card-body pt-2 pb-3">
+        <div class="detail-row">
+          <div class="detail-icon"><i class="fas fa-id-badge"></i></div>
+          <div><div class="detail-label">Employee ID</div><div class="detail-value">{{ employee.employee_id }}</div></div>
         </div>
-        <div class="card-body">
-          <p><strong>ID Employee:</strong> {{ employee.employee_id }}</p>
-          <p><strong>Department:</strong> {{ employee.department.name }}</p>
-          <p><strong>Position:</strong> {{ employee.position }}</p>
-          <p>
-            <strong>Hire Date:</strong> {{ employee.hire_date|date:"d/m/Y" }}
-          </p>
-          <p>
-            <strong>Kinh nghiệm:</strong> {{ employee.years_of_service }} năm
-          </p>
-          <p>
-            <strong>Status:</strong>
-            <span class="status-badge status-{{ employee.status|lower }}">
-              {{ employee.get_status_display }}
-            </span>
-          </p>
+        <div class="detail-row">
+          <div class="detail-icon"><i class="fas fa-envelope"></i></div>
+          <div><div class="detail-label">Email</div><div class="detail-value"><a href="mailto:{{ employee.email }}" style="color:var(--primary)">{{ employee.email }}</a></div></div>
         </div>
-      </div>
-
-      <div class="card">
-        <div class="card-header">
-          <h5 class="mb-0">Thông tin lương</h5>
+        <div class="detail-row">
+          <div class="detail-icon"><i class="fas fa-phone"></i></div>
+          <div><div class="detail-label">Phone</div><div class="detail-value">{{ employee.phone }}</div></div>
         </div>
-        <div class="card-body">
-          <p>
-            <strong>Lương cơ bản:</strong> {{ employee.base_salary|floatformat:0
-            }} VND
-          </p>
-          <p>
-            <strong>Phụ cấp:</strong> {{ employee.allowance|floatformat:0 }} VND
-          </p>
-          <p>
-            <strong>Tổng lương:</strong> {{ total_salary|floatformat:0 }} VND
-          </p>
+        <div class="detail-row">
+          <div class="detail-icon"><i class="fas fa-birthday-cake"></i></div>
+          <div><div class="detail-label">Date of Birth</div><div class="detail-value">{{ employee.date_of_birth|date:"d/m/Y" }}</div></div>
         </div>
-      </div>
-
-      <div class="d-grid gap-2">
-        <a
-          href="{% url 'employees:employee_edit' employee.pk %}"
-          class="btn btn-warning"
-        >
-          <i class="fas fa-edit"></i> Edit
-        </a>
-        <a
-          href="{% url 'employees:employee_delete' employee.pk %}"
-          class="btn btn-danger"
-        >
-          <i class="fas fa-trash"></i> Delete
-        </a>
+        <div class="detail-row">
+          <div class="detail-icon"><i class="fas fa-venus-mars"></i></div>
+          <div><div class="detail-label">Gender</div><div class="detail-value">{{ employee.get_gender_display }}</div></div>
+        </div>
+        <div class="detail-row">
+          <div class="detail-icon"><i class="fas fa-map-marker-alt"></i></div>
+          <div><div class="detail-label">Address</div><div class="detail-value">{{ employee.address }}</div></div>
+        </div>
       </div>
     </div>
 
-    <!-- Activity & History -->
-    <div class="col-md-8">
-      <div class="card">
-        <div class="card-header">
-          <h5 class="mb-0">Attendance gần đây</h5>
+    <!-- Salary -->
+    <div class="card">
+      <div class="card-header"><i class="fas fa-money-bill-wave" style="color:var(--success)"></i> Salary Information</div>
+      <div class="card-body pb-3">
+        <div class="detail-row">
+          <div class="detail-icon"><i class="fas fa-coins"></i></div>
+          <div><div class="detail-label">Base Salary</div><div class="detail-value fw-600">{{ employee.base_salary|floatformat:0 }} VND</div></div>
         </div>
-        <div class="table-responsive">
-          <table class="table table-sm mb-0">
-            <thead class="table-light">
-              <tr>
-                <th>Date</th>
-                <th>Check In</th>
-                <th>Check Out</th>
-                <th>Status</th>
-                <th>Working Hours</th>
-              </tr>
-            </thead>
-            <tbody>
-              {% if attendances %} {% for att in attendances %}
-              <tr>
-                <td>{{ att.date|date:"d/m/Y" }}</td>
-                <td>{{ att.check_in_time|time:"H:i" }}</td>
-                <td>{{ att.check_out_time|time:"H:i" }}</td>
-                <td>
-                  <span class="badge bg-info"
-                    >{{ att.get_status_display }}</span
-                  >
-                </td>
-                <td>{{ att.working_hours|default:"-" }}</td>
-              </tr>
-              {% endfor %} {% else %}
-              <tr>
-                <td colspan="5" class="text-center text-muted">
-                  Not available dữ liệu chấm công
-                </td>
-              </tr>
-              {% endif %}
-            </tbody>
-          </table>
+        <div class="detail-row">
+          <div class="detail-icon"><i class="fas fa-plus-circle"></i></div>
+          <div><div class="detail-label">Allowance</div><div class="detail-value fw-600">{{ employee.allowance|floatformat:0 }} VND</div></div>
+        </div>
+        <div class="detail-row" style="background:var(--primary-light);border-radius:8px;padding:10px;margin-top:4px;border:none">
+          <div class="detail-icon" style="background:var(--primary);color:#fff"><i class="fas fa-wallet"></i></div>
+          <div><div class="detail-label" style="color:var(--primary)">Total Salary</div><div class="detail-value fw-700" style="color:var(--primary);font-size:1rem">{{ total_salary|floatformat:0 }} VND</div></div>
         </div>
       </div>
+    </div>
 
-      <div class="card mt-3">
-        <div class="card-header">
-          <h5 class="mb-0">Đơn nghỉ phép gần đây</h5>
+    <!-- Actions -->
+    <div class="d-grid gap-2">
+      <a href="{% url 'employees:employee_edit' employee.pk %}" class="btn btn-warning">
+        <i class="fas fa-edit"></i> Edit Employee
+      </a>
+      <a href="{% url 'employees:employee_delete' employee.pk %}" class="btn btn-danger">
+        <i class="fas fa-trash"></i> Delete Employee
+      </a>
+    </div>
+  </div>
+
+  <!-- Right col -->
+  <div class="col-lg-8">
+    <!-- Employment -->
+    <div class="card">
+      <div class="card-header"><i class="fas fa-briefcase" style="color:var(--primary)"></i> Employment Details</div>
+      <div class="card-body">
+        <div class="row g-3">
+          <div class="col-sm-6">
+            <div style="background:var(--gray-50);border-radius:10px;padding:14px">
+              <div style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--gray-400);margin-bottom:4px">Department</div>
+              <div class="fw-600" style="color:var(--gray-800)">{{ employee.department.name }}</div>
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <div style="background:var(--gray-50);border-radius:10px;padding:14px">
+              <div style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--gray-400);margin-bottom:4px">Position</div>
+              <div class="fw-600" style="color:var(--gray-800)">{{ employee.position }}</div>
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <div style="background:var(--gray-50);border-radius:10px;padding:14px">
+              <div style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--gray-400);margin-bottom:4px">Hire Date</div>
+              <div class="fw-600" style="color:var(--gray-800)">{{ employee.hire_date|date:"d/m/Y" }}</div>
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <div style="background:var(--gray-50);border-radius:10px;padding:14px">
+              <div style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--gray-400);margin-bottom:4px">Experience</div>
+              <div class="fw-600" style="color:var(--gray-800)">{{ employee.years_of_service }} year(s)</div>
+            </div>
+          </div>
         </div>
-        <div class="table-responsive">
-          <table class="table table-sm mb-0">
-            <thead class="table-light">
-              <tr>
-                <th>Leave Type</th>
-                <th>From Date</th>
-                <th>To Date</th>
-                <th>Status</th>
-              </tr>
-            </thead>
-            <tbody>
-              {% if leaves %} {% for leave in leaves %}
-              <tr>
-                <td>{{ leave.leave_type.name }}</td>
-                <td>{{ leave.start_date|date:"d/m/Y" }}</td>
-                <td>{{ leave.end_date|date:"d/m/Y" }}</td>
-                <td>
-                  <span class="badge bg-{{ leave.status|lower }}"
-                    >{{ leave.get_status_display }}</span
-                  >
-                </td>
-              </tr>
-              {% endfor %} {% else %}
-              <tr>
-                <td colspan="4" class="text-center text-muted">
-                  Not available dữ liệu nghỉ phép
-                </td>
-              </tr>
-              {% endif %}
-            </tbody>
-          </table>
-        </div>
+      </div>
+    </div>
+
+    <!-- Recent Attendance -->
+    <div class="card">
+      <div class="card-header"><i class="fas fa-clock" style="color:var(--warning)"></i> Recent Attendance</div>
+      <div class="table-responsive">
+        <table class="table table-hover mb-0">
+          <thead><tr><th>Date</th><th>Check In</th><th>Check Out</th><th>Status</th><th>Hours</th></tr></thead>
+          <tbody>
+            {% if attendances %}{% for att in attendances %}
+            <tr>
+              <td>{{ att.date|date:"d/m/Y" }}</td>
+              <td>{{ att.check_in_time|time:"H:i"|default:"-" }}</td>
+              <td>{{ att.check_out_time|time:"H:i"|default:"-" }}</td>
+              <td><span class="status-badge status-{{ att.status|lower }}">{{ att.get_status_display }}</span></td>
+              <td>{% if att.working_hours %}<span class="badge bg-success">{{ att.working_hours }}h</span>{% else %}-{% endif %}</td>
+            </tr>
+            {% endfor %}{% else %}
+            <tr><td colspan="5"><div class="empty-state" style="padding:30px 20px"><i class="fas fa-calendar-times"></i><p>No attendance records</p></div></td></tr>
+            {% endif %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Recent Leaves -->
+    <div class="card">
+      <div class="card-header"><i class="fas fa-calendar-check" style="color:var(--success)"></i> Recent Leave Requests</div>
+      <div class="table-responsive">
+        <table class="table table-hover mb-0">
+          <thead><tr><th>Leave Type</th><th>From</th><th>To</th><th>Status</th></tr></thead>
+          <tbody>
+            {% if leaves %}{% for leave in leaves %}
+            <tr>
+              <td>{{ leave.leave_type.name }}</td>
+              <td>{{ leave.start_date|date:"d/m/Y" }}</td>
+              <td>{{ leave.end_date|date:"d/m/Y" }}</td>
+              <td><span class="status-badge status-{{ leave.status|lower }}">{{ leave.get_status_display }}</span></td>
+            </tr>
+            {% endfor %}{% else %}
+            <tr><td colspan="4"><div class="empty-state" style="padding:30px 20px"><i class="fas fa-calendar-check"></i><p>No leave records</p></div></td></tr>
+            {% endif %}
+          </tbody>
+        </table>
       </div>
     </div>
   </div>

@@ -1,69 +1,79 @@
-{% extends "auth/auth_base.html" %} {% block title %}Login{% endblock %} {%block content %}
-<div class="card shadow">
-  <div class="card-header text-center">
-    <h3><i class="fas fa-lock"></i> Login</h3>
-  </div>
+{% extends "auth/auth_base.html" %}
+{% block title %}Login{% endblock %}
 
-  <div class="card-body p-4">
-    <!-- Non-field errors -->
-    {% if form.non_field_errors %}
-    <div class="alert alert-danger">
-      {% for error in form.non_field_errors %}
-      <p class="mb-0">{{ error }}</p>
-      {% endfor %}
-    </div>
-    {% endif %}
+{% block content %}
+<h3>Welcome back 👋</h3>
+<p class="subtitle">Sign in to your HRM account to continue</p>
 
-    <form method="post" novalidate>
-      {% csrf_token %}
-
-      <!-- Username -->
-      <div class="mb-3">
-        <label class="form-label">Username or Email</label>
-        {{ form.username }} {% if form.username.errors %}
-        <div class="text-danger small">
-          {{ form.username.errors|striptags }}
-        </div>
-        {% endif %}
-      </div>
-
-      <!-- Password -->
-      <div class="mb-3">
-        <label class="form-label">Password</label>
-        <div class="input-group">
-          {{ form.password }}
-          <button
-            type="button"
-            class="btn btn-outline-secondary"
-            onclick="togglePassword()"
-          >
-            👁
-          </button>
-        </div>
-        {% if form.password.errors %}
-        <div class="text-danger small">
-          {{ form.password.errors|striptags }}
-        </div>
-        {% endif %}
-      </div>
-
-      <!-- Submit -->
-      <button type="submit" class="btn btn-primary w-100 mb-2">
-        <i class="fas fa-sign-in-alt"></i> Login
-      </button>
-    </form>
-  </div>
+<!-- Non-field errors -->
+{% if form.non_field_errors %}
+<div class="alert alert-danger py-2">
+  <i class="fas fa-exclamation-circle me-2"></i>
+  {% for error in form.non_field_errors %}<span>{{ error }}</span>{% endfor %}
 </div>
+{% endif %}
 
-<p class="text-center mt-4 text-white">
-  <small> Use admin account or create one in the admin panel </small>
-</p>
+<form method="post" novalidate>
+  {% csrf_token %}
 
+  <!-- Username -->
+  <div class="mb-4">
+    <label class="form-label" for="id_username">
+      <i class="fas fa-user me-1" style="color:var(--primary)"></i> Username
+    </label>
+    <div class="input-group">
+      <span class="input-group-text"><i class="fas fa-user"></i></span>
+      {{ form.username }}
+    </div>
+    {% if form.username.errors %}
+    <div class="invalid-feedback d-block">{{ form.username.errors|striptags }}</div>
+    {% endif %}
+  </div>
+
+  <!-- Password -->
+  <div class="mb-4">
+    <label class="form-label" for="id_password">
+      <i class="fas fa-lock me-1" style="color:var(--primary)"></i> Password
+    </label>
+    <div class="input-group">
+      <span class="input-group-text"><i class="fas fa-lock"></i></span>
+      {{ form.password }}
+      <button type="button" class="btn btn-secondary" id="togglePwd" style="border-radius:0 var(--radius-sm) var(--radius-sm) 0;border:1.5px solid var(--gray-200);border-left:none;">
+        <i class="fas fa-eye" id="togglePwdIcon"></i>
+      </button>
+    </div>
+    {% if form.password.errors %}
+    <div class="invalid-feedback d-block">{{ form.password.errors|striptags }}</div>
+    {% endif %}
+  </div>
+
+  <!-- Submit -->
+  <button type="submit" class="btn btn-primary w-100 btn-lg mt-2">
+    <i class="fas fa-sign-in-alt"></i> Sign In
+  </button>
+</form>
+
+<div class="text-center mt-4 pt-3" style="border-top:1px solid var(--gray-200)">
+  <small style="color:var(--gray-400)">Use your admin credentials or create an account in <a href="/admin/" style="color:var(--primary);font-weight:600">Django Admin</a></small>
+</div>
+{% endblock %}
+
+{% block extra_js %}
 <script>
-  function togglePassword() {
-    const input = document.getElementById("id_password");
-    input.type = input.type === "password" ? "text" : "password";
-  }
-</script>
+  const toggleBtn  = document.getElementById('togglePwd');
+  const toggleIcon = document.getElementById('togglePwdIcon');
+  const pwdInput   = document.getElementById('id_password');
 
+  if (toggleBtn && pwdInput) {
+    toggleBtn.addEventListener('click', () => {
+      const isText = pwdInput.type === 'text';
+      pwdInput.type = isText ? 'password' : 'text';
+      toggleIcon.className = isText ? 'fas fa-eye' : 'fas fa-eye-slash';
+    });
+  }
+
+  // Add form-control class to Django-rendered inputs
+  document.getElementById('id_username').classList.add('form-control');
+  document.getElementById('id_password').classList.add('form-control');
+</script>
 {% endblock %}

@@ -1,103 +1,82 @@
-{% extends 'base.html' %}
-
-{% block title %}
-Daily Attendance
-{% endblock %}
+﻿{% extends 'base.html' %}
+{% block title %}Daily Attendance{% endblock %}
 
 {% block content %}
-<div class="container-fluid">
-  <div class="page-header">
-    <h1><i class="fas fa-calendar"></i> Daily Attendance</h1>
-  </div>
-
-  <div class="card mb-4">
-    <div class="card-header">
-      <h5 class="mb-0">Date: {{ date }}</h5>
-    </div>
-
-    <div class="card-body">
-      <form method="post">
-        {% csrf_token %}
-        <input type="hidden" name="date" value="{{ date }}" />
-
-        <div class="table-responsive">
-          <table class="table">
-            <thead class="table-light">
-              <tr>
-                <th>Employee</th>
-                <th>Check In</th>
-                <th>Check Out</th>
-                <th>Status</th>
-                <th>Notes</th>
-              </tr>
-            </thead>
-
-            <tbody>
-              {% for attendance in attendances %}
-              <tr>
-                <td>{{ attendance.employee.full_name }}</td>
-
-                <td>
-                  <input
-                    type="time"
-                    name="check_in_{{ attendance.employee.id }}"
-                    value="{{ attendance.check_in_time }}"
-                    class="form-control form-control-sm"
-                  />
-                </td>
-
-                <td>
-                  <input
-                    type="time"
-                    name="check_out_{{ attendance.employee.id }}"
-                    value="{{ attendance.check_out_time }}"
-                    class="form-control form-control-sm"
-                  />
-                </td>
-
-                <td>
-                  <select
-                    name="status_{{ attendance.employee.id }}"
-                    class="form-select form-select-sm"
-                  >
-                    {% for val, label in statuses %}
-                      <option value="{{ val }}"
-                        {% if attendance.status == val %}selected{% endif %}
-                      >
-                        {{ label }}
-                      </option>
-                    {% endfor %}
-                  </select>
-                </td>
-
-                <td>
-                  <input
-                    type="text"
-                    name="notes_{{ attendance.employee.id }}"
-                    value="{{ attendance.notes }}"
-                    class="form-control form-control-sm"
-                  />
-                </td>
-              </tr>
-              {% endfor %}
-            </tbody>
-
-          </table>
-        </div>
-
-        <div class="d-grid gap-2 mt-3">
-          <button type="submit" class="btn btn-primary">
-            <i class="fas fa-save"></i> Save Attendance
-          </button>
-
-          <a href="{% url 'attendance:attendance_list' %}" class="btn btn-secondary">
-            <i class="fas fa-times"></i> Cancel
-          </a>
-        </div>
-
-      </form>
-    </div>
+<div class="page-header d-flex justify-content-between align-items-start flex-wrap gap-3">
+  <div>
+    <h1><i class="fas fa-calendar-day"></i> Daily Attendance</h1>
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'employees:dashboard' %}">Dashboard</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'attendance:attendance_list' %}">Attendance</a></li>
+        <li class="breadcrumb-item active">Daily Check-In</li>
+      </ol>
+    </nav>
   </div>
 </div>
 
+<div class="card">
+  <div class="card-header d-flex align-items-center gap-2">
+    <i class="fas fa-calendar" style="color:var(--primary)"></i>
+    <span>Date: <strong>{{ date }}</strong></span>
+  </div>
+  <div class="card-body p-0">
+    <form method="post">
+      {% csrf_token %}
+      <input type="hidden" name="date" value="{{ date }}" />
+      <div class="table-responsive">
+        <table class="table table-hover mb-0">
+          <thead>
+            <tr>
+              <th style="min-width:180px">Employee</th>
+              <th>Check In</th>
+              <th>Check Out</th>
+              <th>Status</th>
+              <th style="min-width:160px">Notes</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for attendance in attendances %}
+            <tr>
+              <td>
+                <div class="d-flex align-items-center gap-2">
+                  <div style="width:30px;height:30px;border-radius:8px;background:linear-gradient(135deg,var(--primary),var(--secondary));color:#fff;display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:700;flex-shrink:0">
+                    {{ attendance.employee.first_name|first|upper }}{{ attendance.employee.last_name|first|upper }}
+                  </div>
+                  <span class="fw-600" style="color:var(--gray-800)">{{ attendance.employee.full_name }}</span>
+                </div>
+              </td>
+              <td>
+                <input type="time" name="check_in_{{ attendance.employee.id }}" value="{{ attendance.check_in_time }}" class="form-control form-control-sm" style="min-width:110px">
+              </td>
+              <td>
+                <input type="time" name="check_out_{{ attendance.employee.id }}" value="{{ attendance.check_out_time }}" class="form-control form-control-sm" style="min-width:110px">
+              </td>
+              <td>
+                <select name="status_{{ attendance.employee.id }}" class="form-select form-select-sm" style="min-width:120px">
+                  {% for val, label in statuses %}
+                    <option value="{{ val }}" {% if attendance.status == val %}selected{% endif %}>{{ label }}</option>
+                  {% endfor %}
+                </select>
+              </td>
+              <td>
+                <input type="text" name="notes_{{ attendance.employee.id }}" value="{{ attendance.notes }}" class="form-control form-control-sm" placeholder="Optional note&hellip;">
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+
+      <div class="d-flex gap-3 p-4 border-top" style="border-color:var(--gray-200)!important">
+        <button type="submit" class="btn btn-primary btn-lg flex-fill">
+          <i class="fas fa-save"></i> Save Attendance
+        </button>
+        <a href="{% url 'attendance:attendance_list' %}" class="btn btn-secondary btn-lg">
+          <i class="fas fa-times"></i> Cancel
+        </a>
+      </div>
+    </form>
+  </div>
+</div>
 {% endblock %}

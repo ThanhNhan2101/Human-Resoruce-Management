@@ -1,77 +1,56 @@
-{% extends 'base.html' %}
-
+﻿{% extends 'base.html' %}
 {% block title %}Attendance Details{% endblock %}
 
 {% block content %}
-<div class="container-fluid">
-    <div class="page-header">
-        <a href="{% url 'attendance:attendance_list' %}" class="text-decoration-none">
-            <i class="fas fa-arrow-left"></i> Back
-        </a>
-        <h1 class="mt-2">Attendance Details</h1>
-    </div>
+<div class="page-header">
+  <a href="{% url 'attendance:attendance_list' %}" class="back-link"><i class="fas fa-arrow-left"></i> Back to Attendance</a>
+  <h1 style="margin-top:8px"><i class="fas fa-clock"></i> Attendance Record</h1>
+</div>
 
-    <div class="row justify-content-center">
-        <div class="col-md-6">
-            <div class="card">
-                <div class="card-header">
-                    <h5 class="mb-0">{{ attendance.employee.full_name }} - {{ attendance.date|date:"d/m/Y" }}</h5>
-                </div>
-                <div class="card-body">
-                    <p>
-                        <strong>Employee:</strong><br>
-                        {{ attendance.employee.full_name }} ({{ attendance.employee.employee_id }})
-                    </p>
-                    
-                    <p>
-                        <strong>Date:</strong><br>
-                        {{ attendance.date|date:"l, d/m/Y" }}
-                    </p>
-                    
-                    <p>
-                        <strong>Check In Time:</strong><br>
-                        {{ attendance.check_in_time|time:"H:i"|default:"Not available" }}
-                    </p>
-                    
-                    <p>
-                        <strong>Check Out Time:</strong><br>
-                        {{ attendance.check_out_time|time:"H:i"|default:"Not available" }}
-                    </p>
-                    
-                    <p>
-                        <strong>Working Hours:</strong><br>
-                        {% if attendance.working_hours %}
-                            {{ attendance.working_hours }} hours
-                        {% else %}
-                            Not calculated
-                        {% endif %}
-                    </p>
-                    
-                    <p>
-                        <strong>Status:</strong><br>
-                        <span class="status-badge status-{{ attendance.status|lower }}">
-                            {{ attendance.get_status_display }}
-                        </span>
-                    </p>
-                    
-                    {% if attendance.notes %}
-                    <p>
-                        <strong>Notes:</strong><br>
-                        <div class="bg-light p-3 rounded">{{ attendance.notes }}</div>
-                    </p>
-                    {% endif %}
-
-                    <div class="d-grid gap-2 mt-4">
-                        <a href="{% url 'attendance:attendance_edit' attendance.pk %}" class="btn btn-warning">
-                            <i class="fas fa-edit"></i> Edit
-                        </a>
-                        <a href="{% url 'attendance:attendance_list' %}" class="btn btn-secondary">
-                            <i class="fas fa-arrow-left"></i> Back
-                        </a>
-                    </div>
-                </div>
-            </div>
+<div class="row justify-content-center">
+  <div class="col-lg-6 col-md-8">
+    <div class="card">
+      <div class="card-header d-flex justify-content-between align-items-center">
+        <span><i class="fas fa-user" style="color:var(--primary)"></i> {{ attendance.employee.full_name }}</span>
+        <span class="status-badge status-{{ attendance.status|lower }}">{{ attendance.get_status_display }}</span>
+      </div>
+      <div class="card-body pb-3">
+        <div class="detail-row">
+          <div class="detail-icon"><i class="fas fa-user"></i></div>
+          <div><div class="detail-label">Employee</div><div class="detail-value fw-600">{{ attendance.employee.full_name }} ({{ attendance.employee.employee_id }})</div></div>
         </div>
+        <div class="detail-row">
+          <div class="detail-icon"><i class="fas fa-calendar"></i></div>
+          <div><div class="detail-label">Date</div><div class="detail-value">{{ attendance.date|date:"l, d/m/Y" }}</div></div>
+        </div>
+        <div class="detail-row">
+          <div class="detail-icon"><i class="fas fa-sign-in-alt"></i></div>
+          <div><div class="detail-label">Check In</div><div class="detail-value">{{ attendance.check_in_time|time:"H:i"|default:"Not recorded" }}</div></div>
+        </div>
+        <div class="detail-row">
+          <div class="detail-icon"><i class="fas fa-sign-out-alt"></i></div>
+          <div><div class="detail-label">Check Out</div><div class="detail-value">{{ attendance.check_out_time|time:"H:i"|default:"Not recorded" }}</div></div>
+        </div>
+        <div class="detail-row">
+          <div class="detail-icon"><i class="fas fa-hourglass-half"></i></div>
+          <div>
+            <div class="detail-label">Working Hours</div>
+            <div class="detail-value">
+              {% if attendance.working_hours %}<span class="badge bg-success">{{ attendance.working_hours }} hours</span>{% else %}<span style="color:var(--gray-400)">Not calculated</span>{% endif %}
+            </div>
+          </div>
+        </div>
+        {% if attendance.notes %}
+        <div class="detail-row">
+          <div class="detail-icon"><i class="fas fa-sticky-note"></i></div>
+          <div><div class="detail-label">Notes</div><div class="detail-value" style="background:var(--gray-50);padding:8px 12px;border-radius:8px;margin-top:4px">{{ attendance.notes }}</div></div>
+        </div>
+        {% endif %}
+      </div>
+      <div class="card-body border-top" style="border-color:var(--gray-200)!important">
+        <a href="{% url 'attendance:attendance_edit' attendance.pk %}" class="btn btn-warning w-100"><i class="fas fa-edit"></i> Edit Record</a>
+      </div>
     </div>
+  </div>
 </div>
 {% endblock %}

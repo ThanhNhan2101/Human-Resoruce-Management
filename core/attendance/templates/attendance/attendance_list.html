@@ -1,159 +1,134 @@
-{% extends 'base.html' %}
-
-{% block title %}Attendance List{% endblock %}
+﻿{% extends 'base.html' %}
+{% block title %}Attendance{% endblock %}
 
 {% block content %}
-<div class="container-fluid">
-    <div class="page-header d-flex justify-content-between align-items-center">
-        <h1><i class="fas fa-clock"></i> Attendance List</h1>
-        <a href="{% url 'attendance:daily_attendance' %}" class="btn btn-primary">
-            <i class="fas fa-plus"></i> Check In Today
-        </a>
-    </div>
-
-    <!-- Filter Form -->
-    <div class="card mb-4">
-        <div class="card-body">
-            <form method="get" class="row g-3">
-                <div class="col-md-3">
-                    <select name="employee" class="form-select">
-                        <option value="">All Employees</option>
-                        {% for emp in employees %}
-                            <option value="{{ emp.id }}" {% if emp.id|stringformat:"s" == selected_employee %}selected{% endif %}>
-                                {{ emp.full_name }}
-                            </option>
-                        {% endfor %}
-                    </select>
-                </div>
-                <div class="col-md-2">
-                    <select name="status" class="form-select">
-                        <option value="">All Status</option>
-                        {% for val, label in statuses %}
-                            <option value="{{ val }}" {% if val == selected_status %}selected{% endif %}>{{ label }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-                <div class="col-md-2">
-                    <input type="date" name="from_date" class="form-control" value="{{ from_date }}" placeholder="From Date">
-                </div>
-                <div class="col-md-2">
-                    <input type="date" name="to_date" class="form-control" value="{{ to_date }}" placeholder="To Date">
-                </div>
-                <div class="col-md-3">
-                    <button type="submit" class="btn btn-outline-primary w-100">
-                        <i class="fas fa-search"></i> Search
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- Statistics -->
-    <div class="row mb-4">
-        <div class="col-md-3">
-            <div class="stat-card">
-                <h3>{{ today_present }}</h3>
-                <p><i class="fas fa-check-circle"></i> Có mặt hôm nay</p>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="stat-card">
-                <h3>{{ today_absent }}</h3>
-                <p><i class="fas fa-times-circle"></i> Vắng mặt hôm nay</p>
-            </div>
-        </div>
-    </div>
-
-    <!-- Attendance Table -->
-    <div class="card">
-        <div class="table-responsive">
-            <table class="table table-hover mb-0">
-                <thead class="table-light">
-                    <tr>
-                        <th>Employee</th>
-                        <th>Date</th>
-                        <th>Check In</th>
-                        <th>Check Out</th>
-                        <th>Working Hours</th>
-                        <th>Status</th>
-                        <th>Notes</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% if attendances %}
-                        {% for att in attendances %}
-                            <tr>
-                                <td>{{ att.employee.full_name }}</td>
-                                <td>{{ att.date|date:"d/m/Y" }}</td>
-                                <td>{{ att.check_in_time|time:"H:i"|default:"-" }}</td>
-                                <td>{{ att.check_out_time|time:"H:i"|default:"-" }}</td>
-                                <td>
-                                    {% if att.working_hours %}
-                                        <span class="badge bg-success">{{ att.working_hours }}h</span>
-                                    {% else %}
-                                        -
-                                    {% endif %}
-                                </td>
-                                <td>
-                                    <span class="status-badge status-{{ att.status|lower }}">
-                                        {{ att.get_status_display }}
-                                    </span>
-                                </td>
-                                <td class="text-truncate" title="{{ att.notes }}">{{ att.notes|truncatewords:3 }}</td>
-                                <td>
-                                    <a href="{% url 'attendance:attendance_detail' att.pk %}" class="btn btn-sm btn-info">
-                                        <i class="fas fa-eye"></i>
-                                    </a>
-                                    <a href="{% url 'attendance:attendance_edit' att.pk %}" class="btn btn-sm btn-warning">
-                                        <i class="fas fa-edit"></i>
-                                    </a>
-                                </td>
-                            </tr>
-                        {% endfor %}
-                    {% else %}
-                        <tr>
-                            <td colspan="8" class="text-center text-muted py-4">
-                                <i class="fas fa-inbox"></i> Không có dữ liệu chấm công
-                            </td>
-                        </tr>
-                    {% endif %}
-                </tbody>
-            </table>
-        </div>
-    </div>
-
-    <!-- Pagination -->
-    {% if is_paginated %}
-    <nav aria-label="Page navigation" class="mt-4">
-        <ul class="pagination justify-content-center">
-            {% if page_obj.has_previous %}
-                <li class="page-item">
-                    <a class="page-link" href="?page=1">First</a>
-                </li>
-                <li class="page-item">
-                    <a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous</a>
-                </li>
-            {% endif %}
-
-            {% for num in page_obj.paginator.page_range %}
-                {% if page_obj.number == num %}
-                    <li class="page-item active"><span class="page-link">{{ num }}</span></li>
-                {% else %}
-                    <li class="page-item"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
-                {% endif %}
-            {% endfor %}
-
-            {% if page_obj.has_next %}
-                <li class="page-item">
-                    <a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a>
-                </li>
-                <li class="page-item">
-                    <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">Last</a>
-                </li>
-            {% endif %}
-        </ul>
+<div class="page-header d-flex justify-content-between align-items-start flex-wrap gap-3">
+  <div>
+    <h1><i class="fas fa-clock"></i> Attendance</h1>
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'employees:dashboard' %}">Dashboard</a></li>
+        <li class="breadcrumb-item active">Attendance</li>
+      </ol>
     </nav>
-    {% endif %}
+  </div>
+  <a href="{% url 'attendance:daily_attendance' %}" class="btn btn-primary">
+    <i class="fas fa-calendar-day"></i> Daily Check-In
+  </a>
 </div>
+
+<!-- Stats -->
+<div class="row g-3 mb-4">
+  <div class="col-sm-6 col-xl-3">
+    <div class="stat-card card-success">
+      <div class="stat-icon"><i class="fas fa-check-circle"></i></div>
+      <div class="stat-info"><h3>{{ today_present }}</h3><p>Present Today</p></div>
+    </div>
+  </div>
+  <div class="col-sm-6 col-xl-3">
+    <div class="stat-card card-danger">
+      <div class="stat-icon"><i class="fas fa-times-circle"></i></div>
+      <div class="stat-info"><h3>{{ today_absent }}</h3><p>Absent Today</p></div>
+    </div>
+  </div>
+</div>
+
+<!-- Filter -->
+<div class="filter-card">
+  <form method="get" class="row g-2 align-items-end">
+    <div class="col-md-3 col-sm-6">
+      <label class="form-label">Employee</label>
+      <select name="employee" class="form-select">
+        <option value="">All Employees</option>
+        {% for emp in employees %}
+          <option value="{{ emp.id }}" {% if emp.id|stringformat:"s" == selected_employee %}selected{% endif %}>{{ emp.full_name }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="col-md-2 col-sm-6">
+      <label class="form-label">Status</label>
+      <select name="status" class="form-select">
+        <option value="">All</option>
+        {% for val, label in statuses %}
+          <option value="{{ val }}" {% if val == selected_status %}selected{% endif %}>{{ label }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="col-md-2 col-sm-6">
+      <label class="form-label">From Date</label>
+      <input type="date" name="from_date" class="form-control" value="{{ from_date }}">
+    </div>
+    <div class="col-md-2 col-sm-6">
+      <label class="form-label">To Date</label>
+      <input type="date" name="to_date" class="form-control" value="{{ to_date }}">
+    </div>
+    <div class="col-md-3 col-sm-12 d-flex gap-2">
+      <button type="submit" class="btn btn-primary flex-fill"><i class="fas fa-search"></i> Filter</button>
+      <a href="{% url 'attendance:attendance_list' %}" class="btn btn-secondary"><i class="fas fa-times"></i></a>
+    </div>
+  </form>
+</div>
+
+<!-- Table -->
+<div class="table-wrapper">
+  <table class="table table-hover">
+    <thead>
+      <tr>
+        <th>Employee</th>
+        <th>Date</th>
+        <th>Check In</th>
+        <th>Check Out</th>
+        <th>Hours</th>
+        <th>Status</th>
+        <th>Notes</th>
+        <th style="text-align:right">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% if attendances %}{% for att in attendances %}
+      <tr>
+        <td>
+          <div class="d-flex align-items-center gap-2">
+            <div style="width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,var(--primary),var(--secondary));color:#fff;display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:700;flex-shrink:0">
+              {{ att.employee.first_name|first|upper }}{{ att.employee.last_name|first|upper }}
+            </div>
+            <span class="fw-600" style="color:var(--gray-800)">{{ att.employee.full_name }}</span>
+          </div>
+        </td>
+        <td style="color:var(--gray-600)">{{ att.date|date:"d/m/Y" }}</td>
+        <td>{% if att.check_in_time %}<span class="badge bg-success">{{ att.check_in_time|time:"H:i" }}</span>{% else %}<span style="color:var(--gray-400)">—</span>{% endif %}</td>
+        <td>{% if att.check_out_time %}<span class="badge" style="background:var(--gray-100);color:var(--gray-600)">{{ att.check_out_time|time:"H:i" }}</span>{% else %}<span style="color:var(--gray-400)">—</span>{% endif %}</td>
+        <td>{% if att.working_hours %}<span class="badge bg-info">{{ att.working_hours }}h</span>{% else %}<span style="color:var(--gray-400)">—</span>{% endif %}</td>
+        <td><span class="status-badge status-{{ att.status|lower }}">{{ att.get_status_display }}</span></td>
+        <td style="color:var(--gray-500);max-width:120px" title="{{ att.notes }}">{{ att.notes|truncatewords:3|default:"—" }}</td>
+        <td>
+          <div class="btn-action-group justify-content-end">
+            <a href="{% url 'attendance:attendance_detail' att.pk %}" class="btn btn-info btn-sm"><i class="fas fa-eye"></i></a>
+            <a href="{% url 'attendance:attendance_edit' att.pk %}" class="btn btn-warning btn-sm"><i class="fas fa-edit"></i></a>
+          </div>
+        </td>
+      </tr>
+      {% endfor %}{% else %}
+      <tr><td colspan="8"><div class="empty-state"><i class="fas fa-clock"></i><p>No attendance records found.</p></div></td></tr>
+      {% endif %}
+    </tbody>
+  </table>
+</div>
+
+{% if is_paginated %}
+<nav class="mt-3"><ul class="pagination">
+  {% if page_obj.has_previous %}
+    <li class="page-item"><a class="page-link" href="?page=1"><i class="fas fa-angle-double-left"></i></a></li>
+    <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}"><i class="fas fa-angle-left"></i></a></li>
+  {% endif %}
+  {% for num in page_obj.paginator.page_range %}
+    {% if page_obj.number == num %}<li class="page-item active"><span class="page-link">{{ num }}</span></li>
+    {% else %}<li class="page-item"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>{% endif %}
+  {% endfor %}
+  {% if page_obj.has_next %}
+    <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}"><i class="fas fa-angle-right"></i></a></li>
+    <li class="page-item"><a class="page-link" href="?page={{ page_obj.paginator.num_pages }}"><i class="fas fa-angle-double-right"></i></a></li>
+  {% endif %}
+</ul></nav>
+{% endif %}
 {% endblock %}

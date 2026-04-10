@@ -1,99 +1,59 @@
-{% extends 'base.html' %} {% block title %}{{ title }}{% endblock %} {% block content %}
-<div class="container-fluid">
-  <div class="page-header">
-    <a
-      href="{% url 'attendance:attendance_list' %}"
-      class="text-decoration-none"
-    >
-      <i class="fas fa-arrow-left"></i> Back
-    </a>
-    <h1 class="mt-2">{{ title }}</h1>
-  </div>
+﻿{% extends 'base.html' %}
+{% block title %}{{ title }}{% endblock %}
 
-  <div class="row justify-content-center">
-    <div class="col-md-8">
-      <div class="card">
-        <div class="card-body">
-          <form method="post" novalidate>
-            {% csrf_token %}
+{% block content %}
+<div class="page-header">
+  <a href="{% url 'attendance:attendance_list' %}" class="back-link"><i class="fas fa-arrow-left"></i> Back to Attendance</a>
+  <h1 style="margin-top:8px"><i class="fas fa-clock"></i> {{ title }}</h1>
+</div>
 
-            <div class="mb-3">
-              {{ form.employee.label_tag }} {{ form.employee }} {% if
-              form.employee.errors %}
-              <div class="text-danger small">{{ form.employee.errors }}</div>
-              {% endif %}
+<div class="row justify-content-center">
+  <div class="col-lg-7 col-md-9">
+    <div class="card">
+      <div class="card-body">
+        <form method="post" novalidate>
+          {% csrf_token %}
+
+          <div class="mb-4">
+            {{ form.employee.label_tag }}{{ form.employee }}
+            {% if form.employee.errors %}<div class="invalid-feedback d-block">{{ form.employee.errors|striptags }}</div>{% endif %}
+          </div>
+
+          <div class="mb-4">
+            {{ form.date.label_tag }}{{ form.date }}
+            {% if form.date.errors %}<div class="invalid-feedback d-block">{{ form.date.errors|striptags }}</div>{% endif %}
+          </div>
+
+          <div class="row g-3 mb-4">
+            <div class="col-md-6">
+              {{ form.check_in_time.label_tag }}{{ form.check_in_time }}
+              {% if form.check_in_time.errors %}<div class="invalid-feedback d-block">{{ form.check_in_time.errors|striptags }}</div>{% endif %}
             </div>
-
-            <div class="mb-3">
-              {{ form.date.label_tag }} {{ form.date }} {% if form.date.errors
-              %}
-              <div class="text-danger small">{{ form.date.errors }}</div>
-              {% endif %}
+            <div class="col-md-6">
+              {{ form.check_out_time.label_tag }}{{ form.check_out_time }}
+              {% if form.check_out_time.errors %}<div class="invalid-feedback d-block">{{ form.check_out_time.errors|striptags }}</div>{% endif %}
             </div>
+          </div>
 
-            <div class="row">
-              <div class="col-md-6 mb-3">
-                {{ form.check_in_time.label_tag }} {{ form.check_in_time }} {%
-                if form.check_in_time.errors %}
-                <div class="text-danger small">
-                  {{ form.check_in_time.errors }}
-                </div>
-                {% endif %}
-              </div>
-              <div class="col-md-6 mb-3">
-                {{ form.check_out_time.label_tag }} {{ form.check_out_time }} {%
-                if form.check_out_time.errors %}
-                <div class="text-danger small">
-                  {{ form.check_out_time.errors }}
-                </div>
-                {% endif %}
-              </div>
-            </div>
+          <div class="mb-4">
+            {{ form.status.label_tag }}{{ form.status }}
+            {% if form.status.errors %}<div class="invalid-feedback d-block">{{ form.status.errors|striptags }}</div>{% endif %}
+          </div>
 
-            <div class="mb-3">
-              {{ form.status.label_tag }} {{ form.status }} {% if
-              form.status.errors %}
-              <div class="text-danger small">{{ form.status.errors }}</div>
-              {% endif %}
-            </div>
+          {% if form.notes %}
+          <div class="mb-4">
+            {{ form.notes.label_tag }}{{ form.notes }}
+            {% if form.notes.errors %}<div class="invalid-feedback d-block">{{ form.notes.errors|striptags }}</div>{% endif %}
+          </div>
+          {% endif %}
 
-            <div class="mb-3">
-              {{ form.notes.label_tag }} {{ form.notes }} {% if
-              form.notes.errors %}
-              <div class="text-danger small">{{ form.notes.errors }}</div>
-              {% endif %}
-            </div>
-
-            <div class="d-grid gap-2 mt-4">
-              <button type="submit" class="btn btn-primary">
-                <i class="fas fa-save"></i> {{ button_text }}
-              </button>
-              <a
-                href="{% url 'attendance:attendance_list' %}"
-                class="btn btn-secondary"
-              >
-                <i class="fas fa-times"></i> Cancel
-              </a>
-            </div>
-          </form>
-        </div>
+          <div class="d-flex gap-3 mt-2">
+            <button type="submit" class="btn btn-primary btn-lg flex-fill"><i class="fas fa-save"></i> Save Record</button>
+            <a href="{% url 'attendance:attendance_list' %}" class="btn btn-secondary btn-lg"><i class="fas fa-times"></i> Cancel</a>
+          </div>
+        </form>
       </div>
     </div>
   </div>
 </div>
-
-<style>
-  .form-control,
-  .form-select,
-  textarea {
-    border: 1px solid #ddd;
-    border-radius: 6px;
-  }
-
-  .form-label {
-    font-weight: 600;
-    margin-bottom: 8px;
-    color: #333;
-  }
-</style>
 {% endblock %}

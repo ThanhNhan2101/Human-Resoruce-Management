@@ -1,260 +1,281 @@
 #!/usr/bin/env python
 """
 Django seed script - Tạo dữ liệu demo cho HRM System
-Chạy: python manage.py shell < scripts/seed_data.py
+Chạy: python scripts/seed_data.py
+  hoặc: python manage.py shell < scripts/seed_data.py
 """
 
-from django.utils import timezone
 from core.attendance.models import Attendance
-from core.leaves.models import Leave, LeaveType
-from core.employees.models import Employee, Department, Position
+from core.leaves.models import Leave
+from core.employees.models import Employee, Department
+from django.contrib.auth import get_user_model
+from django.utils import timezone
 import os
+import sys
 import django
 from datetime import date, timedelta
+from decimal import Decimal
 import random
 
+# Allow running directly: python scripts/seed_data.py
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+if BASE_DIR not in sys.path:
+    sys.path.insert(0, BASE_DIR)
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings.base')
 django.setup()
 
 
-# Clear existing data (optional)
-print("Clearing existing data...")
+User = get_user_model()
+
+random.seed(42)
+today = timezone.now().date()
+
+# ─────────────────────────────────────────────
+# 0. CLEAR existing data
+# ─────────────────────────────────────────────
+print("🗑  Clearing existing data...")
+Attendance.objects.all().delete()
+Leave.objects.all().delete()
 Employee.objects.all().delete()
 Department.objects.all().delete()
-Position.objects.all().delete()
-LeaveType.objects.all().delete()
 
-# Create Departments
-print("Creating departments...")
-departments = {
-    'hr': Department.objects.create(
-        name='Phòng Nhân Sự',
-        description='Bộ phận quản lý nhân sự'
-    ),
-    'it': Department.objects.create(
-        name='Phòng CNTT',
-        description='Bộ phận công nghệ thông tin'
-    ),
-    'sales': Department.objects.create(
-        name='Phòng Bán Hàng',
-        description='Bộ phận kinh doanh'
-    ),
-    'accounting': Department.objects.create(
-        name='Phòng Kế Toán',
-        description='Bộ phận tài chính kế toán'
-    ),
-}
+# ─────────────────────────────────────────────
+# 1. SUPERUSER
+# ─────────────────────────────────────────────
+print("👤 Creating superuser...")
+if not User.objects.filter(username='admin').exists():
+    User.objects.create_superuser(
+        username='admin',
+        email='admin@hrm.local',
+        password='admin123',
+    )
+    print("  - admin / admin123  (superuser created)")
+else:
+    print("  - admin already exists, skipped")
 
-# Create Positions
-print("Creating positions...")
-positions = {}
-for dept_key, dept in departments.items():
-    if dept_key == 'hr':
-        positions['hr_manager'] = Position.objects.create(
-            name='Trưởng phòng HR',
-            department=dept
-        )
-        positions['hr_staff'] = Position.objects.create(
-            name='Nhân viên HR',
-            department=dept
-        )
-    elif dept_key == 'it':
-        positions['dev_lead'] = Position.objects.create(
-            name='Tech Lead',
-            department=dept
-        )
-        positions['dev'] = Position.objects.create(
-            name='Developer',
-            department=dept
-        )
-        positions['qa'] = Position.objects.create(
-            name='QA Engineer',
-            department=dept
-        )
-    elif dept_key == 'sales':
-        positions['sales_manager'] = Position.objects.create(
-            name='Sales Manager',
-            department=dept
-        )
-        positions['sales_exec'] = Position.objects.create(
-            name='Sales Executive',
-            department=dept
-        )
-    elif dept_key == 'accounting':
-        positions['accountant'] = Position.objects.create(
-            name='Nhân viên Kế Toán',
-            department=dept
-        )
+# ─────────────────────────────────────────────
+# 2. DEPARTMENTS
+# ─────────────────────────────────────────────
+print("🏢 Creating departments...")
+dept_data = [
+    ('Phòng Nhân Sự',     'Quản lý tuyển dụng, đào tạo và phúc lợi nhân sự'),
+    ('Phòng CNTT',        'Phát triển và vận hành hệ thống công nghệ thông tin'),
+    ('Phòng Bán Hàng',   'Tìm kiếm khách hàng và thúc đẩy doanh thu'),
+    ('Phòng Kế Toán',    'Quản lý tài chính, kế toán và thuế'),
+    ('Phòng Marketing',  'Xây dựng thương hiệu và các chiến dịch tiếp thị'),
+]
+depts = {}
+for name, desc in dept_data:
+    d, _ = Department.objects.get_or_create(
+        name=name, defaults={'description': desc})
+    depts[name] = d
+    print(f"  - {name}")
 
-# Create Employees
-print("Creating employees...")
-employees = [
-    {
-        'first_name': 'Nguyễn',
-        'last_name': 'Văn A',
-        'email': 'a.nguyen@hrm.local',
-        'phone': '+84912345678',
-        'date_of_birth': date(1995, 5, 15),
-        'gender': 'M',
-        'address': '123 Đường Nguyễn Huệ, Hà Nội',
-        'employee_id': 'NV001',
-        'department': departments['hr'],
-        'position': positions['hr_manager'],
-        'hire_date': date(2022, 1, 15),
-        'base_salary': 15000000,
-        'allowance': 1000000,
-    },
-    {
-        'first_name': 'Trần',
-        'last_name': 'Thị B',
-        'email': 'b.tran@hrm.local',
-        'phone': '+84987654321',
-        'date_of_birth': date(1998, 8, 20),
-        'gender': 'F',
-        'address': '456 Đường Lê Lợi, TPHCM',
-        'employee_id': 'NV002',
-        'department': departments['it'],
-        'position': positions['dev_lead'],
-        'hire_date': date(2023, 3, 1),
-        'base_salary': 18000000,
-        'allowance': 2000000,
-    },
-    {
-        'first_name': 'Phạm',
-        'last_name': 'Văn C',
-        'email': 'c.pham@hrm.local',
-        'phone': '+84977777777',
-        'date_of_birth': date(1996, 2, 28),
-        'gender': 'M',
-        'address': '789 Đường Trần Hưng Đạo, Đà Nẵng',
-        'employee_id': 'NV003',
-        'department': departments['sales'],
-        'position': positions['sales_manager'],
-        'hire_date': date(2021, 6, 15),
-        'base_salary': 16000000,
-        'allowance': 3000000,
-    },
-    {
-        'first_name': 'Hoàng',
-        'last_name': 'Thị D',
-        'email': 'd.hoang@hrm.local',
-        'phone': '+84988888888',
-        'date_of_birth': date(2000, 3, 10),
-        'gender': 'F',
-        'address': '321 Đường Cách Mạng Tháng 8, Quảng Ninh',
-        'employee_id': 'NV004',
-        'department': departments['it'],
-        'position': positions['dev'],
-        'hire_date': date(2023, 9, 1),
-        'base_salary': 13000000,
-        'allowance': 1000000,
-    },
-    {
-        'first_name': 'Võ',
-        'last_name': 'Văn E',
-        'email': 'e.vo@hrm.local',
-        'phone': '+84966666666',
-        'date_of_birth': date(1994, 11, 5),
-        'gender': 'M',
-        'address': '654 Đường Hàng Tràu, Hà Nội',
-        'employee_id': 'NV005',
-        'department': departments['accounting'],
-        'position': positions['accountant'],
-        'hire_date': date(2022, 7, 20),
-        'base_salary': 12000000,
-        'allowance': 500000,
-    },
-    {
-        'first_name': 'Đinh',
-        'last_name': 'Thị F',
-        'email': 'f.dinh@hrm.local',
-        'phone': '+84944444444',
-        'date_of_birth': date(1999, 1, 15),
-        'gender': 'F',
-        'address': '987 Đường Bạch Đằng, Hải Phòng',
-        'employee_id': 'NV006',
-        'department': departments['sales'],
-        'position': positions['sales_exec'],
-        'hire_date': date(2024, 1, 10),
-        'base_salary': 10000000,
-        'allowance': 2000000,
-    },
+# ─────────────────────────────────────────────
+# 3. EMPLOYEES
+# ─────────────────────────────────────────────
+print("👥 Creating employees...")
+employee_data = [
+    # HR
+    dict(first_name='Nguyễn', last_name='Minh Tuấn',  email='tuan.nguyen@hrm.local',
+         phone='0912345601', date_of_birth=date(1985, 3, 12), gender='M',
+         address='12 Lý Thường Kiệt, Hà Nội', employee_id='NV001',
+         department=depts['Phòng Nhân Sự'], position='Trưởng phòng Nhân Sự',
+         hire_date=date(2019, 1, 7), status='ACTIVE',
+         base_salary=Decimal('22000000'), allowance=Decimal('3000000')),
+    dict(first_name='Lê', last_name='Thị Hương',      email='huong.le@hrm.local',
+         phone='0912345602', date_of_birth=date(1993, 7, 25), gender='F',
+         address='45 Trần Phú, Hà Nội', employee_id='NV002',
+         department=depts['Phòng Nhân Sự'], position='Chuyên viên Nhân Sự',
+         hire_date=date(2021, 4, 1), status='ACTIVE',
+         base_salary=Decimal('14000000'), allowance=Decimal('1500000')),
+    # IT
+    dict(first_name='Trần', last_name='Văn Khoa',     email='khoa.tran@hrm.local',
+         phone='0912345603', date_of_birth=date(1990, 11, 8), gender='M',
+         address='33 Nguyễn Trãi, TP.HCM', employee_id='NV003',
+         department=depts['Phòng CNTT'], position='Tech Lead',
+         hire_date=date(2020, 6, 15), status='ACTIVE',
+         base_salary=Decimal('28000000'), allowance=Decimal('4000000')),
+    dict(first_name='Phạm', last_name='Thanh Hà',     email='ha.pham@hrm.local',
+         phone='0912345604', date_of_birth=date(1996, 2, 14), gender='F',
+         address='78 Đinh Tiên Hoàng, TP.HCM', employee_id='NV004',
+         department=depts['Phòng CNTT'], position='Backend Developer',
+         hire_date=date(2022, 9, 5), status='ACTIVE',
+         base_salary=Decimal('18000000'), allowance=Decimal('2000000')),
+    dict(first_name='Hoàng', last_name='Đức Minh',    email='minh.hoang@hrm.local',
+         phone='0912345605', date_of_birth=date(1998, 5, 20), gender='M',
+         address='101 Lê Lợi, Đà Nẵng', employee_id='NV005',
+         department=depts['Phòng CNTT'], position='Frontend Developer',
+         hire_date=date(2023, 3, 1), status='ACTIVE',
+         base_salary=Decimal('16000000'), allowance=Decimal('1500000')),
+    dict(first_name='Vũ', last_name='Thị Lan',        email='lan.vu@hrm.local',
+         phone='0912345606', date_of_birth=date(1997, 9, 3), gender='F',
+         address='55 Bạch Đằng, Đà Nẵng', employee_id='NV006',
+         department=depts['Phòng CNTT'], position='QA Engineer',
+         hire_date=date(2023, 7, 10), status='ACTIVE',
+         base_salary=Decimal('15000000'), allowance=Decimal('1000000')),
+    # Sales
+    dict(first_name='Đinh', last_name='Văn Long',     email='long.dinh@hrm.local',
+         phone='0912345607', date_of_birth=date(1988, 4, 18), gender='M',
+         address='22 Hùng Vương, Hải Phòng', employee_id='NV007',
+         department=depts['Phòng Bán Hàng'], position='Sales Manager',
+         hire_date=date(2018, 8, 20), status='ACTIVE',
+         base_salary=Decimal('20000000'), allowance=Decimal('5000000')),
+    dict(first_name='Ngô', last_name='Thị Thúy',      email='thuy.ngo@hrm.local',
+         phone='0912345608', date_of_birth=date(1999, 12, 1), gender='F',
+         address='9 Quang Trung, Hà Nội', employee_id='NV008',
+         department=depts['Phòng Bán Hàng'], position='Sales Executive',
+         hire_date=date(2024, 2, 1), status='ACTIVE',
+         base_salary=Decimal('11000000'), allowance=Decimal('2500000')),
+    # Accounting
+    dict(first_name='Bùi', last_name='Quốc Dũng',    email='dung.bui@hrm.local',
+         phone='0912345609', date_of_birth=date(1987, 6, 30), gender='M',
+         address='67 Tràng Tiền, Hà Nội', employee_id='NV009',
+         department=depts['Phòng Kế Toán'], position='Kế Toán Trưởng',
+         hire_date=date(2017, 5, 10), status='ACTIVE',
+         base_salary=Decimal('19000000'), allowance=Decimal('2000000')),
+    dict(first_name='Đặng', last_name='Thị Mai',      email='mai.dang@hrm.local',
+         phone='0912345610', date_of_birth=date(1994, 8, 22), gender='F',
+         address='3 Hoàng Diệu, Hà Nội', employee_id='NV010',
+         department=depts['Phòng Kế Toán'], position='Nhân viên Kế Toán',
+         hire_date=date(2022, 11, 15), status='ACTIVE',
+         base_salary=Decimal('13000000'), allowance=Decimal('1000000')),
+    # Marketing
+    dict(first_name='Lý', last_name='Văn Hùng',       email='hung.ly@hrm.local',
+         phone='0912345611', date_of_birth=date(1992, 1, 9), gender='M',
+         address='88 Nam Kỳ Khởi Nghĩa, TP.HCM', employee_id='NV011',
+         department=depts['Phòng Marketing'], position='Marketing Manager',
+         hire_date=date(2020, 3, 1), status='ACTIVE',
+         base_salary=Decimal('21000000'), allowance=Decimal('3500000')),
+    dict(first_name='Cao', last_name='Thị Ngọc',      email='ngoc.cao@hrm.local',
+         phone='0912345612', date_of_birth=date(2000, 10, 15), gender='F',
+         address='14 Võ Thị Sáu, TP.HCM', employee_id='NV012',
+         department=depts['Phòng Marketing'], position='Content Creator',
+         hire_date=date(2024, 1, 15), status='ACTIVE',
+         base_salary=Decimal('12000000'), allowance=Decimal('1000000')),
 ]
 
 created_employees = []
-for emp_data in employees:
-    emp = Employee.objects.create(**emp_data)
+for data in employee_data:
+    emp, created = Employee.objects.get_or_create(
+        employee_id=data['employee_id'], defaults=data
+    )
     created_employees.append(emp)
-    print(f"  - Created: {emp.full_name} ({emp.employee_id})")
+    tag = 'created' if created else 'exists'
+    print(f"  - {emp.full_name} ({emp.employee_id}) [{tag}]")
 
-# Create Leave Types
-print("Creating leave types...")
-leave_types = [
-    LeaveType.objects.create(
-        name='Phép năm',
-        days_per_year=12,
-        is_paid=True,
-        description='Nghỉ phép hàng năm'
-    ),
-    LeaveType.objects.create(
-        name='Phép bệnh',
-        days_per_year=5,
-        is_paid=True,
-        description='Nghỉ phép khi bệnh'
-    ),
-    LeaveType.objects.create(
-        name='Phép hưởng lương',
-        days_per_year=20,
-        is_paid=True,
-        description='Phép hưởng lương đầy đủ'
-    ),
-    LeaveType.objects.create(
-        name='Phép không lương',
-        days_per_year=10,
-        is_paid=False,
-        description='Phép không hưởng lương'
-    ),
+hr_manager = created_employees[0]   # NV001 – approves leaves
+
+# ─────────────────────────────────────────────
+# 4. LEAVE REQUESTS
+# ─────────────────────────────────────────────
+print("📋 Creating leave requests...")
+
+leave_scenarios = [
+    # (emp_index, days_from_today_start, duration, reason, status, approved_by)
+    (1,  5,  3, 'Nghỉ phép năm – đi du lịch gia đình',           'PENDING',  None),
+    (2, -10, 2, 'Nghỉ ốm – sốt virus',
+     'APPROVED', hr_manager),
+    (3,  10, 5, 'Nghỉ phép năm – việc cá nhân',                   'PENDING',  None),
+    (4, -20, 1, 'Nghỉ hiếu – đám tang người thân',
+     'APPROVED', hr_manager),
+    (5,  2,  2, 'Nghỉ bệnh – khám định kỳ',                       'PENDING',  None),
+    (6, -5,  3, 'Nghỉ phép năm',
+     'APPROVED', hr_manager),
+    (7, -30, 2, 'Nghỉ ốm – cảm cúm',
+     'REJECTED', hr_manager),
+    (8,  15, 4, 'Nghỉ phép năm – về quê',                         'PENDING',  None),
+    (9, -15, 1, 'Nghỉ việc riêng',
+     'APPROVED', hr_manager),
+    (10, 20, 3, 'Nghỉ phép năm – tham dự đám cưới bạn bè',       'PENDING',  None),
+    (11, -8, 2, 'Nghỉ ốm – viêm họng',
+     'APPROVED', hr_manager),
+    (0, -40, 5, 'Nghỉ phép năm – nghỉ dưỡng',
+     'APPROVED', hr_manager),
 ]
 
-# Create some Leave requests
-print("Creating leave requests...")
-for emp in created_employees[:3]:
+for emp_idx, offset_start, duration, reason, status, approved_by in leave_scenarios:
+    emp = created_employees[emp_idx]
+    start = today + timedelta(days=offset_start)
+    end = start + timedelta(days=duration - 1)
+    remarks = 'Đã xác nhận' if status == 'APPROVED' else (
+              'Không đủ điều kiện' if status == 'REJECTED' else '')
     Leave.objects.create(
         employee=emp,
-        leave_type=leave_types[0],
-        start_date=timezone.now().date() + timedelta(days=5),
-        end_date=timezone.now().date() + timedelta(days=7),
-        reason='Nghỉ phép hàng năm',
-        status='PENDING'
+        start_date=start,
+        end_date=end,
+        reason=reason,
+        status=status,
+        approved_by=approved_by,
+        remarks=remarks,
     )
-    print(f"  - Created leave for: {emp.full_name}")
+    print(f"  - {emp.full_name}: {start} → {end} [{status}]")
 
-# Create Attendance records
-print("Creating attendance records...")
-today = timezone.now().date()
+# ─────────────────────────────────────────────
+# 5. ATTENDANCE (last 30 working days)
+# ─────────────────────────────────────────────
+print("🕐 Creating attendance records...")
+
+
+def prev_working_days(ref_date, count):
+    """Yield `count` dates going backwards from ref_date, skipping weekends."""
+    d = ref_date - timedelta(days=1)
+    yielded = 0
+    while yielded < count:
+        if d.weekday() < 5:   # Mon-Fri
+            yield d
+            yielded += 1
+        d -= timedelta(days=1)
+
+
 for emp in created_employees:
-    for i in range(1, 21):  # Last 20 days
-        att_date = today - timedelta(days=i)
-        status = random.choice(
-            ['PRESENT', 'PRESENT', 'PRESENT', 'LATE', 'ABSENT'])
+    records_created = 0
+    for work_date in prev_working_days(today, 30):
+        # weighted random: mostly PRESENT
+        roll = random.random()
+        if roll < 0.70:
+            status = 'PRESENT'
+        elif roll < 0.82:
+            status = 'LATE'
+        elif roll < 0.90:
+            status = 'ABSENT'
+        elif roll < 0.95:
+            status = 'HALF_DAY'
+        else:
+            status = 'ON_LEAVE'
 
-        check_in = f"{random.randint(7, 9):02d}:{random.randint(0, 59):02d}" if status in [
-            'PRESENT', 'LATE'] else None
-        check_out = f"{random.randint(17, 18):02d}:{random.randint(0, 59):02d}" if status == 'PRESENT' else None
+        if status in ('PRESENT', 'LATE'):
+            late_min = random.randint(5, 45) if status == 'LATE' else 0
+            check_in_h = 8 if status == 'PRESENT' else random.choice([9, 10])
+            check_in_m = random.randint(
+                0, 10) if status == 'PRESENT' else late_min
+            check_in = f"{check_in_h:02d}:{check_in_m:02d}:00"
+            check_out = f"{random.randint(17, 18):02d}:{random.randint(0, 59):02d}:00"
+        elif status == 'HALF_DAY':
+            check_in = f"08:{random.randint(0, 15):02d}:00"
+            check_out = f"12:{random.randint(0, 30):02d}:00"
+        else:
+            check_in = check_out = None
 
-        Attendance.objects.create(
+        Attendance.objects.get_or_create(
             employee=emp,
-            date=att_date,
-            check_in_time=check_in,
-            check_out_time=check_out,
-            status=status,
-            notes='Auto generated demo data' if i % 5 == 0 else ''
+            date=work_date,
+            defaults=dict(
+                check_in_time=check_in,
+                check_out_time=check_out,
+                status=status,
+                notes='',
+            )
         )
-    print(f"  - Created 20 attendance records for: {emp.full_name}")
+        records_created += 1
+    print(f"  - {emp.full_name}: {records_created} ngày")
 
-print("\n✅ Seed data created successfully!")
-print(f"Total Employees: {Employee.objects.count()}")
-print(f"Total Departments: {Department.objects.count()}")
-print(f"Total Positions: {Position.objects.count()}")
-print(f"Total Leave Requests: {Leave.objects.count()}")
-print(f"Total Attendance Records: {Attendance.objects.count()}")
+# ─────────────────────────────────────────────
+# 6. SUMMARY
+# ─────────────────────────────────────────────
+print("\n✅ Seed data hoàn tất!")
+print(f"   Nhân viên    : {Employee.objects.count()}")
+print(f"   Phòng ban    : {Department.objects.count()}")
+print(f"   Đơn nghỉ    : {Leave.objects.count()}")
+print(f"   Chấm công    : {Attendance.objects.count()}")
+print(f"\n   Đăng nhập   : admin / admin123")

@@ -1,226 +1,127 @@
-{% extends 'base.html' %}
-
-{% block title %}
-{{ title }}
-{% endblock %}
+﻿{% extends 'base.html' %}
+{% block title %}{{ title }}{% endblock %}
 
 {% block content %}
-<div class="container-fluid">
-  <div class="page-header">
-    <a href="{% url 'employees:employee_list' %}" class="text-decoration-none">
-      <i class="fas fa-arrow-left"></i> Back
-    </a>
-    <h1 class="mt-2">{{ title }}</h1>
-  </div>
+<div class="page-header">
+  <a href="{% url 'employees:employee_list' %}" class="back-link"><i class="fas fa-arrow-left"></i> Back to Employees</a>
+  <h1 style="margin-top:8px"><i class="fas fa-user-edit"></i> {{ title }}</h1>
+</div>
 
-  <div class="row justify-content-center">
-    <div class="col-md-8">
-      <div class="card">
-        <div class="card-body">
-          <form method="post" enctype="multipart/form-data" novalidate>
-            {% csrf_token %}
+<div class="row justify-content-center">
+  <div class="col-xl-9 col-lg-11">
+    <div class="card">
+      <div class="card-body">
+        <form method="post" enctype="multipart/form-data" novalidate>
+          {% csrf_token %}
 
-            <!-- Personal Information -->
-            <h5 class="mb-3 border-bottom pb-2">Personal Information</h5>
-
-            <div class="row">
-              <div class="col-md-6 mb-3">
+          <!-- Personal Information -->
+          <div class="form-section">
+            <div class="form-section-title"><i class="fas fa-user"></i> Personal Information</div>
+            <div class="row g-3">
+              <div class="col-md-6">
                 {{ form.first_name.label_tag }}
                 {{ form.first_name }}
-                {% if form.first_name.errors %}
-                  <div class="text-danger small">
-                    {{ form.first_name.errors }}
-                  </div>
-                {% endif %}
+                {% if form.first_name.errors %}<div class="invalid-feedback d-block">{{ form.first_name.errors|striptags }}</div>{% endif %}
               </div>
-
-              <div class="col-md-6 mb-3">
+              <div class="col-md-6">
                 {{ form.last_name.label_tag }}
                 {{ form.last_name }}
-                {% if form.last_name.errors %}
-                  <div class="text-danger small">
-                    {{ form.last_name.errors }}
-                  </div>
-                {% endif %}
+                {% if form.last_name.errors %}<div class="invalid-feedback d-block">{{ form.last_name.errors|striptags }}</div>{% endif %}
               </div>
-            </div>
-
-            <div class="row">
-              <div class="col-md-6 mb-3">
+              <div class="col-md-6">
                 {{ form.email.label_tag }}
                 {{ form.email }}
-                {% if form.email.errors %}
-                  <div class="text-danger small">
-                    {{ form.email.errors }}
-                  </div>
-                {% endif %}
+                {% if form.email.errors %}<div class="invalid-feedback d-block">{{ form.email.errors|striptags }}</div>{% endif %}
               </div>
-
-              <div class="col-md-6 mb-3">
+              <div class="col-md-6">
                 {{ form.phone.label_tag }}
                 {{ form.phone }}
-                {% if form.phone.errors %}
-                  <div class="text-danger small">
-                    {{ form.phone.errors }}
-                  </div>
-                {% endif %}
+                {% if form.phone.errors %}<div class="invalid-feedback d-block">{{ form.phone.errors|striptags }}</div>{% endif %}
               </div>
-            </div>
-
-            <div class="row">
-              <div class="col-md-6 mb-3">
+              <div class="col-md-6">
                 {{ form.date_of_birth.label_tag }}
                 {{ form.date_of_birth }}
-                {% if form.date_of_birth.errors %}
-                  <div class="text-danger small">
-                    {{ form.date_of_birth.errors }}
-                  </div>
-                {% endif %}
+                {% if form.date_of_birth.errors %}<div class="invalid-feedback d-block">{{ form.date_of_birth.errors|striptags }}</div>{% endif %}
               </div>
-
-              <div class="col-md-6 mb-3">
+              <div class="col-md-6">
                 {{ form.gender.label_tag }}
                 {{ form.gender }}
-                {% if form.gender.errors %}
-                  <div class="text-danger small">
-                    {{ form.gender.errors }}
-                  </div>
-                {% endif %}
+                {% if form.gender.errors %}<div class="invalid-feedback d-block">{{ form.gender.errors|striptags }}</div>{% endif %}
+              </div>
+              <div class="col-12">
+                {{ form.address.label_tag }}
+                {{ form.address }}
+                {% if form.address.errors %}<div class="invalid-feedback d-block">{{ form.address.errors|striptags }}</div>{% endif %}
+              </div>
+              <div class="col-12">
+                {{ form.avatar.label_tag }}
+                {{ form.avatar }}
+                {% if form.avatar.errors %}<div class="invalid-feedback d-block">{{ form.avatar.errors|striptags }}</div>{% endif %}
               </div>
             </div>
+          </div>
 
-            <div class="mb-3">
-              {{ form.address.label_tag }}
-              {{ form.address }}
-              {% if form.address.errors %}
-                <div class="text-danger small">
-                  {{ form.address.errors }}
-                </div>
-              {% endif %}
-            </div>
-
-            <div class="mb-3">
-              {{ form.avatar.label_tag }}
-              {{ form.avatar }}
-              {% if form.avatar.errors %}
-                <div class="text-danger small">
-                  {{ form.avatar.errors }}
-                </div>
-              {% endif %}
-            </div>
-
-            <!-- Employment Information -->
-            <h5 class="mb-3 border-bottom pb-2 mt-4">Employment Information</h5>
-
-            <div class="row">
-              <div class="col-md-6 mb-3">
+          <!-- Employment Information -->
+          <div class="form-section">
+            <div class="form-section-title"><i class="fas fa-briefcase"></i> Employment Information</div>
+            <div class="row g-3">
+              <div class="col-md-6">
                 {{ form.employee_id.label_tag }}
                 {{ form.employee_id }}
-                {% if form.employee_id.errors %}
-                  <div class="text-danger small">
-                    {{ form.employee_id.errors }}
-                  </div>
-                {% endif %}
+                {% if form.employee_id.errors %}<div class="invalid-feedback d-block">{{ form.employee_id.errors|striptags }}</div>{% endif %}
               </div>
-
-              <div class="col-md-6 mb-3">
+              <div class="col-md-6">
                 {{ form.hire_date.label_tag }}
                 {{ form.hire_date }}
-                {% if form.hire_date.errors %}
-                  <div class="text-danger small">
-                    {{ form.hire_date.errors }}
-                  </div>
-                {% endif %}
+                {% if form.hire_date.errors %}<div class="invalid-feedback d-block">{{ form.hire_date.errors|striptags }}</div>{% endif %}
               </div>
-            </div>
-
-            <div class="row">
-              <div class="col-md-6 mb-3">
+              <div class="col-md-6">
                 {{ form.department.label_tag }}
                 {{ form.department }}
-                {% if form.department.errors %}
-                  <div class="text-danger small">
-                    {{ form.department.errors }}
-                  </div>
-                {% endif %}
+                {% if form.department.errors %}<div class="invalid-feedback d-block">{{ form.department.errors|striptags }}</div>{% endif %}
               </div>
-
-              <div class="col-md-6 mb-3">
+              <div class="col-md-6">
                 {{ form.position.label_tag }}
                 {{ form.position }}
-                {% if form.position.errors %}
-                  <div class="text-danger small">
-                    {{ form.position.errors }}
-                  </div>
-                {% endif %}
+                {% if form.position.errors %}<div class="invalid-feedback d-block">{{ form.position.errors|striptags }}</div>{% endif %}
+              </div>
+              <div class="col-md-6">
+                {{ form.status.label_tag }}
+                {{ form.status }}
+                {% if form.status.errors %}<div class="invalid-feedback d-block">{{ form.status.errors|striptags }}</div>{% endif %}
               </div>
             </div>
+          </div>
 
-            <div class="mb-3">
-              {{ form.status.label_tag }}
-              {{ form.status }}
-              {% if form.status.errors %}
-                <div class="text-danger small">
-                  {{ form.status.errors }}
-                </div>
-              {% endif %}
-            </div>
-
-            <!-- Thông tin lương -->
-            <h5 class="mb-3 border-bottom pb-2 mt-4">Thông tin lương</h5>
-
-            <div class="row">
-              <div class="col-md-6 mb-3">
+          <!-- Salary -->
+          <div class="form-section">
+            <div class="form-section-title"><i class="fas fa-money-bill-wave"></i> Salary Information</div>
+            <div class="row g-3">
+              <div class="col-md-6">
                 {{ form.base_salary.label_tag }}
                 {{ form.base_salary }}
-                {% if form.base_salary.errors %}
-                  <div class="text-danger small">
-                    {{ form.base_salary.errors }}
-                  </div>
-                {% endif %}
+                {% if form.base_salary.errors %}<div class="invalid-feedback d-block">{{ form.base_salary.errors|striptags }}</div>{% endif %}
               </div>
-
-              <div class="col-md-6 mb-3">
+              <div class="col-md-6">
                 {{ form.allowance.label_tag }}
                 {{ form.allowance }}
-                {% if form.allowance.errors %}
-                  <div class="text-danger small">
-                    {{ form.allowance.errors }}
-                  </div>
-                {% endif %}
+                {% if form.allowance.errors %}<div class="invalid-feedback d-block">{{ form.allowance.errors|striptags }}</div>{% endif %}
               </div>
             </div>
+          </div>
 
-            <!-- Actions -->
-            <div class="d-grid gap-2 mt-4">
-              <button type="submit" class="btn btn-primary">
-                <i class="fas fa-save"></i> {{ button_text }}
-              </button>
-
-              <a href="{% url 'employees:employee_list' %}" class="btn btn-secondary">
-                <i class="fas fa-times"></i> Cancel
-              </a>
-            </div>
-
-          </form>
-        </div>
+          <!-- Actions -->
+          <div class="d-flex gap-3 mt-2">
+            <button type="submit" class="btn btn-primary btn-lg flex-fill">
+              <i class="fas fa-save"></i> {{ button_text }}
+            </button>
+            <a href="{% url 'employees:employee_list' %}" class="btn btn-secondary btn-lg">
+              <i class="fas fa-times"></i> Cancel
+            </a>
+          </div>
+        </form>
       </div>
     </div>
   </div>
 </div>
-
-<style>
-  .form-control,
-  .form-select {
-    border: 1px solid #ddd;
-    border-radius: 6px;
-  }
-
-  .form-label {
-    font-weight: 600;
-    margin-bottom: 8px;
-    color: #333;
-  }
-</style>
-
 {% endblock %}

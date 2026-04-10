@@ -1,80 +1,59 @@
-{% extends 'base.html' %} {% block title %} {{ title }} {% endblock %} {% block content %}
-<div class="container-fluid">
-  <div class="page-header">
-    <a href="{% url 'leaves:leave_list' %}" class="text-decoration-none">
-      <i class="fas fa-arrow-left"></i> Back
-    </a>
-    <h1 class="mt-2">{{ title }}</h1>
-  </div>
+﻿{% extends 'base.html' %}
+{% block title %}{{ title }}{% endblock %}
 
-  <div class="row justify-content-center">
-    <div class="col-md-8">
-      <div class="card">
-        <div class="card-body">
-          <form method="post" novalidate>
-            {% csrf_token %}
+{% block content %}
+<div class="page-header">
+  <a href="{% url 'leaves:leave_list' %}" class="back-link"><i class="fas fa-arrow-left"></i> Back to Leaves</a>
+  <h1 style="margin-top:8px"><i class="fas fa-calendar-plus"></i> {{ title }}</h1>
+</div>
 
-            <div class="mb-3">
-              {{ form.employee.label_tag }} {{ form.employee }} {% if
-              form.employee.errors %}
-              <div class="text-danger small">{{ form.employee.errors }}</div>
-              {% endif %}
+<div class="row justify-content-center">
+  <div class="col-lg-7 col-md-9">
+    <div class="card">
+      <div class="card-body">
+        <form method="post" novalidate>
+          {% csrf_token %}
+
+          <div class="mb-4">
+            {{ form.employee.label_tag }}
+            {{ form.employee }}
+            {% if form.employee.errors %}<div class="invalid-feedback d-block">{{ form.employee.errors|striptags }}</div>{% endif %}
+          </div>
+
+          <div class="row g-3 mb-4">
+            <div class="col-md-6">
+              {{ form.start_date.label_tag }}
+              {{ form.start_date }}
+              {% if form.start_date.errors %}<div class="invalid-feedback d-block">{{ form.start_date.errors|striptags }}</div>{% endif %}
             </div>
-
-            <div class="row">
-              <div class="col-md-6 mb-3">
-                {{ form.start_date.label_tag }} {{ form.start_date }} {% if
-                form.start_date.errors %}
-                <div class="text-danger small">
-                  {{ form.start_date.errors }}
-                </div>
-                {% endif %}
-              </div>
-
-              <div class="col-md-6 mb-3">
-                {{ form.end_date.label_tag }} {{ form.end_date }} {% if
-                form.end_date.errors %}
-                <div class="text-danger small">{{ form.end_date.errors }}</div>
-                {% endif %}
-              </div>
+            <div class="col-md-6">
+              {{ form.end_date.label_tag }}
+              {{ form.end_date }}
+              {% if form.end_date.errors %}<div class="invalid-feedback d-block">{{ form.end_date.errors|striptags }}</div>{% endif %}
             </div>
+          </div>
 
-            <div class="mb-3">
-              {{ form.reason.label_tag }} {{ form.reason }} {% if
-              form.reason.errors %}
-              <div class="text-danger small">{{ form.reason.errors }}</div>
-              {% endif %}
-            </div>
+          <div class="mb-4">
+            {{ form.reason.label_tag }}
+            {{ form.reason }}
+            {% if form.reason.errors %}<div class="invalid-feedback d-block">{{ form.reason.errors|striptags }}</div>{% endif %}
+          </div>
 
-            <div class="d-grid gap-2 mt-4">
-              <button type="submit" class="btn btn-primary">
-                <i class="fas fa-save"></i> {{ button_text }}
-              </button>
+          {% if form.status %}
+          <div class="mb-4">
+            {{ form.status.label_tag }}
+            {{ form.status }}
+            {% if form.status.errors %}<div class="invalid-feedback d-block">{{ form.status.errors|striptags }}</div>{% endif %}
+          </div>
+          {% endif %}
 
-              <a href="{% url 'leaves:leave_list' %}" class="btn btn-secondary">
-                <i class="fas fa-times"></i> Cancel
-              </a>
-            </div>
-          </form>
-        </div>
+          <div class="d-flex gap-3 mt-2">
+            <button type="submit" class="btn btn-primary btn-lg flex-fill"><i class="fas fa-save"></i> Save Leave Request</button>
+            <a href="{% url 'leaves:leave_list' %}" class="btn btn-secondary btn-lg"><i class="fas fa-times"></i> Cancel</a>
+          </div>
+        </form>
       </div>
     </div>
   </div>
 </div>
-
-<style>
-  .form-control,
-  .form-select,
-  textarea {
-    border: 1px solid #ddd;
-    border-radius: 6px;
-  }
-
-  .form-label {
-    font-weight: 600;
-    margin-bottom: 8px;
-    color: #333;
-  }
-</style>
-
 {% endblock %}

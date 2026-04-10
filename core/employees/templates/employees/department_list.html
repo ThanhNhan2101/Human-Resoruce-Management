@@ -1,64 +1,61 @@
-{% extends 'base.html' %} {% block title %} Department List {% endblock %} {% block content %}
-<div class="container-fluid">
-  <div
-    class="page-header d-flex justify-content-between align-items-center mb-4"
-  >
-    <h1><i class="fas fa-sitemap"></i> Department List</h1>
-    <a href="{% url 'employees:department_create' %}" class="btn btn-primary">
-      <i class="fas fa-plus"></i> Add New Department
-    </a>
-  </div>
+﻿{% extends 'base.html' %}
+{% block title %}Departments{% endblock %}
 
-  <div class="row">
-    {% if departments %} {% for dept in departments %}
-    <div class="col-md-4 mb-4">
-      <div class="card">
-        <div class="card-header">
-          <h5 class="mb-0">{{ dept.name }}</h5>
-        </div>
-        <div class="card-body">
-          <p class="text-muted">{{ dept.description }}</p>
-          <p>
-            <strong>Employee Count:</strong>
-            <span class="badge bg-primary">{{ dept.employee_count }}</span>
-          </p>
-        </div>
-        <div
-          class="card-footer d-flex justify-content-between align-items-center"
-        >
-          <small class="text-muted">
-            Updated: {{ dept.updated_at|date:"d/m/Y H:i" }}
-          </small>
-          <div class="btn-group btn-group-sm" role="group">
-            <a
-              href="{% url 'employees:department_edit' dept.pk %}"
-              class="btn btn-warning"
-              title="Edit"
-            >
-              <i class="fas fa-edit"></i>
-            </a>
-            <a
-              href="{% url 'employees:department_delete' dept.pk %}"
-              class="btn btn-danger"
-              title="Delete"
-            >
-              <i class="fas fa-trash"></i>
-            </a>
+{% block content %}
+<div class="page-header d-flex justify-content-between align-items-start flex-wrap gap-3">
+  <div>
+    <h1><i class="fas fa-sitemap"></i> Departments</h1>
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'employees:dashboard' %}">Dashboard</a></li>
+        <li class="breadcrumb-item active">Departments</li>
+      </ol>
+    </nav>
+  </div>
+  <a href="{% url 'employees:department_create' %}" class="btn btn-primary">
+    <i class="fas fa-plus"></i> Add Department
+  </a>
+</div>
+
+{% if departments %}
+<div class="row g-3">
+  {% for dept in departments %}
+  <div class="col-xl-4 col-md-6">
+    <div class="card h-100 dept-card">
+      <div class="card-body">
+        <div class="d-flex align-items-start justify-content-between mb-3">
+          <div style="width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,var(--primary),var(--secondary));color:#fff;display:flex;align-items:center;justify-content:center;font-size:1.1rem">
+            <i class="fas fa-building"></i>
           </div>
+          <span class="badge bg-info">{{ dept.employee_count }} people</span>
+        </div>
+        <h5 class="fw-700 mb-1" style="color:var(--gray-900)">{{ dept.name }}</h5>
+        <p style="font-size:.82rem;color:var(--gray-500);min-height:36px">{{ dept.description|default:"No description provided."|truncatewords:12 }}</p>
+      </div>
+      <div class="card-footer d-flex justify-content-between align-items-center" style="background:var(--gray-50);border-top:1px solid var(--gray-200)">
+        <small style="color:var(--gray-400);font-size:.72rem"><i class="fas fa-clock me-1"></i>{{ dept.updated_at|date:"d/m/Y" }}</small>
+        <div class="btn-action-group">
+          <a href="{% url 'employees:department_edit' dept.pk %}" class="btn btn-warning btn-sm" title="Edit"><i class="fas fa-edit"></i></a>
+          <a href="{% url 'employees:department_delete' dept.pk %}" class="btn btn-danger btn-sm" title="Delete"><i class="fas fa-trash"></i></a>
         </div>
       </div>
     </div>
-    {% endfor %} {% else %}
-    <div class="col-12">
-      <div class="alert alert-info">
-        <i class="fas fa-info-circle"></i>
-        No departments found.
-        <a href="{% url 'employees:department_create' %}" class="alert-link"
-          >Add a new department now</a
-        >
-      </div>
-    </div>
-    {% endif %}
+  </div>
+  {% endfor %}
+</div>
+{% else %}
+<div class="table-wrapper">
+  <div class="empty-state">
+    <i class="fas fa-sitemap"></i>
+    <p>No departments found. <a href="{% url 'employees:department_create' %}" style="color:var(--primary)">Create one now</a></p>
   </div>
 </div>
+{% endif %}
+{% endblock %}
+
+{% block extra_css %}
+<style>
+  .dept-card { transition:.2s; }
+  .dept-card:hover { transform:translateY(-3px); box-shadow:var(--shadow); }
+</style>
 {% endblock %}
