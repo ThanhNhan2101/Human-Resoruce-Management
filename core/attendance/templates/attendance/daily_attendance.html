@@ -1,18 +1,18 @@
 {% extends 'base.html' %}
 
 {% block title %}
-Chấm công hàng ngày
+Daily Attendance
 {% endblock %}
 
 {% block content %}
 <div class="container-fluid">
   <div class="page-header">
-    <h1><i class="fas fa-calendar"></i> Chấm công hàng ngày</h1>
+    <h1><i class="fas fa-calendar"></i> Daily Attendance</h1>
   </div>
 
   <div class="card mb-4">
     <div class="card-header">
-      <h5 class="mb-0">Ngày: {{ date }}</h5>
+      <h5 class="mb-0">Date: {{ date }}</h5>
     </div>
 
     <div class="card-body">
@@ -24,11 +24,11 @@ Chấm công hàng ngày
           <table class="table">
             <thead class="table-light">
               <tr>
-                <th>Nhân viên</th>
-                <th>Vào</th>
-                <th>Ra</th>
-                <th>Trạng thái</th>
-                <th>Ghi chú</th>
+                <th>Employee</th>
+                <th>Check In</th>
+                <th>Check Out</th>
+                <th>Status</th>
+                <th>Notes</th>
               </tr>
             </thead>
 
@@ -87,11 +87,11 @@ Chấm công hàng ngày
 
         <div class="d-grid gap-2 mt-3">
           <button type="submit" class="btn btn-primary">
-            <i class="fas fa-save"></i> Lưu chấm công
+            <i class="fas fa-save"></i> Save Attendance
           </button>
 
           <a href="{% url 'attendance:attendance_list' %}" class="btn btn-secondary">
-            <i class="fas fa-times"></i> Hủy
+            <i class="fas fa-times"></i> Cancel
           </a>
         </div>
 

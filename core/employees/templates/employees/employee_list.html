@@ -1,15 +1,15 @@
 {% extends 'base.html' %}
 
-{% block title %}Danh sách nhân viên{% endblock %}
+{% block title %}Employee List{% endblock %}
 
 {% block content %}
 <div class="container-fluid">
     <div class="page-header d-flex justify-content-between align-items-center">
         <div>
-            <h1><i class="fas fa-users"></i> Danh sách nhân viên</h1>
+            <h1><i class="fas fa-users"></i> Employee List</h1>
         </div>
         <a href="{% url 'employees:employee_create' %}" class="btn btn-primary">
-            <i class="fas fa-plus"></i> Thêm nhân viên mới
+            <i class="fas fa-plus"></i> Add New Employee
         </a>
     </div>
 
@@ -18,11 +18,11 @@
         <div class="card-body">
             <form method="get" class="row g-3">
                 <div class="col-md-4">
-                    <input type="text" name="search" class="form-control" placeholder="Tìm kiếm..." value="{{ search }}">
+                    <input type="text" name="search" class="form-control" placeholder="Search..." value="{{ search }}">
                 </div>
                 <div class="col-md-3">
                     <select name="department" class="form-select">
-                        <option value="">Tất cả phòng ban</option>
+                        <option value="">All Departments</option>
                         {% for dept in departments %}
                             <option value="{{ dept.id }}" {% if dept.id|stringformat:"s" == selected_department %}selected{% endif %}>
                                 {{ dept.name }}
@@ -32,7 +32,7 @@
                 </div>
                 <div class="col-md-3">
                     <select name="status" class="form-select">
-                        <option value="">Tất cả trạng thái</option>
+                        <option value="">All Status</option>
                         {% for val, label in statuses %}
                             <option value="{{ val }}" {% if val == selected_status %}selected{% endif %}>{{ label }}</option>
                         {% endfor %}
@@ -40,7 +40,7 @@
                 </div>
                 <div class="col-md-2">
                     <button type="submit" class="btn btn-outline-primary w-100">
-                        <i class="fas fa-search"></i> Tìm kiếm
+                        <i class="fas fa-search"></i> Search
                     </button>
                 </div>
             </form>
@@ -54,13 +54,13 @@
                 <thead class="table-light">
                     <tr>
                         <th>ID</th>
-                        <th>Tên</th>
+                        <th>Name</th>
                         <th>Email</th>
-                        <th>Phòng ban</th>
-                        <th>Chức vụ</th>
-                        <th>Trạng thái</th>
-                        <th>Ngày tuyển dụng</th>
-                        <th>Thao tác</th>
+                        <th>Department</th>
+                        <th>Position</th>
+                        <th>Status</th>
+                        <th>Hire Date</th>
+                        <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -71,7 +71,7 @@
                                 <td>{{ emp.full_name }}</td>
                                 <td>{{ emp.email }}</td>
                                 <td>{{ emp.department.name }}</td>
-                                <td>{{ emp.position.name }}</td>
+                                <td>{{ emp.position }}</td>
                                 <td>
                                     <span class="status-badge status-{{ emp.status|lower }}">
                                         {{ emp.get_status_display }}
@@ -92,11 +92,9 @@
                             </tr>
                         {% endfor %}
                     {% else %}
-                        <tr>
                             <td colspan="8" class="text-center text-muted py-4">
-                                <i class="fas fa-inbox"></i> Khôngcó nhân viên nào
+                                <i class="fas fa-inbox"></i> No employees found
                             </td>
-                        </tr>
                     {% endif %}
                 </tbody>
             </table>
@@ -109,10 +107,10 @@
         <ul class="pagination justify-content-center">
             {% if page_obj.has_previous %}
                 <li class="page-item">
-                    <a class="page-link" href="?page=1{{ query_string }}">Đầu</a>
+                    <a class="page-link" href="?page=1{{ query_string }}">First</a>
                 </li>
                 <li class="page-item">
-                    <a class="page-link" href="?page={{ page_obj.previous_page_number }}{{ query_string }}">Trước</a>
+                    <a class="page-link" href="?page={{ page_obj.previous_page_number }}{{ query_string }}">Previous</a>
                 </li>
             {% endif %}
 
@@ -126,10 +124,10 @@
 
             {% if page_obj.has_next %}
                 <li class="page-item">
-                    <a class="page-link" href="?page={{ page_obj.next_page_number }}{{ query_string }}">Sau</a>
+                    <a class="page-link" href="?page={{ page_obj.next_page_number }}{{ query_string }}">Next</a>
                 </li>
                 <li class="page-item">
-                    <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}{{ query_string }}">Cuối</a>
+                    <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}{{ query_string }}">Last</a>
                 </li>
             {% endif %}
         </ul>

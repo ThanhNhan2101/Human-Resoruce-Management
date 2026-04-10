@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{% block title %}HRM System{% endblock %}</title>
+
+    <!-- Bootstrap -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+
+    <!-- Font Awesome -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+
+    <style>
+      :root {
+        --primary: #667eea;
+        --secondary: #764ba2;
+      }
+
+      body {
+        font-family: "Segoe UI", sans-serif;
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      /* ===== NAVBAR ===== */
+      .navbar {
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        height: 56px;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+        position: fixed;
+        top: 0;
+        width: 100%;
+        z-index: 1000;
+      }
+
+      .navbar-brand {
+        font-weight: bold;
+        font-size: 1.3rem;
+      }
+
+      /* ===== CARD ===== */
+      .card {
+        border: none;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      }
+
+      .card-header {
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        color: white;
+        border: none;
+      }
+
+      /* ===== BUTTON ===== */
+      .btn-primary {
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        border: none;
+      }
+
+      .btn-primary:hover {
+        opacity: 0.9;
+      }
+
+      /* ===== FORM ===== */
+      .form-control {
+        border-radius: 6px;
+        border: 1px solid #ddd;
+      }
+
+      .form-control:focus {
+        border-color: var(--primary);
+        box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+      }
+
+      /* ===== AUTH CONTAINER ===== */
+      .auth-container {
+        width: 100%;
+        max-width: 400px;
+      }
+
+      .auth-container .card {
+        background: white;
+      }
+
+      .text-muted {
+        color: rgba(255, 255, 255, 0.8) !important;
+      }
+
+      /* ===== RESPONSIVE ===== */
+      @media (max-width: 768px) {
+        body {
+          padding: 20px;
+        }
+
+        .auth-container {
+          max-width: 100%;
+        }
+      }
+    </style>
+
+    {% block extra_css %}{% endblock %}
+  </head>
+
+  <body>
+    <!-- ===== NAVBAR ===== -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="/">
+          <i class="fas fa-briefcase"></i> HRM System
+        </a>
+      </div>
+    </nav>
+
+    <!-- ===== CONTENT ===== -->
+    <div class="auth-container">{% block content %}{% endblock %}</div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    {% block extra_js %}{% endblock %}
+  </body>
+</html>

@@ -6,6 +6,9 @@ from core.employees.views.employee_views import (
     EmployeeUpdateView,
     EmployeeDeleteView,
     DepartmentListView,
+    DepartmentCreateView,
+    DepartmentUpdateView,
+    DepartmentDeleteView,
     DashboardView,
 )
 
@@ -21,4 +24,10 @@ urlpatterns = [
     path('employees/<int:pk>/delete/',
          EmployeeDeleteView.as_view(), name='employee_delete'),
     path('departments/', DepartmentListView.as_view(), name='department_list'),
+    path('departments/create/', DepartmentCreateView.as_view(),
+         name='department_create'),
+    path('departments/<int:pk>/edit/',
+         DepartmentUpdateView.as_view(), name='department_edit'),
+    path('departments/<int:pk>/delete/',
+         DepartmentDeleteView.as_view(), name='department_delete'),
 ]

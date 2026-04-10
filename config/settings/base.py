@@ -86,7 +86,7 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 # Internationalization
-LANGUAGE_CODE = 'vi'
+LANGUAGE_CODE = 'en'
 TIME_ZONE = 'Asia/Ho_Chi_Minh'
 USE_I18N = True
 USE_TZ = True

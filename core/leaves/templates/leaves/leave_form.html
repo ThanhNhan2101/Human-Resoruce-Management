@@ -1,14 +1,8 @@
-{% extends 'base.html' %}
-
-{% block title %}
-{{ title }}
-{% endblock %}
-
-{% block content %}
+{% extends 'base.html' %} {% block title %} {{ title }} {% endblock %} {% block content %}
 <div class="container-fluid">
   <div class="page-header">
     <a href="{% url 'leaves:leave_list' %}" class="text-decoration-none">
-      <i class="fas fa-arrow-left"></i> Quay lại
+      <i class="fas fa-arrow-left"></i> Back
     </a>
     <h1 class="mt-2">{{ title }}</h1>
   </div>
@@ -21,54 +15,34 @@
             {% csrf_token %}
 
             <div class="mb-3">
-              {{ form.employee.label_tag }}
-              {{ form.employee }}
-              {% if form.employee.errors %}
-                <div class="text-danger small">
-                  {{ form.employee.errors }}
-                </div>
-              {% endif %}
-            </div>
-
-            <div class="mb-3">
-              {{ form.leave_type.label_tag }}
-              {{ form.leave_type }}
-              {% if form.leave_type.errors %}
-                <div class="text-danger small">
-                  {{ form.leave_type.errors }}
-                </div>
+              {{ form.employee.label_tag }} {{ form.employee }} {% if
+              form.employee.errors %}
+              <div class="text-danger small">{{ form.employee.errors }}</div>
               {% endif %}
             </div>
 
             <div class="row">
               <div class="col-md-6 mb-3">
-                {{ form.start_date.label_tag }}
-                {{ form.start_date }}
-                {% if form.start_date.errors %}
-                  <div class="text-danger small">
-                    {{ form.start_date.errors }}
-                  </div>
+                {{ form.start_date.label_tag }} {{ form.start_date }} {% if
+                form.start_date.errors %}
+                <div class="text-danger small">
+                  {{ form.start_date.errors }}
+                </div>
                 {% endif %}
               </div>
 
               <div class="col-md-6 mb-3">
-                {{ form.end_date.label_tag }}
-                {{ form.end_date }}
-                {% if form.end_date.errors %}
-                  <div class="text-danger small">
-                    {{ form.end_date.errors }}
-                  </div>
+                {{ form.end_date.label_tag }} {{ form.end_date }} {% if
+                form.end_date.errors %}
+                <div class="text-danger small">{{ form.end_date.errors }}</div>
                 {% endif %}
               </div>
             </div>
 
             <div class="mb-3">
-              {{ form.reason.label_tag }}
-              {{ form.reason }}
-              {% if form.reason.errors %}
-                <div class="text-danger small">
-                  {{ form.reason.errors }}
-                </div>
+              {{ form.reason.label_tag }} {{ form.reason }} {% if
+              form.reason.errors %}
+              <div class="text-danger small">{{ form.reason.errors }}</div>
               {% endif %}
             </div>
 
@@ -78,10 +52,9 @@
               </button>
 
               <a href="{% url 'leaves:leave_list' %}" class="btn btn-secondary">
-                <i class="fas fa-times"></i> Hủy
+                <i class="fas fa-times"></i> Cancel
               </a>
             </div>
-
           </form>
         </div>
       </div>

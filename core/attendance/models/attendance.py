@@ -7,12 +7,12 @@ class Attendance(models.Model):
     """Attendance model"""
 
     STATUS_CHOICES = [
-        ('PRESENT', 'Có mặt'),
-        ('ABSENT', 'Vắng mặt'),
-        ('LATE', 'Đi muộn'),
-        ('EARLY_LEAVE', 'Về sớm'),
-        ('HALF_DAY', 'Nửa ngày'),
-        ('ON_LEAVE', 'Đang nghỉ phép'),
+        ('PRESENT', 'Present'),
+        ('ABSENT', 'Absent'),
+        ('LATE', 'Late'),
+        ('EARLY_LEAVE', 'Early Leave'),
+        ('HALF_DAY', 'Half Day'),
+        ('ON_LEAVE', 'On Leave'),
     ]
 
     employee = models.ForeignKey(

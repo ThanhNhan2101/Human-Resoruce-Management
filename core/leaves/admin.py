@@ -1,27 +1,21 @@
 from django.contrib import admin
-from core.leaves.models import Leave, LeaveType
-
-
-@admin.register(LeaveType)
-class LeaveTypeAdmin(admin.ModelAdmin):
-    list_display = ('name', 'days_per_year', 'is_paid')
-    search_fields = ('name',)
+from core.leaves.models import Leave
 
 
 @admin.register(Leave)
 class LeaveAdmin(admin.ModelAdmin):
-    list_display = ('employee', 'leave_type', 'start_date',
-                    'end_date', 'duration_days', 'status')
+    list_display = ('employee', 'start_date', 'end_date',
+                    'duration_days', 'status')
     search_fields = ('employee__first_name', 'employee__last_name')
-    list_filter = ('status', 'leave_type', 'start_date')
+    list_filter = ('status', 'start_date')
     fieldsets = (
-        ('Thông tin nhân viên', {
-            'fields': ('employee', 'leave_type')
+        ('Employee Information', {
+            'fields': ('employee',)
         }),
-        ('Thời gian nghỉ', {
+        ('Leave Period', {
             'fields': ('start_date', 'end_date', 'reason')
         }),
-        ('Duyệt phép', {
+        ('Approval', {
             'fields': ('status', 'approved_by', 'remarks')
         }),
     )

@@ -3,20 +3,20 @@ from django.views import View
 from django.views.generic import FormView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
-from core.leaves.models import Leave, LeaveType
+from core.leaves.models import Leave
 from core.employees.models import Employee
 from django.forms import ModelForm, DateInput
 from django import forms
 from django.core.paginator import Paginator
 
-from core.leaves.usecase.selectors.leave_selectors import LeaveSelector, LeaveTypeSelector
+from core.leaves.usecase.selectors.leave_selectors import LeaveSelector
 from core.leaves.usecase.services.leave_services import LeaveService
 
 
 class LeaveForm(ModelForm):
     class Meta:
         model = Leave
-        fields = ['employee', 'leave_type', 'start_date', 'end_date', 'reason']
+        fields = ['employee', 'start_date', 'end_date', 'reason']
         widgets = {
             'start_date': DateInput(attrs={'type': 'date'}),
             'end_date': DateInput(attrs={'type': 'date'}),
@@ -33,7 +33,6 @@ class LeaveListView(LoginRequiredMixin, View):
         filters = {
             'search': request.GET.get('search', ''),
             'status': request.GET.get('status', ''),
-            'leave_type': request.GET.get('leave_type', ''),
         }
         leaves = selector.list(filters=filters)
 
@@ -41,16 +40,13 @@ class LeaveListView(LoginRequiredMixin, View):
         page_number = request.GET.get('page')
         page_obj = paginator.get_page(page_number)
 
-        type_selector = LeaveTypeSelector()
         context = {
             'leaves': page_obj,
             'page_obj': page_obj,
             'is_paginated': page_obj.has_other_pages(),
-            'leave_types': type_selector.list(),
             'statuses': Leave.STATUS_CHOICES,
             'search': filters['search'],
             'selected_status': filters['status'],
-            'selected_leave_type': filters['leave_type'],
         }
         return render(request, self.template_name, context)
 
@@ -73,7 +69,7 @@ class LeaveCreateView(LoginRequiredMixin, FormView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['title'] = 'Đăng ký nghỉ phép'
+        context['title'] = 'Request Leave'
         context['button_text'] = 'Đăng ký'
         return context
 
@@ -98,8 +94,8 @@ class LeaveUpdateView(LoginRequiredMixin, FormView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['title'] = 'Cập nhật đơn nghỉ phép'
-        context['button_text'] = 'Cập nhật'
+        context['title'] = 'Updated đơn nghỉ phép'
+        context['button_text'] = 'Updated'
         return context
 
     def form_valid(self, form):

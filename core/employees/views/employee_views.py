@@ -3,8 +3,8 @@ from django.views import View
 from django.views.generic import FormView, TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
-from core.employees.models import Employee, Department, Position
-from django.forms import ModelForm, DateInput
+from core.employees.models import Employee, Department
+from django.forms import ModelForm, DateInput, TextInput, Textarea
 from django.core.paginator import Paginator
 
 from core.employees.usecase.selectors.employee_selectors import EmployeeSelector, DepartmentSelector
@@ -22,6 +22,16 @@ class EmployeeForm(ModelForm):
         widgets = {
             'date_of_birth': DateInput(attrs={'type': 'date'}),
             'hire_date': DateInput(attrs={'type': 'date'}),
+        }
+
+
+class DepartmentForm(ModelForm):
+    class Meta:
+        model = Department
+        fields = ['name', 'description']
+        widgets = {
+            'name': TextInput(attrs={'class': 'form-control'}),
+            'description': Textarea(attrs={'class': 'form-control', 'rows': 4}),
         }
 
 
@@ -79,8 +89,8 @@ class EmployeeCreateView(LoginRequiredMixin, FormView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['title'] = 'Thêm nhân viên mới'
-        context['button_text'] = 'Thêm'
+        context['title'] = 'Add New Employee'
+        context['button_text'] = 'Add'
         return context
 
     def form_valid(self, form):
@@ -104,8 +114,8 @@ class EmployeeUpdateView(LoginRequiredMixin, FormView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['title'] = 'Cập nhật thông tin nhân viên'
-        context['button_text'] = 'Cập nhật'
+        context['title'] = 'Update Employee Information'
+        context['button_text'] = 'Update'
         return context
 
     def form_valid(self, form):
@@ -142,6 +152,62 @@ class DepartmentListView(LoginRequiredMixin, View):
         return render(request, self.template_name, context)
 
 
+class DepartmentCreateView(LoginRequiredMixin, FormView):
+    template_name = 'employees/department_form.html'
+    form_class = DepartmentForm
+    success_url = reverse_lazy('employees:department_list')
+    login_url = 'login'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Add New Department'
+        context['button_text'] = 'Add'
+        return context
+
+    def form_valid(self, form):
+        form.save()
+        return redirect(self.success_url)
+
+
+class DepartmentUpdateView(LoginRequiredMixin, FormView):
+    template_name = 'employees/department_form.html'
+    form_class = DepartmentForm
+    success_url = reverse_lazy('employees:department_list')
+    login_url = 'login'
+
+    def get_form(self, form_class=None):
+        self.department = get_object_or_404(Department, pk=self.kwargs['pk'])
+        if form_class is None:
+            form_class = self.get_form_class()
+        return form_class(instance=self.department, **self.get_form_kwargs())
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Update Department'
+        context['button_text'] = 'Update'
+        context['department'] = self.department
+        return context
+
+    def form_valid(self, form):
+        form.save()
+        return redirect(self.success_url)
+
+
+class DepartmentDeleteView(LoginRequiredMixin, View):
+    template_name = 'employees/department_confirm_delete.html'
+    login_url = 'login'
+
+    def get(self, request, pk):
+        department = get_object_or_404(Department, pk=pk)
+        context = {'department': department}
+        return render(request, self.template_name, context)
+
+    def post(self, request, pk):
+        department = get_object_or_404(Department, pk=pk)
+        department.delete()
+        return redirect('employees:department_list')
+
+
 class DashboardView(LoginRequiredMixin, View):
     login_url = 'login'
 
@@ -150,7 +216,6 @@ class DashboardView(LoginRequiredMixin, View):
             'total_employees': Employee.objects.count(),
             'active_employees': Employee.objects.filter(status='ACTIVE').count(),
             'total_departments': Department.objects.count(),
-            'total_positions': Position.objects.count(),
             'recent_employees': Employee.objects.all().order_by('-created_at')[:5],
         }
         return render(request, 'dashboard.html', context)

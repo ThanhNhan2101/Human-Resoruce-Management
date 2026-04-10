@@ -20,39 +20,20 @@ class Department(models.Model):
         return self.name
 
 
-class Position(models.Model):
-    """Position model"""
-    name = models.CharField(max_length=100, unique=True)
-    description = models.TextField(blank=True, null=True)
-    department = models.ForeignKey(
-        Department, on_delete=models.CASCADE, related_name='positions')
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-
-    class Meta:
-        app_label = 'employees'
-        verbose_name = 'Position'
-        verbose_name_plural = 'Positions'
-        ordering = ['department', 'name']
-
-    def __str__(self):
-        return f"{self.name} - {self.department.name}"
-
-
 class Employee(models.Model):
     """Employee model"""
 
     GENDER_CHOICES = [
-        ('M', 'Nam'),
-        ('F', 'Nữ'),
-        ('O', 'Khác'),
+        ('M', 'Male'),
+        ('F', 'Female'),
+        ('O', 'Other'),
     ]
 
     EMPLOYMENT_STATUS = [
-        ('ACTIVE', 'Đang làm việc'),
-        ('INACTIVE', 'Nghỉ việc'),
-        ('SUSPENDED', 'Tạm dừng'),
-        ('ON_LEAVE', 'Đang nghỉ phép'),
+        ('ACTIVE', 'Active'),
+        ('INACTIVE', 'Inactive'),
+        ('SUSPENDED', 'Suspended'),
+        ('ON_LEAVE', 'On Leave'),
     ]
 
     # Personal information
@@ -75,12 +56,7 @@ class Employee(models.Model):
         null=True,
         related_name='employees'
     )
-    position = models.ForeignKey(
-        Position,
-        on_delete=models.SET_NULL,
-        null=True,
-        related_name='employees'
-    )
+    position = models.CharField(max_length=100, blank=True, null=True)
     hire_date = models.DateField()
     status = models.CharField(
         max_length=20,

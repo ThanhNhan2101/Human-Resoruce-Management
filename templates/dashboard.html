@@ -1,16 +1,10 @@
-{% extends 'base.html' %}
-
-{% block title %}
-Bảng điều khiển
-{% endblock %}
-
-{% block content %}
+{% extends 'base.html' %} {% block title %} Dashboard {% endblock %} {% block content %}
 <div class="container-fluid">
   <div class="page-header">
-    <h1>Bảng điều khiển</h1>
+    <h1>Dashboard</h1>
     <nav aria-label="breadcrumb">
       <ol class="breadcrumb">
-        <li class="breadcrumb-item active">Bảng điều khiển</li>
+        <li class="breadcrumb-item active">Dashboard</li>
       </ol>
     </nav>
   </div>
@@ -19,25 +13,19 @@ Bảng điều khiển
     <div class="col-md-3">
       <div class="stat-card">
         <h3>{{ total_employees }}</h3>
-        <p><i class="fas fa-users"></i> Tổng nhân viên</p>
+        <p><i class="fas fa-users"></i> Total Employees</p>
       </div>
     </div>
     <div class="col-md-3">
       <div class="stat-card">
         <h3>{{ active_employees }}</h3>
-        <p><i class="fas fa-check-circle"></i> Đang làm việc</p>
+        <p><i class="fas fa-check-circle"></i> Active</p>
       </div>
     </div>
-    <div class="col-md-3">
+    <div class="col-md-6">
       <div class="stat-card">
         <h3>{{ total_departments }}</h3>
-        <p><i class="fas fa-sitemap"></i> Phòng ban</p>
-      </div>
-    </div>
-    <div class="col-md-3">
-      <div class="stat-card">
-        <h3>{{ total_positions }}</h3>
-        <p><i class="fas fa-briefcase"></i> Chức vụ</p>
+        <p><i class="fas fa-sitemap"></i> Departments</p>
       </div>
     </div>
   </div>

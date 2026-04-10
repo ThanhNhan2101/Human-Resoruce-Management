@@ -20,7 +20,7 @@ class Migration(migrations.Migration):
                 ('date', models.DateField(db_index=True)),
                 ('check_in_time', models.TimeField(blank=True, null=True)),
                 ('check_out_time', models.TimeField(blank=True, null=True)),
-                ('status', models.CharField(choices=[('PRESENT', 'Có mặt'), ('ABSENT', 'Vắng mặt'), ('LATE', 'Đi muộn'), ('EARLY_LEAVE', 'Về sớm'), ('HALF_DAY', 'Nửa ngày'), ('ON_LEAVE', 'Đang nghỉ phép')], default='ABSENT', max_length=20)),
+                ('status', models.CharField(choices=[('PRESENT', 'Có mặt'), ('ABSENT', 'Vắng mặt'), ('LATE', 'Đi muộn'), ('EARLY_LEAVE', 'Về sớm'), ('HALF_DAY', 'Nửa days'), ('ON_LEAVE', 'Đang nghỉ phép')], default='ABSENT', max_length=20)),
                 ('notes', models.TextField(blank=True, null=True)),
                 ('created_at', models.DateTimeField(auto_now_add=True)),
                 ('updated_at', models.DateTimeField(auto_now=True)),

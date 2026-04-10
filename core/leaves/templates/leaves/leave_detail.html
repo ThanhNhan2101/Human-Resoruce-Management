@@ -1,56 +1,48 @@
-{% extends 'base.html' %} {% block title %}Chi tiết đơn nghỉ phép{% endblock %}
+{% extends 'base.html' %} {% block title %}Leave Request Details{% endblock %}
 {% block content %}
 <div class="container-fluid">
   <div class="page-header">
     <a href="{% url 'leaves:leave_list' %}" class="text-decoration-none">
-      <i class="fas fa-arrow-left"></i> Quay lại
+      <i class="fas fa-arrow-left"></i> Back
     </a>
-    <h1 class="mt-2">Chi tiết đơn nghỉ phép</h1>
+    <h1 class="mt-2">Leave Request Details</h1>
   </div>
 
   <div class="row justify-content-center">
     <div class="col-md-8">
       <div class="card">
         <div class="card-header">
-          <h5 class="mb-0">Thông tin đơn nghỉ phép</h5>
+          <h5 class="mb-0">Leave Request Information</h5>
         </div>
         <div class="card-body">
-          <div class="row mb-3">
-            <div class="col-md-6">
-              <p><strong>Nhân viên:</strong></p>
-              <p>
-                {{ leave.employee.full_name }} ({{ leave.employee.employee_id
-                }})
-              </p>
-            </div>
-            <div class="col-md-6">
-              <p><strong>Loại phép:</strong></p>
-              <p>{{ leave.leave_type.name }}</p>
-            </div>
+          <div class="mb-3">
+            <p><strong>Employee:</strong></p>
+            <p>
+              {{ leave.employee.full_name }} ({{ leave.employee.employee_id }})
+            </p>
           </div>
-
           <div class="row mb-3">
             <div class="col-md-6">
-              <p><strong>Từ ngày:</strong></p>
+              <p><strong>From Date:</strong></p>
               <p>{{ leave.start_date|date:"d/m/Y" }}</p>
             </div>
             <div class="col-md-6">
-              <p><strong>Đến ngày:</strong></p>
+              <p><strong>To Date:</strong></p>
               <p>{{ leave.end_date|date:"d/m/Y" }}</p>
             </div>
           </div>
 
           <div class="row mb-3">
             <div class="col-md-6">
-              <p><strong>Số ngày:</strong></p>
+              <p><strong>Days:</strong></p>
               <p>
                 <span class="badge bg-info"
-                  >{{ leave.duration_days }} ngày</span
+                  >{{ leave.duration_days }} days</span
                 >
               </p>
             </div>
             <div class="col-md-6">
-              <p><strong>Trạng thái:</strong></p>
+              <p><strong>Status:</strong></p>
               <p>
                 <span class="status-badge status-{{ leave.status|lower }}"
                   >{{ leave.get_status_display }}</span
@@ -60,19 +52,19 @@
           </div>
 
           <div class="mb-3">
-            <p><strong>Lý do:</strong></p>
+            <p><strong>Reason:</strong></p>
             <p class="bg-light p-3 rounded">{{ leave.reason }}</p>
           </div>
 
           {% if leave.remarks %}
           <div class="mb-3">
-            <p><strong>Ghi chú:</strong></p>
+            <p><strong>Notes:</strong></p>
             <p class="bg-light p-3 rounded">{{ leave.remarks }}</p>
           </div>
           {% endif %} {% if leave.status == 'PENDING' %}
           <div class="alert alert-warning">
             <p class="mb-0">
-              <i class="fas fa-clock"></i> Đơn này đang chờ duyệt
+              <i class="fas fa-clock"></i> This request is pending approval
             </p>
           </div>
 
@@ -89,7 +81,7 @@
                 value="approve"
                 class="btn btn-success w-100"
               >
-                <i class="fas fa-check"></i> Phê duyệt
+                <i class="fas fa-check"></i> Approve
               </button>
             </div>
             <div class="col-md-6">
@@ -99,7 +91,7 @@
                 data-bs-toggle="modal"
                 data-bs-target="#rejectModal"
               >
-                <i class="fas fa-times"></i> Từ chối
+                <i class="fas fa-times"></i> Reject
               </button>
             </div>
           </form>
@@ -110,13 +102,13 @@
               href="{% url 'leaves:leave_edit' leave.pk %}"
               class="btn btn-warning"
             >
-              <i class="fas fa-edit"></i> Chỉnh sửa
+              <i class="fas fa-edit"></i> Edit
             </a>
             <a
               href="{% url 'leaves:leave_delete' leave.pk %}"
               class="btn btn-danger"
             >
-              <i class="fas fa-trash"></i> Xóa
+              <i class="fas fa-trash"></i> Delete
             </a>
           </div>
         </div>
@@ -130,7 +122,7 @@
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">Từ chối đơn nghỉ phép</h5>
+        <h5 class="modal-title">Reject đơn nghỉ phép</h5>
         <button
           type="button"
           class="btn-close"
@@ -141,7 +133,7 @@
         {% csrf_token %}
         <div class="modal-body">
           <div class="mb-3">
-            <label for="remarks" class="form-label">Lý do từ chối:</label>
+            <label for="remarks" class="form-label">Reason từ chối:</label>
             <textarea
               class="form-control"
               name="remarks"
@@ -157,7 +149,7 @@
             class="btn btn-secondary"
             data-bs-dismiss="modal"
           >
-            Hủy
+            Cancel
           </button>
           <button
             type="submit"
@@ -165,7 +157,7 @@
             value="reject"
             class="btn btn-danger"
           >
-            Từ chối
+            Reject
           </button>
         </div>
       </form>

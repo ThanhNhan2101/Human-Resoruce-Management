@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="vi">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -83,7 +83,11 @@
       }
 
       .sidebar-menu a.active {
-        background: linear-gradient(90deg, rgba(102,126,234,0.1), transparent);
+        background: linear-gradient(
+          90deg,
+          rgba(102, 126, 234, 0.1),
+          transparent
+        );
         border-left: 3px solid var(--primary);
         color: var(--primary);
         font-weight: 600;
@@ -183,7 +187,6 @@
 
   <!-- 👇 KEY FIX -->
   <body class="{% if user.is_authenticated %}authenticated{% endif %}">
-
     <!-- ===== NAVBAR ===== -->
     <nav class="navbar navbar-expand-lg navbar-dark">
       <div class="container-fluid">
@@ -193,26 +196,34 @@
 
         <div class="ms-auto">
           <div class="dropdown">
-            <a class="nav-link text-white dropdown-toggle" data-bs-toggle="dropdown">
+            <a
+              class="nav-link text-white dropdown-toggle"
+              data-bs-toggle="dropdown"
+            >
               <i class="fas fa-user-circle"></i>
-              {% if user.is_authenticated %}
-                {{ user.username }}
-              {% else %}
-                Tài khoản
-              {% endif %}
+              {% if user.is_authenticated %} {{ user.username }} {% else %}
+              Account {% endif %}
             </a>
 
             <ul class="dropdown-menu dropdown-menu-end">
               {% if user.is_authenticated %}
-                <li><a class="dropdown-item" href="#"><i class="fas fa-cog"></i> Cài đặt</a></li>
-                <li><hr class="dropdown-divider"></li>
-                <li><a class="dropdown-item" href="{% url 'logout' %}">
-                  <i class="fas fa-sign-out-alt"></i> Đăng xuất
-                </a></li>
+              <li>
+                <a class="dropdown-item" href="#"
+                  ><i class="fas fa-cog"></i> Settings</a
+                >
+              </li>
+              <li><hr class="dropdown-divider" /></li>
+              <li>
+                <a class="dropdown-item" href="{% url 'logout' %}">
+                  <i class="fas fa-sign-out-alt"></i> Logout
+                </a>
+              </li>
               {% else %}
-                <li><a class="dropdown-item" href="{% url 'login' %}">
-                  <i class="fas fa-sign-in-alt"></i> Đăng nhập
-                </a></li>
+              <li>
+                <a class="dropdown-item" href="{% url 'login' %}">
+                  <i class="fas fa-sign-in-alt"></i> Login
+                </a>
+              </li>
               {% endif %}
             </ul>
           </div>
@@ -221,72 +232,66 @@
     </nav>
 
     <div class="d-flex">
-
-      {% block sidebar %}
-  {% if user.is_authenticated %}
-  <div class="sidebar">
-    <ul class="sidebar-menu">
-      <li>
-        <a href="{% url 'employees:dashboard' %}"
-           class="{% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
-          <i class="fas fa-home"></i> Bảng điều khiển
-        </a>
-      </li>
-      <li>
-        <a href="{% url 'employees:employee_list' %}"
-           class="{% if 'employee' in request.resolver_match.url_name %}active{% endif %}">
-          <i class="fas fa-users"></i> Nhân viên
-        </a>
-      </li>
-      <li>
-        <a href="{% url 'employees:department_list' %}"
-           class="{% if 'department' in request.resolver_match.url_name %}active{% endif %}">
-          <i class="fas fa-sitemap"></i> Phòng ban
-        </a>
-      </li>
-      <li>
-        <a href="{% url 'leaves:leave_list' %}"
-           class="{% if 'leave' in request.resolver_match.url_name %}active{% endif %}">
-          <i class="fas fa-calendar-check"></i> Nghỉ phép
-        </a>
-      </li>
-      <li>
-        <a href="{% url 'attendance:attendance_list' %}"
-           class="{% if 'attendance' in request.resolver_match.url_name %}active{% endif %}">
-          <i class="fas fa-clock"></i> Chấm công
-        </a>
-      </li>
-      <li>
-        <a href="/admin/">
-          <i class="fas fa-cogs"></i> Quản trị
-        </a>
-      </li>
-    </ul>
-  </div>
-  {% endif %}
-{% endblock %}
+      {% block sidebar %} {% if user.is_authenticated %}
+      <div class="sidebar">
+        <ul class="sidebar-menu">
+          <li>
+            <a
+              href="{% url 'employees:dashboard' %}"
+              class="{% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}"
+            >
+              <i class="fas fa-home"></i> Dashboard
+            </a>
+          </li>
+          <li>
+            <a
+              href="{% url 'employees:employee_list' %}"
+              class="{% if 'employee' in request.resolver_match.url_name %}active{% endif %}"
+            >
+              <i class="fas fa-users"></i> Employees
+            </a>
+          </li>
+          <li>
+            <a
+              href="{% url 'employees:department_list' %}"
+              class="{% if 'department' in request.resolver_match.url_name %}active{% endif %}"
+            >
+              <i class="fas fa-sitemap"></i> Departments
+            </a>
+          </li>
+          <li>
+            <a
+              href="{% url 'leaves:leave_list' %}"
+              class="{% if 'leave' in request.resolver_match.url_name %}active{% endif %}"
+            >
+              <i class="fas fa-calendar-check"></i> Leaves
+            </a>
+          </li>
+          <li>
+            <a
+              href="{% url 'attendance:attendance_list' %}"
+              class="{% if 'attendance' in request.resolver_match.url_name %}active{% endif %}"
+            >
+              <i class="fas fa-clock"></i> Attendance
+            </a>
+          </li>
+        </ul>
+      </div>
+      {% endif %} {% endblock %}
 
       <!-- ===== CONTENT ===== -->
       <div class="content w-100">
-
-        {% if messages %}
-          {% for message in messages %}
-          <div class="alert alert-{{ message.tags }} alert-dismissible fade show">
-            {{ message }}
-            <button class="btn-close" data-bs-dismiss="alert"></button>
-          </div>
-          {% endfor %}
-        {% endif %}
-
-        {% block content %}{% endblock %}
-
+        {% if messages %} {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show">
+          {{ message }}
+          <button class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        {% endfor %} {% endif %} {% block content %}{% endblock %}
       </div>
     </div>
 
     {% if user.is_authenticated %}
-    <footer>
-      &copy; 2024 HRM System
-    </footer>
+    <footer>&copy; 2024 HRM System</footer>
     {% endif %}
 
     <!-- JS -->

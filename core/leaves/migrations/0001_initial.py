@@ -36,7 +36,7 @@ class Migration(migrations.Migration):
                 ('start_date', models.DateField()),
                 ('end_date', models.DateField()),
                 ('reason', models.TextField()),
-                ('status', models.CharField(choices=[('PENDING', 'Chờ duyệt'), ('APPROVED', 'Được duyệt'), ('REJECTED', 'Bị từ chối'), ('CANCELLED', 'Hủy bỏ')], default='PENDING', max_length=20)),
+                ('status', models.CharField(choices=[('PENDING', 'Chờ duyệt'), ('APPROVED', 'Được duyệt'), ('REJECTED', 'Bị từ chối'), ('CANCELLED', 'Cancel bỏ')], default='PENDING', max_length=20)),
                 ('remarks', models.TextField(blank=True, null=True)),
                 ('created_at', models.DateTimeField(auto_now_add=True)),
                 ('updated_at', models.DateTimeField(auto_now=True)),

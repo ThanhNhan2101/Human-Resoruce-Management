@@ -1,4 +1,4 @@
-from core.employees.models import Employee, Department, Position
+from core.employees.models import Employee, Department
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
 
@@ -6,7 +6,7 @@ from django.shortcuts import get_object_or_404
 class EmployeeSelector:
     def list(self, filters=None):
         filters = filters or {}
-        queryset = Employee.objects.select_related('department', 'position')
+        queryset = Employee.objects.select_related('department')
 
         search = filters.get('search', '')
         if search:
@@ -29,7 +29,7 @@ class EmployeeSelector:
 
     def get_by_id(self, pk):
         return get_object_or_404(
-            Employee.objects.select_related('department', 'position'),
+            Employee.objects.select_related('department'),
             pk=pk
         )
 
@@ -43,11 +43,6 @@ class DepartmentSelector:
 
     def get_by_id(self, pk):
         return get_object_or_404(Department, pk=pk)
-
-
-class PositionSelector:
-    def list(self):
-        return Position.objects.all()
 
     def get_by_id(self, pk):
         return get_object_or_404(Position, pk=pk)

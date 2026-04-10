@@ -106,8 +106,8 @@ class AttendanceUpdateView(LoginRequiredMixin, FormView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['title'] = 'Cập nhật chấm công'
-        context['button_text'] = 'Cập nhật'
+        context['title'] = 'Updated chấm công'
+        context['button_text'] = 'Updated'
         return context
 
     def form_valid(self, form):

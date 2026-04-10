@@ -1,18 +1,11 @@
 from django.contrib import admin
-from core.employees.models import Employee, Department, Position
+from core.employees.models import Employee, Department
 
 
 @admin.register(Department)
 class DepartmentAdmin(admin.ModelAdmin):
     list_display = ('name', 'created_at', 'updated_at')
     search_fields = ('name',)
-
-
-@admin.register(Position)
-class PositionAdmin(admin.ModelAdmin):
-    list_display = ('name', 'department', 'created_at')
-    search_fields = ('name', 'department__name')
-    list_filter = ('department',)
 
 
 @admin.register(Employee)
@@ -22,13 +15,13 @@ class EmployeeAdmin(admin.ModelAdmin):
     search_fields = ('employee_id', 'first_name', 'last_name', 'email')
     list_filter = ('status', 'department', 'gender', 'hire_date')
     fieldsets = (
-        ('Thông tin cá nhân', {
+        ('Personal Information', {
             'fields': ('first_name', 'last_name', 'email', 'phone', 'date_of_birth', 'gender', 'address', 'avatar')
         }),
-        ('Thông tin tuyển dụng', {
+        ('Employment Information', {
             'fields': ('employee_id', 'department', 'position', 'hire_date', 'status')
         }),
-        ('Thông tin lương', {
+        ('Salary Information', {
             'fields': ('base_salary', 'allowance')
         }),
     )

@@ -1,14 +1,14 @@
 {% extends 'base.html' %}
 
-{% block title %}Chi tiết chấm công{% endblock %}
+{% block title %}Attendance Details{% endblock %}
 
 {% block content %}
 <div class="container-fluid">
     <div class="page-header">
         <a href="{% url 'attendance:attendance_list' %}" class="text-decoration-none">
-            <i class="fas fa-arrow-left"></i> Quay lại
+            <i class="fas fa-arrow-left"></i> Back
         </a>
-        <h1 class="mt-2">Chi tiết chấm công</h1>
+        <h1 class="mt-2">Attendance Details</h1>
     </div>
 
     <div class="row justify-content-center">
@@ -19,36 +19,36 @@
                 </div>
                 <div class="card-body">
                     <p>
-                        <strong>Nhân viên:</strong><br>
+                        <strong>Employee:</strong><br>
                         {{ attendance.employee.full_name }} ({{ attendance.employee.employee_id }})
                     </p>
                     
                     <p>
-                        <strong>Ngày:</strong><br>
+                        <strong>Date:</strong><br>
                         {{ attendance.date|date:"l, d/m/Y" }}
                     </p>
                     
                     <p>
-                        <strong>Thời gian vào:</strong><br>
-                        {{ attendance.check_in_time|time:"H:i"|default:"Chưa có" }}
+                        <strong>Check In Time:</strong><br>
+                        {{ attendance.check_in_time|time:"H:i"|default:"Not available" }}
                     </p>
                     
                     <p>
-                        <strong>Thời gian ra:</strong><br>
-                        {{ attendance.check_out_time|time:"H:i"|default:"Chưa có" }}
+                        <strong>Check Out Time:</strong><br>
+                        {{ attendance.check_out_time|time:"H:i"|default:"Not available" }}
                     </p>
                     
                     <p>
-                        <strong>Giờ làm:</strong><br>
+                        <strong>Working Hours:</strong><br>
                         {% if attendance.working_hours %}
-                            {{ attendance.working_hours }} giờ
+                            {{ attendance.working_hours }} hours
                         {% else %}
-                            Chưa tính
+                            Not calculated
                         {% endif %}
                     </p>
                     
                     <p>
-                        <strong>Trạng thái:</strong><br>
+                        <strong>Status:</strong><br>
                         <span class="status-badge status-{{ attendance.status|lower }}">
                             {{ attendance.get_status_display }}
                         </span>
@@ -56,17 +56,17 @@
                     
                     {% if attendance.notes %}
                     <p>
-                        <strong>Ghi chú:</strong><br>
+                        <strong>Notes:</strong><br>
                         <div class="bg-light p-3 rounded">{{ attendance.notes }}</div>
                     </p>
                     {% endif %}
 
                     <div class="d-grid gap-2 mt-4">
                         <a href="{% url 'attendance:attendance_edit' attendance.pk %}" class="btn btn-warning">
-                            <i class="fas fa-edit"></i> Chỉnh sửa
+                            <i class="fas fa-edit"></i> Edit
                         </a>
                         <a href="{% url 'attendance:attendance_list' %}" class="btn btn-secondary">
-                            <i class="fas fa-arrow-left"></i> Quay lại
+                            <i class="fas fa-arrow-left"></i> Back
                         </a>
                     </div>
                 </div>

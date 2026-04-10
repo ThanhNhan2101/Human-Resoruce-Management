@@ -1,3 +1,3 @@
-from .leave import Leave, LeaveType
+from .leave import Leave
 
-__all__ = ['Leave', 'LeaveType']
+__all__ = ['Leave']

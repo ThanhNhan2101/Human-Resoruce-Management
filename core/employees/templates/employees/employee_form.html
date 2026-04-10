@@ -8,7 +8,7 @@
 <div class="container-fluid">
   <div class="page-header">
     <a href="{% url 'employees:employee_list' %}" class="text-decoration-none">
-      <i class="fas fa-arrow-left"></i> Quay lại
+      <i class="fas fa-arrow-left"></i> Back
     </a>
     <h1 class="mt-2">{{ title }}</h1>
   </div>
@@ -20,8 +20,8 @@
           <form method="post" enctype="multipart/form-data" novalidate>
             {% csrf_token %}
 
-            <!-- Thông tin cá nhân -->
-            <h5 class="mb-3 border-bottom pb-2">Thông tin cá nhân</h5>
+            <!-- Personal Information -->
+            <h5 class="mb-3 border-bottom pb-2">Personal Information</h5>
 
             <div class="row">
               <div class="col-md-6 mb-3">
@@ -109,8 +109,8 @@
               {% endif %}
             </div>
 
-            <!-- Thông tin tuyển dụng -->
-            <h5 class="mb-3 border-bottom pb-2 mt-4">Thông tin tuyển dụng</h5>
+            <!-- Employment Information -->
+            <h5 class="mb-3 border-bottom pb-2 mt-4">Employment Information</h5>
 
             <div class="row">
               <div class="col-md-6 mb-3">
@@ -198,7 +198,7 @@
               </button>
 
               <a href="{% url 'employees:employee_list' %}" class="btn btn-secondary">
-                <i class="fas fa-times"></i> Hủy
+                <i class="fas fa-times"></i> Cancel
               </a>
             </div>
 

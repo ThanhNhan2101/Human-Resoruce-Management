@@ -1,11 +1,10 @@
-from core.leaves.models import Leave, LeaveType
+from core.leaves.models import Leave
 
 
-def create_leave(employee, leave_type, start_date, end_date, reason):
+def create_leave(employee, start_date, end_date, reason):
     """Create a new leave request"""
     leave = Leave.objects.create(
         employee=employee,
-        leave_type=leave_type,
         start_date=start_date,
         end_date=end_date,
         reason=reason,

@@ -1,3 +1,3 @@
-from .employee import Employee, Department, Position
+from .employee import Employee, Department
 
-__all__ = ['Employee', 'Department', 'Position']
+__all__ = ['Employee', 'Department']
