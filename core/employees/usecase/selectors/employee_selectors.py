@@ -1,37 +1,53 @@
 from core.employees.models import Employee, Department, Position
 from django.db.models import Q
+from django.shortcuts import get_object_or_404
 
 
-def get_all_employees():
-    """Get all employees"""
-    return Employee.objects.select_related('department', 'position').all()
+class EmployeeSelector:
+    def list(self, filters=None):
+        filters = filters or {}
+        queryset = Employee.objects.select_related('department', 'position')
+
+        search = filters.get('search', '')
+        if search:
+            queryset = queryset.filter(
+                Q(first_name__icontains=search) |
+                Q(last_name__icontains=search) |
+                Q(employee_id__icontains=search) |
+                Q(email__icontains=search)
+            )
+
+        department = filters.get('department', '')
+        if department:
+            queryset = queryset.filter(department_id=department)
+
+        status = filters.get('status', '')
+        if status:
+            queryset = queryset.filter(status=status)
+
+        return queryset
+
+    def get_by_id(self, pk):
+        return get_object_or_404(
+            Employee.objects.select_related('department', 'position'),
+            pk=pk
+        )
+
+    def get_active(self):
+        return Employee.objects.filter(status='ACTIVE')
 
 
-def get_employee_by_id(employee_id):
-    """Get employee by ID"""
-    return Employee.objects.select_related('department', 'position', 'attendances', 'leaves').get(id=employee_id)
+class DepartmentSelector:
+    def list(self):
+        return Department.objects.all()
+
+    def get_by_id(self, pk):
+        return get_object_or_404(Department, pk=pk)
 
 
-def search_employees(search_term):
-    """Search employees by name, email, or ID"""
-    return Employee.objects.filter(
-        Q(first_name__icontains=search_term) |
-        Q(last_name__icontains=search_term) |
-        Q(email__icontains=search_term) |
-        Q(employee_id__icontains=search_term)
-    ).select_related('department', 'position')
+class PositionSelector:
+    def list(self):
+        return Position.objects.all()
 
-
-def get_employees_by_department(department_id):
-    """Get employees by department"""
-    return Employee.objects.filter(department_id=department_id).select_related('position')
-
-
-def get_employees_by_status(status):
-    """Get employees by status"""
-    return Employee.objects.filter(status=status).select_related('department', 'position')
-
-
-def get_active_employees():
-    """Get active employees"""
-    return get_employees_by_status('ACTIVE')
+    def get_by_id(self, pk):
+        return get_object_or_404(Position, pk=pk)

@@ -1,13 +1,16 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views import View
-from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
+from django.views.generic import FormView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
-from django.db.models import Q
 from core.leaves.models import Leave, LeaveType
 from core.employees.models import Employee
 from django.forms import ModelForm, DateInput
 from django import forms
+from django.core.paginator import Paginator
+
+from core.leaves.usecase.selectors.leave_selectors import LeaveSelector, LeaveTypeSelector
+from core.leaves.usecase.services.leave_services import LeaveService
 
 
 class LeaveForm(ModelForm):
@@ -21,59 +24,51 @@ class LeaveForm(ModelForm):
         }
 
 
-class LeaveListView(LoginRequiredMixin, ListView):
-    model = Leave
+class LeaveListView(LoginRequiredMixin, View):
     template_name = 'leaves/leave_list.html'
-    context_object_name = 'leaves'
-    paginate_by = 10
     login_url = 'login'
 
-    def get_queryset(self):
-        queryset = Leave.objects.select_related(
-            'employee', 'leave_type', 'approved_by')
+    def get(self, request):
+        selector = LeaveSelector()
+        filters = {
+            'search': request.GET.get('search', ''),
+            'status': request.GET.get('status', ''),
+            'leave_type': request.GET.get('leave_type', ''),
+        }
+        leaves = selector.list(filters=filters)
 
-        # Search
-        search = self.request.GET.get('search', '')
-        if search:
-            queryset = queryset.filter(
-                Q(employee__first_name__icontains=search) |
-                Q(employee__last_name__icontains=search)
-            )
+        paginator = Paginator(leaves, 10)
+        page_number = request.GET.get('page')
+        page_obj = paginator.get_page(page_number)
 
-        # Filter by status
-        status = self.request.GET.get('status', '')
-        if status:
-            queryset = queryset.filter(status=status)
-
-        # Filter by leave type
-        leave_type = self.request.GET.get('leave_type', '')
-        if leave_type:
-            queryset = queryset.filter(leave_type_id=leave_type)
-
-        return queryset.order_by('-start_date')
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['leave_types'] = LeaveType.objects.all()
-        context['statuses'] = Leave._meta.get_field('status').choices
-        context['search'] = self.request.GET.get('search', '')
-        context['selected_status'] = self.request.GET.get('status', '')
-        context['selected_leave_type'] = self.request.GET.get('leave_type', '')
-        return context
+        type_selector = LeaveTypeSelector()
+        context = {
+            'leaves': page_obj,
+            'page_obj': page_obj,
+            'is_paginated': page_obj.has_other_pages(),
+            'leave_types': type_selector.list(),
+            'statuses': Leave.STATUS_CHOICES,
+            'search': filters['search'],
+            'selected_status': filters['status'],
+            'selected_leave_type': filters['leave_type'],
+        }
+        return render(request, self.template_name, context)
 
 
-class LeaveDetailView(LoginRequiredMixin, DetailView):
-    model = Leave
+class LeaveDetailView(LoginRequiredMixin, View):
     template_name = 'leaves/leave_detail.html'
-    context_object_name = 'leave'
     login_url = 'login'
 
+    def get(self, request, pk):
+        selector = LeaveSelector()
+        leave = selector.get_by_id(pk)
+        return render(request, self.template_name, {'leave': leave})
 
-class LeaveCreateView(LoginRequiredMixin, CreateView):
-    model = Leave
-    form_class = LeaveForm
+
+class LeaveCreateView(LoginRequiredMixin, FormView):
     template_name = 'leaves/leave_form.html'
-    success_url = reverse_lazy('leave_list')
+    form_class = LeaveForm
+    success_url = reverse_lazy('leaves:leave_list')
     login_url = 'login'
 
     def get_context_data(self, **kwargs):
@@ -82,13 +77,24 @@ class LeaveCreateView(LoginRequiredMixin, CreateView):
         context['button_text'] = 'Đăng ký'
         return context
 
+    def form_valid(self, form):
+        service = LeaveService()
+        service.create(input=form.cleaned_data)
+        return redirect(self.success_url)
 
-class LeaveUpdateView(LoginRequiredMixin, UpdateView):
-    model = Leave
-    form_class = LeaveForm
+
+class LeaveUpdateView(LoginRequiredMixin, FormView):
     template_name = 'leaves/leave_form.html'
-    success_url = reverse_lazy('leave_list')
+    form_class = LeaveForm
+    success_url = reverse_lazy('leaves:leave_list')
     login_url = 'login'
+
+    def get_form(self, form_class=None):
+        selector = LeaveSelector()
+        self.leave = selector.get_by_id(self.kwargs['pk'])
+        if form_class is None:
+            form_class = self.get_form_class()
+        return form_class(instance=self.leave, **self.get_form_kwargs())
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -96,28 +102,39 @@ class LeaveUpdateView(LoginRequiredMixin, UpdateView):
         context['button_text'] = 'Cập nhật'
         return context
 
+    def form_valid(self, form):
+        service = LeaveService()
+        service.update(pk=self.kwargs['pk'], input=form.cleaned_data)
+        return redirect(self.success_url)
 
-class LeaveDeleteView(LoginRequiredMixin, DeleteView):
-    model = Leave
+
+class LeaveDeleteView(LoginRequiredMixin, View):
     template_name = 'leaves/leave_confirm_delete.html'
-    success_url = reverse_lazy('leave_list')
     login_url = 'login'
+
+    def get(self, request, pk):
+        selector = LeaveSelector()
+        leave = selector.get_by_id(pk)
+        return render(request, self.template_name, {'leave': leave})
+
+    def post(self, request, pk):
+        service = LeaveService()
+        service.delete(pk=pk)
+        return redirect('leaves:leave_list')
 
 
 class LeaveApprovalView(LoginRequiredMixin, View):
     login_url = 'login'
 
     def post(self, request, pk):
-        leave = get_object_or_404(Leave, pk=pk)
+        service = LeaveService()
         action = request.POST.get('action')
 
         if action == 'approve':
-            leave.status = 'APPROVED'
-            # Thay bằng request.user.employee profile
-            leave.approved_by = Employee.objects.first()
+            approved_by = Employee.objects.first()
+            service.approve(pk=pk, approved_by=approved_by)
         elif action == 'reject':
-            leave.status = 'REJECTED'
-            leave.remarks = request.POST.get('remarks', '')
+            remarks = request.POST.get('remarks', '')
+            service.reject(pk=pk, remarks=remarks)
 
-        leave.save()
-        return redirect('leave_detail', pk=pk)
+        return redirect('leaves:leave_detail', pk=pk)

@@ -1,11 +1,14 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views import View
-from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
+from django.views.generic import FormView, TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
-from django.db.models import Q
 from core.employees.models import Employee, Department, Position
 from django.forms import ModelForm, DateInput
+from django.core.paginator import Paginator
+
+from core.employees.usecase.selectors.employee_selectors import EmployeeSelector, DepartmentSelector
+from core.employees.usecase.services.employee_services import EmployeeService
 
 
 class EmployeeForm(ModelForm):
@@ -22,66 +25,56 @@ class EmployeeForm(ModelForm):
         }
 
 
-class EmployeeListView(LoginRequiredMixin, ListView):
-    model = Employee
+class EmployeeListView(LoginRequiredMixin, View):
     template_name = 'employees/employee_list.html'
-    context_object_name = 'employees'
-    paginate_by = 10
     login_url = 'login'
 
-    def get_queryset(self):
-        queryset = Employee.objects.select_related('department', 'position')
+    def get(self, request):
+        selector = EmployeeSelector()
+        filters = {
+            'search': request.GET.get('search', ''),
+            'department': request.GET.get('department', ''),
+            'status': request.GET.get('status', ''),
+        }
+        employees = selector.list(filters=filters)
 
-        # Search
-        search = self.request.GET.get('search', '')
-        if search:
-            queryset = queryset.filter(
-                Q(first_name__icontains=search) |
-                Q(last_name__icontains=search) |
-                Q(employee_id__icontains=search) |
-                Q(email__icontains=search)
-            )
+        paginator = Paginator(employees, 10)
+        page_number = request.GET.get('page')
+        page_obj = paginator.get_page(page_number)
 
-        # Filter by department
-        department = self.request.GET.get('department', '')
-        if department:
-            queryset = queryset.filter(department_id=department)
-
-        # Filter by status
-        status = self.request.GET.get('status', '')
-        if status:
-            queryset = queryset.filter(status=status)
-
-        return queryset
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['departments'] = Department.objects.all()
-        context['statuses'] = Employee.EMPLOYMENT_STATUS
-        context['search'] = self.request.GET.get('search', '')
-        context['selected_department'] = self.request.GET.get('department', '')
-        context['selected_status'] = self.request.GET.get('status', '')
-        return context
+        dept_selector = DepartmentSelector()
+        context = {
+            'employees': page_obj,
+            'page_obj': page_obj,
+            'is_paginated': page_obj.has_other_pages(),
+            'departments': dept_selector.list(),
+            'statuses': Employee.EMPLOYMENT_STATUS,
+            'search': filters['search'],
+            'selected_department': filters['department'],
+            'selected_status': filters['status'],
+        }
+        return render(request, self.template_name, context)
 
 
-class EmployeeDetailView(LoginRequiredMixin, DetailView):
-    model = Employee
+class EmployeeDetailView(LoginRequiredMixin, View):
     template_name = 'employees/employee_detail.html'
-    context_object_name = 'employee'
     login_url = 'login'
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['attendances'] = self.object.attendances.all()[:10]
-        context['leaves'] = self.object.leaves.all()[:5]
-        return context
+    def get(self, request, pk):
+        selector = EmployeeSelector()
+        employee = selector.get_by_id(pk)
+        context = {
+            'employee': employee,
+            'attendances': employee.attendances.all()[:10],
+            'leaves': employee.leaves.all()[:5],
+        }
+        return render(request, self.template_name, context)
 
 
-class EmployeeCreateView(LoginRequiredMixin, CreateView):
-    model = Employee
-    form_class = EmployeeForm
+class EmployeeCreateView(LoginRequiredMixin, FormView):
     template_name = 'employees/employee_form.html'
-    success_url = reverse_lazy('employee_list')
+    form_class = EmployeeForm
+    success_url = reverse_lazy('employees:employee_list')
     login_url = 'login'
 
     def get_context_data(self, **kwargs):
@@ -90,13 +83,24 @@ class EmployeeCreateView(LoginRequiredMixin, CreateView):
         context['button_text'] = 'Thêm'
         return context
 
+    def form_valid(self, form):
+        service = EmployeeService()
+        service.create(input=form.cleaned_data)
+        return redirect(self.success_url)
 
-class EmployeeUpdateView(LoginRequiredMixin, UpdateView):
-    model = Employee
-    form_class = EmployeeForm
+
+class EmployeeUpdateView(LoginRequiredMixin, FormView):
     template_name = 'employees/employee_form.html'
-    success_url = reverse_lazy('employee_list')
+    form_class = EmployeeForm
+    success_url = reverse_lazy('employees:employee_list')
     login_url = 'login'
+
+    def get_form(self, form_class=None):
+        selector = EmployeeSelector()
+        self.employee = selector.get_by_id(self.kwargs['pk'])
+        if form_class is None:
+            form_class = self.get_form_class()
+        return form_class(instance=self.employee, **self.get_form_kwargs())
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -104,25 +108,38 @@ class EmployeeUpdateView(LoginRequiredMixin, UpdateView):
         context['button_text'] = 'Cập nhật'
         return context
 
+    def form_valid(self, form):
+        service = EmployeeService()
+        service.update(pk=self.kwargs['pk'], input=form.cleaned_data)
+        return redirect(self.success_url)
 
-class EmployeeDeleteView(LoginRequiredMixin, DeleteView):
-    model = Employee
+
+class EmployeeDeleteView(LoginRequiredMixin, View):
     template_name = 'employees/employee_confirm_delete.html'
-    success_url = reverse_lazy('employee_list')
     login_url = 'login'
 
+    def get(self, request, pk):
+        selector = EmployeeSelector()
+        employee = selector.get_by_id(pk)
+        return render(request, self.template_name, {'employee': employee})
 
-class DepartmentListView(LoginRequiredMixin, ListView):
-    model = Department
+    def post(self, request, pk):
+        service = EmployeeService()
+        service.delete(pk=pk)
+        return redirect('employees:employee_list')
+
+
+class DepartmentListView(LoginRequiredMixin, View):
     template_name = 'employees/department_list.html'
-    context_object_name = 'departments'
     login_url = 'login'
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        for dept in context['departments']:
+    def get(self, request):
+        selector = DepartmentSelector()
+        departments = selector.list()
+        for dept in departments:
             dept.employee_count = dept.employees.count()
-        return context
+        context = {'departments': departments}
+        return render(request, self.template_name, context)
 
 
 class DashboardView(LoginRequiredMixin, View):

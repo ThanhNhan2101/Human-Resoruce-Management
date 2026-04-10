@@ -256,6 +256,6 @@ MIT License
 
 ---
 
-**Tác giả**: Generated for HR Management System  
+**Tác giả**: NhanNguyen
 **Ngày tạo**: 2024  
 **Phiên bản**: 1.0.0
