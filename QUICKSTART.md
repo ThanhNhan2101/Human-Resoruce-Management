@@ -1,153 +1,199 @@
 # HRM System - Quick Start Guide
 
-## Bước 1: Install Dependencies
+## 🚀 Bước 1: Cài Đặt
+
+### 1.1 Clone repository
+
+```bash
+git clone <repo-url>
+cd hrm_project
+```
+
+### 1.2 Tạo Virtual Environment
+
+```bash
+# Windows
+python -m venv venv
+venv\Scripts\activate
+
+# Linux / Mac
+python3 -m venv venv
+source venv/bin/activate
+```
+
+### 1.3 Cài đặt Dependencies
 
 ```bash
 pip install -r requirements.txt
 ```
 
-## Bước 2: Run Migrations
+## 🔧 Bước 2: Khởi Tạo Database
 
 ```bash
 python manage.py migrate
 ```
 
-## Bước 3: Create Superuser
+## 📊 Bước 3: Tạo Dữ Liệu Demo
 
 ```bash
-python manage.py createsuperuser
+python scripts/seed_data.py
 ```
 
-## Bước 4: Create Demo Data (Optional)
+Lệnh này sẽ tạo:
 
-Mở Django shell:
+- ✅ 1 superuser: `admin` / `admin123`
+- ✅ 12 nhân viên (NV001–NV012) trong 5 phòng ban
+- ✅ 12 đơn xin nghỉ phép (PENDING, APPROVED, REJECTED)
+- ✅ 360 bản ghi chấm công (30 ngày × 12 nhân viên)
 
-```bash
-python manage.py shell
-```
-
-Chạy lệnh sau:
-
-```python
-from core.employees.models import Employee, Department, Position
-from django.utils import timezone
-from datetime import date
-
-# Tạo phòng ban
-hr_dept = Department.objects.create(
-    name='Phòng Nhân Sự',
-    description='Bộ phận quản lý nhân sự'
-)
-
-it_dept = Department.objects.create(
-    name='Phòng CNTT',
-    description='Bộ phận công nghệ thông tin'
-)
-
-sales_dept = Department.objects.create(
-    name='Phòng Bán Hàng',
-    description='Bộ phận kinh doanh'
-)
-
-# Tạo chức vụ
-pos1 = Position.objects.create(
-    name='Nhân viên',
-    department=hr_dept
-)
-
-pos2 = Position.objects.create(
-    name='Developer',
-    department=it_dept
-)
-
-pos3 = Position.objects.create(
-    name='Sales Executive',
-    department=sales_dept
-)
-
-# Tạo nhân viên
-emp1 = Employee.objects.create(
-    first_name='Nguyễn',
-    last_name='Văn A',
-    email='a.nguyen@hrm.local',
-    phone='+84912345678',
-    date_of_birth=date(1995, 5, 15),
-    gender='M',
-    address='123 Đường A, Hà Nội',
-    employee_id='NV001',
-    department=hr_dept,
-    position=pos1,
-    hire_date=date(2022, 1, 15),
-    base_salary=10000000,
-    allowance=500000
-)
-
-emp2 = Employee.objects.create(
-    first_name='Trần',
-    last_name='Thị B',
-    email='b.tran@hrm.local',
-    phone='+84987654321',
-    date_of_birth=date(1998, 8, 20),
-    gender='F',
-    address='456 Đường B, TPHCM',
-    employee_id='NV002',
-    department=it_dept,
-    position=pos2,
-    hire_date=date(2023, 3, 1),
-    base_salary=15000000,
-    allowance=1000000
-)
-
-emp3 = Employee.objects.create(
-    first_name='Phạm',
-    last_name='Văn C',
-    email='c.pham@hrm.local',
-    phone='+84977777777',
-    date_of_birth=date(1996, 2, 28),
-    gender='M',
-    address='789 Đường C, Đà Nẵng',
-    employee_id='NV003',
-    department=sales_dept,
-    position=pos3,
-    hire_date=date(2021, 6, 15),
-    base_salary=12000000,
-    allowance=2000000
-)
-
-print("Tạo dữ liệu demo thành công!")
-```
-
-Nhấp Ctrl+D hoặc Cmd+D để thoát shell.
-
-## Bước 5: Run Development Server
+## 🌐 Bước 4: Chạy Development Server
 
 ```bash
 python manage.py runserver
 ```
 
-## Bước 6: Access Application
+Server sẽ chạy tại: `http://localhost:8000`
 
-- **Admin Panel**: http://localhost:8000/admin
-- **Main App**: http://localhost:8000
+## 📝 Đăng Nhập
 
-Đăng nhập bằng tài khoản superuser.
+Sử dụng credentials mặc định:
 
-## Cấu Trúc URL Chính
+```
+Username: admin
+Password: admin123
+```
 
-- `/` - Trang chủ
-- `/dashboard/` - Bảng điều khiển
-- `/dashboard/employees/` - Danh sách nhân viên
-- `/dashboard/employees/create/` - Thêm nhân viên
-- `/dashboard/employees/<id>/` - Chi tiết nhân viên
-- `/dashboard/employees/<id>/edit/` - Chỉnh sửa
-- `/dashboard/employees/<id>/delete/` - Xóa
-- `/dashboard/departments/` - Danh sách phòng ban
-- `/leaves/` - Danh sách nghỉ phép
-- `/leaves/create/` - Đăng ký nghỉ phép
-- `/leaves/<id>/` - Chi tiết nghỉ phép
-- `/attendance/` - Danh sách chấm công
-- `/attendance/daily/` - Chấm công ngày
-- `/attendance/create/` - Thêm chấm công
+## 🎯 Các Tính Năng Chính
+
+### Dashboard
+
+- Xem thống kê nhân viên (tổng, hoạt động, phòng ban, đang nghỉ)
+- Quick links đến các module chính
+
+### Nhân Viên (Employees)
+
+- Xem danh sách tất cả nhân viên
+- Thêm / chỉnh sửa / xóa nhân viên
+- Filter theo phòng ban, trạng thái
+- Xem chi tiết profile từng nhân viên
+
+### Phòng Ban (Departments)
+
+- Xem danh sách phòng ban
+- Quản lý cơ cấu tổ chức
+- Xem nhân viên theo phòng ban
+
+### Nghỉ Phép (Leaves)
+
+- Xem danh sách tất cả đơn xin nghỉ
+- Lọc theo trạng thái (PENDING, APPROVED, REJECTED, CANCELLED)
+- Chi tiết từng đơn (ngày, lý do, người phê duyệt)
+- Ở chế độ admin, có thể phê duyệt / từ chối đơn
+
+### Chấm Công (Attendance)
+
+- Xem lịch sử chấm công 30 ngày gần nhất
+- Xem chi tiết từng ngày (vào/ra, trạng thái)
+- Tính toán giờ làm việc tự động
+
+## 🔒 Admin Panel
+
+Truy cập: `http://localhost:8000/admin`
+
+Username: `admin`
+Password: `admin123`
+
+Tại Admin Panel có thể:
+
+- Quản lý tất cả employees, departments, leaves, attendance
+- Thay đổi mật khẩu
+- Xem lịch sử thay đổi dữ liệu
+
+## 📦 Production Deployment
+
+### Chuẩn Bị
+
+1. **Thay đổi SECRET_KEY**:
+
+   ```bash
+   # Tạo SECRET_KEY mới
+   python manage.py shell
+   from django.core.management.utils import get_random_secret_key
+   print(get_random_secret_key())
+   ```
+
+2. **Cấu hình .env**:
+
+   ```bash
+   SECRET_KEY=<new-secret-key>
+   DEBUG=False
+   ALLOWED_HOSTS=yourdomain.com
+   DB_ENGINE=django.db.backends.postgresql
+   DB_NAME=hrm_db
+   DB_USER=postgres
+   DB_PASSWORD=<password>
+   DB_HOST=localhost
+   DB_PORT=5432
+   ```
+
+3. **Static Files**:
+
+   ```bash
+   python manage.py collectstatic --noinput
+   ```
+
+4. **Use Production Server** (Gunicorn + Nginx):
+
+   ```bash
+   pip install gunicorn
+   gunicorn config.wsgi:application --bind 0.0.0.0:8000
+   ```
+
+5. **Backup Database**:
+   ```bash
+   # Trước khi deploy
+   python manage.py dumpdata > backup.json
+   ```
+
+## 🐛 Troubleshooting
+
+### Issue: Port 8000 đang bị sử dụng
+
+```bash
+# Linux/Mac
+python manage.py runserver 8001
+
+# Windows - tìm process sử dụng port
+netstat -ano | findstr :8000
+taskkill /PID <PID> /F
+```
+
+### Issue: Database errors
+
+```bash
+# Reset migrations
+python manage.py migrate --plan  # xem migrations
+python manage.py migrate zero    # rollback all
+python manage.py migrate         # re-apply all
+```
+
+### Issue: Static files không load
+
+```bash
+# Collect static files
+python manage.py collectstatic --clear --noinput
+```
+
+## 📚 Tài Liệu Thêm
+
+- [README.md](README.md) - Tổng quan project
+- [PROJECT_STRUCTURE.md](PROJECT_STRUCTURE.md) - Chi tiết cấu trúc
+- [Django Official Docs](https://docs.djangoproject.com/) - Django documentation
+
+## ✨ Chúc bạn sử dụng vui vẻ!
+
+Nếu có bất kỳ câu hỏi nào, vui lòng tạo issue trên GitHub repo.
+
 - `/admin/` - Admin panel
 
 ## Lưu Ý

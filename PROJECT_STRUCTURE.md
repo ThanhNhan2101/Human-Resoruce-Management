@@ -10,10 +10,10 @@ hrm_project/
 │   ├── asgi.py                   # ASGI config
 │   ├── wsgi.py                   # WSGI config
 │   ├── urls.py                   # Main URL config
-│   ├── settings/
-│   │   ├── __init__.py
-│   │   └── base.py               # Base settings
-│   └── env.py                    # Environment config
+│   ├── forms.py                  # Custom LoginForm (Vietnamese messages)
+│   └── settings/
+│       ├── __init__.py
+│       └── base.py               # Base settings
 │
 ├── core/                          # Core business logic
 │   │
@@ -24,7 +24,7 @@ hrm_project/
 │   │   ├── urls.py               # URL routing
 │   │   ├── models/
 │   │   │   ├── __init__.py
-│   │   │   └── employee.py       # Employee, Department, Position models
+│   │   │   └── employee.py       # Employee, Department models
 │   │   ├── views/
 │   │   │   ├── __init__.py
 │   │   │   └── employee_views.py # Views for employee management
@@ -33,12 +33,14 @@ hrm_project/
 │   │   │   ├── employee_detail.html
 │   │   │   ├── employee_form.html
 │   │   │   ├── employee_confirm_delete.html
-│   │   │   └── department_list.html
+│   │   │   ├── department_list.html
+│   │   │   └── department_form.html
 │   │   ├── usecase/              # Business logic layer
-│   │   │   ├── services/         # Service functions
+│   │   │   ├── __init__.py
+│   │   │   ├── services/
 │   │   │   │   ├── __init__.py
 │   │   │   │   └── employee_services.py
-│   │   │   └── selectors/        # Query selectors
+│   │   │   └── selectors/
 │   │   │       ├── __init__.py
 │   │   │       └── employee_selectors.py
 │   │   └── migrations/           # Database migrations
@@ -50,7 +52,7 @@ hrm_project/
 │   │   ├── urls.py
 │   │   ├── models/
 │   │   │   ├── __init__.py
-│   │   │   └── leave.py          # Leave, LeaveType models
+│   │   │   └── leave.py          # Leave model
 │   │   ├── views/
 │   │   │   ├── __init__.py
 │   │   │   └── leave_views.py    # Leave request views
@@ -61,7 +63,12 @@ hrm_project/
 │   │   │   └── leave_confirm_delete.html
 │   │   ├── usecase/
 │   │   │   ├── __init__.py
-│   │   │   └── leave_services.py
+│   │   │   ├── services/
+│   │   │   │   ├── __init__.py
+│   │   │   │   └── leave_services.py
+│   │   │   └── selectors/
+│   │   │       ├── __init__.py
+│   │   │       └── leave_selectors.py
 │   │   └── migrations/
 │   │
 │   └── attendance/                # Attendance management module
@@ -87,26 +94,83 @@ hrm_project/
 │   └── base_model.py             # Abstract base models
 │
 ├── templates/                     # Global templates
-│   ├── base.html                 # Main layout template
-│   ├── index.html                # Home page
-│   ├── dashboard.html            # Dashboard
+│   ├── base.html                 # Main layout template (dark sidebar)
+│   ├── dashboard.html            # Dashboard with stat cards
+│   ├── index.html                # Home redirect
 │   └── auth/
+│       ├── auth_base.html        # Auth page base (dark gradient)
 │       └── login.html            # Login page
 │
 ├── static/                        # Static files
-│   ├── css/                      # CSS files
-│   └── js/                       # JavaScript files
+│   ├── css/
+│   │   └── main.css              # Complete design system (CSS variables, components)
+│   └── js/
+│
+├── docs/                          # Documentation
+│   └── screenshots/               # README screenshots
+│       ├── 01_login.png
+│       ├── 02_dashboard.png
+│       ├── 03_employee_list.png
+│       ├── 04_employee_detail.png
+│       ├── 05_department_list.png
+│       ├── 06_leave_list.png
+│       ├── 07_attendance_list.png
+│       └── 08_daily_attendance.png
 │
 ├── scripts/                       # Utility scripts
-│   └── seed_data.py              # Demo data generator
+│   └── seed_data.py              # Demo data seeder
 │
 ├── manage.py                      # Django management script
-├── requirements.txt              # Python dependencies
-├── .env                         # Environment variables
-├── .gitignore                   # Git ignore rules
-├── README.md                    # Project documentation
-├── QUICKSTART.md                # Quick start guide
-└── PROJECT_STRUCTURE.md         # This file
+├── requirements.txt               # Python dependencies
+├── db.sqlite3                     # SQLite database (dev)
+├── README.md                      # Project documentation
+├── PROJECT_STRUCTURE.md          # This file
+├── QUICKSTART.md                 # Quick start guide
+└── INTERVIEW_GUIDE.md            # Interview guide
+```
+
+## 📦 Key Files
+
+### config/forms.py
+
+Custom LoginForm with Vietnamese error messages, properly sets `self.user_cache` for Django 5+ login flow.
+
+### config/urls.py
+
+Main URL router with:
+
+- Login view using custom LoginForm
+- Logout view with POST-only redirect
+- Employee, Leave, and Attendance app URLs
+
+### static/css/main.css
+
+Complete design system with:
+
+- CSS custom properties (variables)
+- Responsive dark sidebar
+- Component styles (buttons, forms, tables, cards)
+- Utility classes
+
+### scripts/seed_data.py
+
+Creates demo data:
+
+- 12 employees across 5 departments
+- 12 leave requests (various statuses)
+- 360 attendance records (30 days × 12 employees)
+- Admin superuser (admin / admin123)
+
+│ └── seed_data.py # Demo data generator
+│
+├── manage.py # Django management script
+├── requirements.txt # Python dependencies
+├── .env # Environment variables
+├── .gitignore # Git ignore rules
+├── README.md # Project documentation
+├── QUICKSTART.md # Quick start guide
+└── PROJECT_STRUCTURE.md # This file
+
 ```
 
 ## 🔄 Design Patterns Used
@@ -114,38 +178,47 @@ hrm_project/
 ### 1. **Service/Selector Pattern (Usecase Layer)**
 
 ```
+
 Separation of concerns:
+
 - Selectors: Query database (READ operations)
 - Services: Business logic (WRITE/UPDATE operations)
 
 Example:
 core/employees/usecase/
-├── selectors/employee_selectors.py  # get_employee_by_id(), search_employees()
-└── services/employee_services.py    # create_employee(), update_employee()
+├── selectors/employee_selectors.py # get_employee_by_id(), search_employees()
+└── services/employee_services.py # create_employee(), update_employee()
+
 ```
 
 ### 2. **Django MVT (Model-View-Template)**
 
 ```
+
 - Models: Database schema
 - Views: Business logic + request handling
 - Templates: HTML rendering
+
 ```
 
 ### 3. **Class-Based Views**
 
 ```
+
 Using Django's generic views:
+
 - ListView: Display list of objects
 - DetailView: Display single object
 - CreateView: Create new object
 - UpdateView: Update object
 - DeleteView: Delete object
+
 ```
 
 ## 📊 Entity Relationship
 
 ```
+
 Employee
 ├── department (ForeignKey to Department)
 ├── position (ForeignKey to Position)
@@ -169,6 +242,7 @@ LeaveType
 
 Attendance
 └── employee (ForeignKey to Employee)
+
 ```
 
 ## 🔌 URL Routing
@@ -176,16 +250,18 @@ Attendance
 ### Main URL Dispatcher
 
 ```
+
 config/urls.py (Root)
-├── /admin/                Admin panel
-├── /accounts/login        Django auth login
-├── /accounts/logout       Django auth logout
-└── /dashboard/            Employee app URLs
-    ├── employees/         Employees
-    ├── departments/       Departments
-    └── ...
-├── /leaves/               Leaves app URLs
-└── /attendance/           Attendance app URLs
+├── /admin/ Admin panel
+├── /accounts/login Django auth login
+├── /accounts/logout Django auth logout
+└── /dashboard/ Employee app URLs
+├── employees/ Employees
+├── departments/ Departments
+└── ...
+├── /leaves/ Leaves app URLs
+└── /attendance/ Attendance app URLs
+
 ```
 
 ## 🎨 UI/UX Stack
@@ -200,6 +276,7 @@ config/urls.py (Root)
 ### Key UI Components
 
 ```
+
 - Navbar: Navigation and user info
 - Sidebar: Main menu navigation
 - Cards: Content containers
@@ -208,6 +285,7 @@ config/urls.py (Root)
 - Modals: Dialogs
 - Badges: Status indicators
 - Alerts: Notifications
+
 ```
 
 ## 🗄️ Database
@@ -221,24 +299,28 @@ config/urls.py (Root)
 ### Production: PostgreSQL
 
 - Edit `.env` file:
-  ```
-  DB_ENGINE=django.db.backends.postgresql
-  DB_NAME=hrm_db
-  DB_USER=hrm_user
-  DB_PASSWORD=secure_password
-  DB_HOST=localhost
-  DB_PORT=5432
-  ```
+```
+
+DB_ENGINE=django.db.backends.postgresql
+DB_NAME=hrm_db
+DB_USER=hrm_user
+DB_PASSWORD=secure_password
+DB_HOST=localhost
+DB_PORT=5432
+
+```
 
 ## 📦 Dependencies
 
 ```
-Django==5.2                    # Web framework
-django-environ==0.12.0         # Environment variables
-Pillow==10.0.0                # Image processing
-psycopg2-binary==2.9.10       # PostgreSQL adapter (optional)
-python-dotenv==1.1.1          # .env file support
-```
+
+Django==5.2 # Web framework
+django-environ==0.12.0 # Environment variables
+Pillow==10.0.0 # Image processing
+psycopg2-binary==2.9.10 # PostgreSQL adapter (optional)
+python-dotenv==1.1.1 # .env file support
+
+````
 
 ## 🔒 Authentication & Authorization
 
@@ -258,7 +340,7 @@ python-dotenv==1.1.1          # .env file support
 - Social login (Google, Facebook)
 - Two-factor authentication
 - Role-based access control (RBAC)
-```
+````
 
 ## 🚀 Running the Project
 
