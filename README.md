@@ -64,15 +64,6 @@ python scripts/seed_data.py
 python manage.py runserver
 ```
 
-Open **http://localhost:8000** and log in with `admin` / `admin123`.
-
-## � Default Credentials
-
-| Role         | Username | Password   | URL                         |
-| ------------ | -------- | ---------- | --------------------------- |
-| Admin        | `admin`  | `admin123` | http://localhost:8000       |
-| Django Admin | `admin`  | `admin123` | http://localhost:8000/admin |
-
 ## 📁 Project Structure
 
 ```
@@ -95,31 +86,6 @@ hrm_project/
 └── manage.py
 ```
 
-## � Screenshot Gallery
-
-### Login Page
-
-![Login](docs/screenshots/01_login.png)
-
-### Employee List
-
-![Employees](docs/screenshots/03_employee_list.png)
-
-### Employee Detail
-
-![Employee Detail](docs/screenshots/04_employee_detail.png)
-
-### Department List
-
-![Departments](docs/screenshots/05_department_list.png)
-
-### Leave Requests
-
-![Leaves](docs/screenshots/06_leave_list.png)
-
-### Attendance
-
-![Attendance](docs/screenshots/07_attendance_list.png)
 
 ## � Security Features
 
