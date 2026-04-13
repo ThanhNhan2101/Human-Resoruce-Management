@@ -43,6 +43,3 @@ class DepartmentSelector:
 
     def get_by_id(self, pk):
         return get_object_or_404(Department, pk=pk)
-
-    def get_by_id(self, pk):
-        return get_object_or_404(Position, pk=pk)
