@@ -1,0 +1,21 @@
+services:
+  web:
+    build: .
+    image: hrm_project:local
+    container_name: hrm_web
+    restart: unless-stopped
+    env_file:
+      - .env
+    ports:
+      - "8000:8000"
+    volumes:
+      # Mount source code so changes are reflected immediately (hot-reload)
+      - .:/app
+      # Persist the SQLite database file on the host
+      - ./db.sqlite3:/app/db.sqlite3
+      # Persist uploaded media files
+      - ./media:/app/media
+    # Run migrations then start the dev server
+    command: >
+      sh -c "python manage.py migrate --noinput &&
+             python manage.py runserver 0.0.0.0:8000"
