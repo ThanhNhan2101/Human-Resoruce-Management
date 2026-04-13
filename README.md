@@ -2,8 +2,6 @@
 
 > A modern Human Resource Management web application built with **Django 5.2**, Bootstrap 5 and a clean dark-sidebar UI.
 
-![Dashboard](docs/screenshots/02_dashboard.png)
-
 ---
 
 ## ✨ Features
