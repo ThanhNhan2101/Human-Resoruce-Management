@@ -2,11 +2,12 @@ import os
 from pathlib import Path
 import environ
 
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
+
 # Setup environ
 env = environ.Env()
-environ.Env.read_env()
+environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 
-BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
 SECRET_KEY = env(
     'SECRET_KEY', default='django-insecure-dev-key-change-in-production')
@@ -18,6 +19,7 @@ LOCAL_APPS = [
     'core.employees',
     'core.leaves',
     'core.attendance',
+    'common',
 ]
 
 DJANGO_APPS = [
@@ -64,8 +66,12 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # Database
 DATABASES = {
     'default': {
-        'ENGINE': env('DB_ENGINE', default='django.db.backends.sqlite3'),
-        'NAME': BASE_DIR / env('DB_NAME', default='db.sqlite3'),
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': env('DB_NAME'),
+        'USER': env('DB_USER'),
+        'PASSWORD': env('DB_PASSWORD'),
+        'HOST': env('DB_HOST'),
+        'PORT': env('DB_PORT'),
     }
 }
 

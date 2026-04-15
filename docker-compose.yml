@@ -1,4 +1,17 @@
 services:
+  db:
+    image: postgres:15
+    container_name: hrm_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
   web:
     build: .
     image: hrm_project:local
@@ -6,16 +19,16 @@ services:
     restart: unless-stopped
     env_file:
       - .env
+    depends_on:
+      - db   
     ports:
       - "8000:8000"
     volumes:
-      # Mount source code so changes are reflected immediately (hot-reload)
       - .:/app
-      # Persist the SQLite database file on the host
-      - ./db.sqlite3:/app/db.sqlite3
-      # Persist uploaded media files
       - ./media:/app/media
-    # Run migrations then start the dev server
     command: >
       sh -c "python manage.py migrate --noinput &&
              python manage.py runserver 0.0.0.0:8000"
+
+volumes:
+  postgres_data:
