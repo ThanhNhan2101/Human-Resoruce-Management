@@ -1,0 +1,37 @@
+name: CI - Django HRM Project
+
+on:
+  push:
+    branches: [ "main", "develop" ]
+  pull_request:
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Create .env.test
+      run: |
+        echo "DEBUG=True" >> .env.test
+        echo "SECRET_KEY=ci-secret-key" >> .env.test
+        echo "ALLOWED_HOSTS=*" >> .env.test
+        echo "DB_NAME=hrm_test" >> .env.test
+        echo "DB_USER=hrm_user" >> .env.test
+        echo "DB_PASSWORD=hrm_pass" >> .env.test
+        echo "DB_HOST=db" >> .env.test
+        echo "DB_PORT=5432" >> .env.test
+        echo "POSTGRES_DB=hrm_test" >> .env.test
+        echo "POSTGRES_USER=hrm_user" >> .env.test
+        echo "POSTGRES_PASSWORD=hrm_pass" >> .env.test
+
+    - name: Build Docker image
+      run: docker build -t hrm-app .
+
+    - name: Run tests
+      run: docker-compose -f docker-compose.ci.yml up --abort-on-container-exit --exit-code-from web
+
+    - name: Cleanup
+      if: always()
+      run: docker-compose -f docker-compose.ci.yml down -v
