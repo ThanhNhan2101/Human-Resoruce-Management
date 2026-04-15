@@ -347,6 +347,8 @@ Bạn sẽ chuẩn bị tốt nếu bạn có thể:
 
 **Good luck with your interview! 🚀**
 
+# fix
+
 Bạn đã có một solid project để demonstrate Django skills của bạn.
 Focus on explaining it well, understanding trade-offs, và showing how you'd extend it.
 
