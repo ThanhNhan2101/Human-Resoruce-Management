@@ -27,7 +27,7 @@ jobs:
         echo "POSTGRES_PASSWORD=hrm_pass" >> .env.test
 
     - name: Build Docker image
-      run: docker build -t hrm-app .
+      run: docker build -t hrm-app -f Docker/Dockerfile .
 
     - name: Run tests
       run: docker-compose -f docker-compose.ci.yml up --abort-on-container-exit --exit-code-from web
