@@ -23,6 +23,9 @@ services:
       - .env
     depends_on:
       - db
+    volumes:
+      - static_volume:/app/static
+      - media_volume:/app/media    
     command: >
       sh -c "python manage.py migrate --noinput &&
             python manage.py collectstatic --noinput &&
