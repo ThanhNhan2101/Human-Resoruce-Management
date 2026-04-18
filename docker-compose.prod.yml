@@ -13,7 +13,9 @@ services:
       - postgres_data:/var/lib/postgresql/data
 
   web:
-    build: .
+    build: 
+      context: .
+      dockerfile: Docker/Dockerfile
     image: hrm_project:prod
     container_name: hrm_web
     restart: unless-stopped
