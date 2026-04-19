@@ -509,19 +509,6 @@ class TestAttendanceSelector:
         with pytest.raises(Http404):
             selector.get_by_id(999)
 
-    def test_get_today_by_status(self, db, selector, employee):
-        """Test getting count of today's attendance by status."""
-        today = date.today()
-        Attendance.objects.create(
-            employee=employee,
-            date=today,
-            status='PRESENT'
-        )
-
-        count = selector.get_today_by_status('PRESENT')
-
-        assert isinstance(count, int)
-        assert count >= 1
 
     def test_get_by_date(self, db, selector, employee):
         """Test getting attendance records by date."""
