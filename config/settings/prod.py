@@ -1,3 +1,4 @@
+import dj_database_url
 import os
 from pathlib import Path
 import environ
@@ -56,15 +57,11 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # ─────────────────────────────
 # DATABASE
 # ─────────────────────────────
+
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': env('DB_NAME'),
-        'USER': env('DB_USER'),
-        'PASSWORD': env('DB_PASSWORD'),
-        'HOST': env('DB_HOST'),
-        'PORT': env('DB_PORT'),
-    }
+    'default': dj_database_url.config(
+        default=os.environ.get('DATABASE_URL')
+    )
 }
 
 # ─────────────────────────────
