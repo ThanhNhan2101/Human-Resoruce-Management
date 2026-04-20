@@ -2,7 +2,8 @@
 
 > A modern Human Resource Management web application built with **Django 5.2**, Bootstrap 5 and a clean dark-sidebar UI.
 
----
+## Link: https://human-resoruce-management.onrender.com/
+
 
 ## ✨ Features
 
@@ -16,12 +17,53 @@
 | **Auth**           | Django `LoginView` / `LogoutView` with CSRF-safe POST logout         |
 | **Admin Panel**    | Full Django admin for all models                                     |
 
+## 📸 Screenshots
+
+### Login 
+![Login](docs/screenshots/login.png)
+
+###  Dashboard
+![Dashboard](docs/screenshots/dashboard.png)
+
+###  Employees
+![Employees](docs/screenshots/list_employee.png)
+
+### Create Employees
+![Create Employee](docs/screenshots/create_employee.png)
+
+### Employee Profile
+![Profile Employee](docs/screenshots/employee_profile.png)
+
+### Departments
+![Departments](docs/screenshots/list_department.png)
+
+### Create departments
+![Create Department](docs/screenshots/create_department.png)
+
+###  Leave Requests
+![Leaves](docs/screenshots/list_leave.png)
+
+### Create Leaves request
+![Create Leaves](docs/screenshots/create_leave.png)
+
+### Confirm Leaves
+![Confirm Leaves](docs/screenshots/confirm_leave.png)
+
+###  Attendance
+![Attendance](docs/screenshots/list_attendance.png)
+
+### Apply daily attendance
+![Attendance](docs/screenshots/apply_daily_checkin.png)
+
+### 
+
 ## 🛠️ Tech Stack
 
 - **Backend**: Django 5.2, Python 3.13
 - **Database**: SQLite (dev) / PostgreSQL (prod)
 - **Frontend**: Bootstrap 5.3, Font Awesome 6.4, Inter font (Google Fonts)
 - **Auth**: Django built-in authentication
+- **Deploy**: gunicorn, render
 
 ## ⚡ Quick Start
 
@@ -165,5 +207,3 @@ DB_NAME=hrm_db
 MIT License
 
 ---
-
-**Version**: 1.0.0 · **Django**: 5.2 · **Python**: 3.13
