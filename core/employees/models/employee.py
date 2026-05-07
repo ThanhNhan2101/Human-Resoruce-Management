@@ -1,6 +1,7 @@
 from django.db import models
 from django.core.validators import RegexValidator
 from django.utils import timezone
+from django.contrib.auth.models import User
 
 
 class Department(models.Model):
@@ -70,6 +71,15 @@ class Employee(models.Model):
 
     # Profile
     avatar = models.ImageField(upload_to='avatars/', null=True, blank=True)
+
+    # Authentication
+    user = models.OneToOneField(
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='employee'
+    )
 
     # Timestamps
     created_at = models.DateTimeField(auto_now_add=True)

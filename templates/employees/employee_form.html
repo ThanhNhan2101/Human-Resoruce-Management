@@ -1,127 +1,297 @@
 ﻿{% extends 'base.html' %}
-{% block title %}{{ title }}{% endblock %}
+
+{% block title %}
+    {{ title }}
+{% endblock %}
 
 {% block content %}
+
 <div class="page-header">
-  <a href="{% url 'employees:employee_list' %}" class="back-link"><i class="fas fa-arrow-left"></i> Back to Employees</a>
-  <h1 style="margin-top:8px"><i class="fas fa-user-edit"></i> {{ title }}</h1>
+    <a href="{% url 'employees:employee_list' %}" class="back-link">
+        <i class="fas fa-arrow-left"></i> Back to Employees
+    </a>
+
+    <h1 style="margin-top: 8px">
+        <i class="fas fa-user-edit"></i> {{ title }}
+    </h1>
 </div>
 
 <div class="row justify-content-center">
-  <div class="col-xl-9 col-lg-11">
-    <div class="card">
-      <div class="card-body">
-        <form method="post" enctype="multipart/form-data" novalidate>
-          {% csrf_token %}
+    <div class="col-xl-9 col-lg-11">
+        <div class="card">
+            <div class="card-body">
 
-          <!-- Personal Information -->
-          <div class="form-section">
-            <div class="form-section-title"><i class="fas fa-user"></i> Personal Information</div>
-            <div class="row g-3">
-              <div class="col-md-6">
-                {{ form.first_name.label_tag }}
-                {{ form.first_name }}
-                {% if form.first_name.errors %}<div class="invalid-feedback d-block">{{ form.first_name.errors|striptags }}</div>{% endif %}
-              </div>
-              <div class="col-md-6">
-                {{ form.last_name.label_tag }}
-                {{ form.last_name }}
-                {% if form.last_name.errors %}<div class="invalid-feedback d-block">{{ form.last_name.errors|striptags }}</div>{% endif %}
-              </div>
-              <div class="col-md-6">
-                {{ form.email.label_tag }}
-                {{ form.email }}
-                {% if form.email.errors %}<div class="invalid-feedback d-block">{{ form.email.errors|striptags }}</div>{% endif %}
-              </div>
-              <div class="col-md-6">
-                {{ form.phone.label_tag }}
-                {{ form.phone }}
-                {% if form.phone.errors %}<div class="invalid-feedback d-block">{{ form.phone.errors|striptags }}</div>{% endif %}
-              </div>
-              <div class="col-md-6">
-                {{ form.date_of_birth.label_tag }}
-                {{ form.date_of_birth }}
-                {% if form.date_of_birth.errors %}<div class="invalid-feedback d-block">{{ form.date_of_birth.errors|striptags }}</div>{% endif %}
-              </div>
-              <div class="col-md-6">
-                {{ form.gender.label_tag }}
-                {{ form.gender }}
-                {% if form.gender.errors %}<div class="invalid-feedback d-block">{{ form.gender.errors|striptags }}</div>{% endif %}
-              </div>
-              <div class="col-12">
-                {{ form.address.label_tag }}
-                {{ form.address }}
-                {% if form.address.errors %}<div class="invalid-feedback d-block">{{ form.address.errors|striptags }}</div>{% endif %}
-              </div>
-              <div class="col-12">
-                {{ form.avatar.label_tag }}
-                {{ form.avatar }}
-                {% if form.avatar.errors %}<div class="invalid-feedback d-block">{{ form.avatar.errors|striptags }}</div>{% endif %}
-              </div>
+                <form method="post" enctype="multipart/form-data" novalidate>
+
+                    {% csrf_token %}
+
+                    <!-- Personal Information -->
+                    <div class="form-section">
+
+                        <div class="form-section-title">
+                            <i class="fas fa-user"></i> Personal Information
+                        </div>
+
+                        <div class="row g-3">
+
+                            <div class="col-md-6">
+                                {{ form.first_name.label_tag }}
+                                {{ form.first_name }}
+
+                                {% if form.first_name.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.first_name.errors|striptags }}
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <div class="col-md-6">
+                                {{ form.last_name.label_tag }}
+                                {{ form.last_name }}
+
+                                {% if form.last_name.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.last_name.errors|striptags }}
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <div class="col-md-6">
+                                {{ form.email.label_tag }}
+                                {{ form.email }}
+
+                                {% if form.email.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.email.errors|striptags }}
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <div class="col-md-6">
+                                {{ form.phone.label_tag }}
+                                {{ form.phone }}
+
+                                {% if form.phone.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.phone.errors|striptags }}
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <div class="col-md-6">
+                                {{ form.date_of_birth.label_tag }}
+                                {{ form.date_of_birth }}
+
+                                {% if form.date_of_birth.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.date_of_birth.errors|striptags }}
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <div class="col-md-6">
+                                {{ form.gender.label_tag }}
+                                {{ form.gender }}
+
+                                {% if form.gender.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.gender.errors|striptags }}
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <div class="col-12">
+                                {{ form.address.label_tag }}
+                                {{ form.address }}
+
+                                {% if form.address.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.address.errors|striptags }}
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <div class="col-12">
+                                {{ form.avatar.label_tag }}
+                                {{ form.avatar }}
+
+                                {% if form.avatar.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.avatar.errors|striptags }}
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <!-- Employment Information -->
+                    <div class="form-section">
+
+                        <div class="form-section-title">
+                            <i class="fas fa-briefcase"></i> Employment Information
+                        </div>
+
+                        <div class="row g-3">
+
+                            <div class="col-md-6">
+                                {{ form.employee_id.label_tag }}
+                                {{ form.employee_id }}
+
+                                {% if form.employee_id.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.employee_id.errors|striptags }}
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <div class="col-md-6">
+                                {{ form.hire_date.label_tag }}
+                                {{ form.hire_date }}
+
+                                {% if form.hire_date.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.hire_date.errors|striptags }}
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <div class="col-md-6">
+                                {{ form.department.label_tag }}
+                                {{ form.department }}
+
+                                {% if form.department.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.department.errors|striptags }}
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <div class="col-md-6">
+                                {{ form.position.label_tag }}
+                                {{ form.position }}
+
+                                {% if form.position.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.position.errors|striptags }}
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <div class="col-md-6">
+                                {{ form.status.label_tag }}
+                                {{ form.status }}
+
+                                {% if form.status.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.status.errors|striptags }}
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <!-- Salary -->
+                    <div class="form-section">
+
+                        <div class="form-section-title">
+                            <i class="fas fa-money-bill-wave"></i> Salary Information
+                        </div>
+
+                        <div class="row g-3">
+
+                            <div class="col-md-6">
+                                {{ form.base_salary.label_tag }}
+                                {{ form.base_salary }}
+
+                                {% if form.base_salary.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.base_salary.errors|striptags }}
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <div class="col-md-6">
+                                {{ form.allowance.label_tag }}
+                                {{ form.allowance }}
+
+                                {% if form.allowance.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.allowance.errors|striptags }}
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <!-- Authentication -->
+                    <div class="form-section">
+
+                        <div class="form-section-title">
+                            <i class="fas fa-lock"></i> Authentication Information
+                        </div>
+
+                        <div class="row g-3">
+
+                            <div class="col-md-6">
+                                {{ form.username.label_tag }}
+                                {{ form.username }}
+
+                                {% if form.username.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.username.errors|striptags }}
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <div class="col-md-6">
+                                {{ form.password.label_tag }}
+                                {{ form.password }}
+
+                                {% if form.password.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.password.errors|striptags }}
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                        </div>
+
+                        {% if is_create %}
+                            <small class="text-muted d-block mt-2">
+                                <i class="fas fa-info-circle"></i>
+                                Username and password are required to create a new employee account.
+                            </small>
+                        {% else %}
+                            <small class="text-muted d-block mt-2">
+                                <i class="fas fa-info-circle"></i>
+                                Leave empty to keep existing credentials.
+                            </small>
+                        {% endif %}
+
+                    </div>
+
+                    <!-- Actions -->
+                    <div class="d-flex gap-3 mt-2">
+
+                        <button type="submit" class="btn btn-primary btn-lg flex-fill">
+                            <i class="fas fa-save"></i> {{ button_text }}
+                        </button>
+
+                        <a href="{% url 'employees:employee_list' %}"
+                           class="btn btn-secondary btn-lg">
+                            <i class="fas fa-times"></i> Cancel
+                        </a>
+
+                    </div>
+
+                </form>
+
             </div>
-          </div>
-
-          <!-- Employment Information -->
-          <div class="form-section">
-            <div class="form-section-title"><i class="fas fa-briefcase"></i> Employment Information</div>
-            <div class="row g-3">
-              <div class="col-md-6">
-                {{ form.employee_id.label_tag }}
-                {{ form.employee_id }}
-                {% if form.employee_id.errors %}<div class="invalid-feedback d-block">{{ form.employee_id.errors|striptags }}</div>{% endif %}
-              </div>
-              <div class="col-md-6">
-                {{ form.hire_date.label_tag }}
-                {{ form.hire_date }}
-                {% if form.hire_date.errors %}<div class="invalid-feedback d-block">{{ form.hire_date.errors|striptags }}</div>{% endif %}
-              </div>
-              <div class="col-md-6">
-                {{ form.department.label_tag }}
-                {{ form.department }}
-                {% if form.department.errors %}<div class="invalid-feedback d-block">{{ form.department.errors|striptags }}</div>{% endif %}
-              </div>
-              <div class="col-md-6">
-                {{ form.position.label_tag }}
-                {{ form.position }}
-                {% if form.position.errors %}<div class="invalid-feedback d-block">{{ form.position.errors|striptags }}</div>{% endif %}
-              </div>
-              <div class="col-md-6">
-                {{ form.status.label_tag }}
-                {{ form.status }}
-                {% if form.status.errors %}<div class="invalid-feedback d-block">{{ form.status.errors|striptags }}</div>{% endif %}
-              </div>
-            </div>
-          </div>
-
-          <!-- Salary -->
-          <div class="form-section">
-            <div class="form-section-title"><i class="fas fa-money-bill-wave"></i> Salary Information</div>
-            <div class="row g-3">
-              <div class="col-md-6">
-                {{ form.base_salary.label_tag }}
-                {{ form.base_salary }}
-                {% if form.base_salary.errors %}<div class="invalid-feedback d-block">{{ form.base_salary.errors|striptags }}</div>{% endif %}
-              </div>
-              <div class="col-md-6">
-                {{ form.allowance.label_tag }}
-                {{ form.allowance }}
-                {% if form.allowance.errors %}<div class="invalid-feedback d-block">{{ form.allowance.errors|striptags }}</div>{% endif %}
-              </div>
-            </div>
-          </div>
-
-          <!-- Actions -->
-          <div class="d-flex gap-3 mt-2">
-            <button type="submit" class="btn btn-primary btn-lg flex-fill">
-              <i class="fas fa-save"></i> {{ button_text }}
-            </button>
-            <a href="{% url 'employees:employee_list' %}" class="btn btn-secondary btn-lg">
-              <i class="fas fa-times"></i> Cancel
-            </a>
-          </div>
-        </form>
-      </div>
+        </div>
     </div>
-  </div>
 </div>
+
 {% endblock %}

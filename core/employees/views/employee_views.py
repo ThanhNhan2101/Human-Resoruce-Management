@@ -4,7 +4,7 @@ from django.views.generic import FormView, TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
 from core.employees.models import Employee, Department
-from django.forms import ModelForm, DateInput, TextInput, Textarea
+from django.forms import ModelForm, DateInput, TextInput, Textarea, CharField, PasswordInput
 from django.core.paginator import Paginator
 
 from core.employees.usecase.selectors.employee_selectors import EmployeeSelector, DepartmentSelector
@@ -12,6 +12,21 @@ from core.employees.usecase.services.employee_services import EmployeeService
 
 
 class EmployeeForm(ModelForm):
+    username = CharField(
+        max_length=150,
+        required=False,
+        label='Username',
+        widget=TextInput(attrs={'class': 'form-control',
+                         'placeholder': 'Username (required for new employee)'})
+    )
+    password = CharField(
+        max_length=128,
+        required=False,
+        label='Password',
+        widget=PasswordInput(attrs={
+                             'class': 'form-control', 'placeholder': 'Password (required for new employee)'})
+    )
+
     class Meta:
         model = Employee
         fields = [
@@ -91,9 +106,19 @@ class EmployeeCreateView(LoginRequiredMixin, FormView):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Add New Employee'
         context['button_text'] = 'Add'
+        context['is_create'] = True
         return context
 
     def form_valid(self, form):
+        # Validate that username and password are provided for new employee
+        if not form.cleaned_data.get('username'):
+            form.add_error('username', 'Username is required for new employee')
+            return self.form_invalid(form)
+
+        if not form.cleaned_data.get('password'):
+            form.add_error('password', 'Password is required for new employee')
+            return self.form_invalid(form)
+
         service = EmployeeService()
         service.create(input=form.cleaned_data)
         return redirect(self.success_url)
@@ -116,6 +141,7 @@ class EmployeeUpdateView(LoginRequiredMixin, FormView):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Update Employee Information'
         context['button_text'] = 'Update'
+        context['is_create'] = False
         return context
 
     def form_valid(self, form):
