@@ -19,10 +19,13 @@ LOCAL_APPS = [
     'core.employees',
     'core.leaves',
     'core.attendance',
+    'core.chat',
     'common',
 ]
 
 DJANGO_APPS = [
+    'daphne',
+    'channels',  # Must be first for Channels
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -30,6 +33,8 @@ DJANGO_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 ]
+
+
 
 INSTALLED_APPS = DJANGO_APPS + LOCAL_APPS
 
@@ -41,6 +46,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'config.middleware.RoleBasedDashboardMiddleware',
 ]
 
 ROOT_URLCONF = 'config.urls'
@@ -62,6 +68,22 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'config.wsgi.application'
+
+# Channels Configuration
+ASGI_APPLICATION = 'config.asgi.application'
+
+# Redis channel layer configuration
+REDIS_HOST = env('REDIS_HOST', default='127.0.0.1')
+REDIS_PORT = env.int('REDIS_PORT', default=6379)
+
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            'hosts': [(REDIS_HOST, REDIS_PORT)],
+        },
+    },
+}
 
 # Database
 DATABASES = {
@@ -111,5 +133,5 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Login URL
 LOGIN_URL = 'login'
-LOGIN_REDIRECT_URL = 'employees:dashboard'
+LOGIN_REDIRECT_URL = 'chat:dashboard'
 LOGOUT_REDIRECT_URL = 'login'

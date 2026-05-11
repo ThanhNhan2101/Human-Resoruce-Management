@@ -1,0 +1,108 @@
+{% extends 'base.html' %} {% block title %}Chat Rooms{% endblock %} {% block
+content %}
+<div class="container mt-4">
+  <div class="row mb-4">
+    <div class="col-md-8">
+      <h1><i class="fas fa-comments"></i> Chat Rooms</h1>
+    </div>
+    {% if user.is_superuser %}
+    <div class="col-md-4 text-end">
+      <a href="{% url 'chat:chat_create' %}" class="btn btn-primary">
+        <i class="fas fa-plus"></i> New Chat Room
+      </a>
+    </div>
+    {% endif %}
+  </div>
+
+  {% if chat_rooms %}
+  <div class="row">
+    {% for room in chat_rooms %}
+    <div class="col-md-6 mb-3">
+      <a
+        href="{% url 'chat:chat_detail' room_id=room.id %}"
+        class="text-decoration-none"
+      >
+        <div class="card h-100 hover-shadow">
+          <div class="card-body">
+            <h5 class="card-title">
+              {% if room.is_private %}
+              <i class="fas fa-lock text-warning"></i>
+              {% else %}
+              <i class="fas fa-globe text-info"></i>
+              {% endif %} {{ room.name }}
+            </h5>
+            <p class="card-text text-muted small">
+              {{ room.description|truncatewords:15 }}
+            </p>
+            <div class="d-flex justify-content-between align-items-center">
+              <small class="text-muted">
+                <i class="fas fa-users"></i> {{ room.participants.count }}
+                members
+              </small>
+              <small class="text-muted">
+                <i class="fas fa-comment"></i> {{ room.messages.count }}
+                messages
+              </small>
+            </div>
+          </div>
+        </div>
+      </a>
+    </div>
+    {% endfor %}
+  </div>
+
+  <!-- Pagination -->
+  {% if is_paginated %}
+  <nav aria-label="Page navigation">
+    <ul class="pagination justify-content-center">
+      {% if page_obj.has_previous %}
+      <li class="page-item">
+        <a class="page-link" href="?page=1">First</a>
+      </li>
+      <li class="page-item">
+        <a class="page-link" href="?page={{ page_obj.previous_page_number }}"
+          >Previous</a
+        >
+      </li>
+      {% endif %}
+
+      <li class="page-item active">
+        <span class="page-link"
+          >Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages
+          }}</span
+        >
+      </li>
+
+      {% if page_obj.has_next %}
+      <li class="page-item">
+        <a class="page-link" href="?page={{ page_obj.next_page_number }}"
+          >Next</a
+        >
+      </li>
+      <li class="page-item">
+        <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}"
+          >Last</a
+        >
+      </li>
+      {% endif %}
+    </ul>
+  </nav>
+  {% endif %} {% else %}
+  <div class="alert alert-info" role="alert">
+    <i class="fas fa-info-circle"></i> No chat rooms available. {% if
+    user.is_superuser %}<a href="{% url 'chat:chat_create' %}"
+      >Create one now!</a
+    >{% endif %}
+  </div>
+  {% endif %}
+</div>
+
+<style>
+  .hover-shadow {
+    transition: box-shadow 0.3s ease;
+  }
+  .hover-shadow:hover {
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  }
+</style>
+{% endblock %}

@@ -22,8 +22,10 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy project source
 COPY . .
 
+# Create directories for media and staticfiles
+RUN mkdir -p /app/media /app/staticfiles
 
 EXPOSE 8000
 
-# Default: run the Django dev server
-CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+# Run migrations and start Daphne ASGI server (supports WebSocket)
+CMD ["sh", "-c", "python manage.py migrate --noinput && python manage.py collectstatic --noinput && daphne -b 0.0.0.0 -p 8000 config.asgi:application"]

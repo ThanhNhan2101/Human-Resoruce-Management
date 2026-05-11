@@ -7,7 +7,7 @@ from config.forms import LoginForm
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    
+
     # Authentication URLs
     path('', LoginView.as_view(template_name='auth/login.html',
          authentication_form=LoginForm), name='login'),
@@ -17,6 +17,7 @@ urlpatterns = [
     path('dashboard/', include('core.employees.urls')),
     path('leaves/', include('core.leaves.urls')),
     path('attendance/', include('core.attendance.urls')),
+    path('chat/', include('core.chat.urls')),
 ]
 
 if settings.DEBUG:

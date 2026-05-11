@@ -1,0 +1,168 @@
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0">
+  <diagram id="HRM-System" name="HRM Flowcharts">
+    <mxGraphModel dx="1627" dy="934" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1200" pageHeight="1600" background="#ffffff" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="100" parent="1" style="text;fontSize=20;fontStyle=1;align=center" value="EMPLOYEE MANAGEMENT FLOW" vertex="1">
+          <mxGeometry height="30" width="400" x="50" y="10" as="geometry" />
+        </mxCell>
+        <mxCell id="CFIvyQe8cjEy0RXMd4rm-127" edge="1" parent="1" source="101" style="edgeStyle=none;curved=1;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;fontSize=12;startSize=8;endSize=8;" target="102">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="101" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#90EE90" value="Admin Access" vertex="1">
+          <mxGeometry height="50" width="120" x="150" y="60" as="geometry" />
+        </mxCell>
+        <mxCell id="CFIvyQe8cjEy0RXMd4rm-128" edge="1" parent="1" source="102" style="edgeStyle=none;curved=1;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;fontSize=12;startSize=8;endSize=8;" target="103">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="102" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#87CEEB" value="Click Create&#xa;Employee" vertex="1">
+          <mxGeometry height="60" width="180" x="120" y="150" as="geometry" />
+        </mxCell>
+        <mxCell id="CFIvyQe8cjEy0RXMd4rm-129" edge="1" parent="1" source="103" style="edgeStyle=none;curved=1;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;fontSize=12;startSize=8;endSize=8;" target="104">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="103" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#87CEEB" value="Fill Employee Form&#xa;(Name, Email, Phone, Dept, etc.)" vertex="1">
+          <mxGeometry height="60" width="260" x="80" y="260" as="geometry" />
+        </mxCell>
+        <mxCell id="CFIvyQe8cjEy0RXMd4rm-130" edge="1" parent="1" source="104" style="edgeStyle=none;curved=1;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;fontSize=12;startSize=8;endSize=8;" target="105">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="CFIvyQe8cjEy0RXMd4rm-131" edge="1" parent="1" source="104" style="edgeStyle=none;curved=1;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;fontSize=12;startSize=8;endSize=8;" target="106">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="104" parent="1" style="rhombus;whiteSpace=wrap;html=1;fillColor=#FFD700" value="System Validates&#xa;Data" vertex="1">
+          <mxGeometry height="80" width="160" x="130" y="370" as="geometry" />
+        </mxCell>
+        <mxCell id="105" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FF6B6B" value="Show Error&#xa;Message" vertex="1">
+          <mxGeometry height="60" width="140" x="380" y="380" as="geometry" />
+        </mxCell>
+        <mxCell id="CFIvyQe8cjEy0RXMd4rm-132" edge="1" parent="1" source="106" style="edgeStyle=none;curved=1;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;fontSize=12;startSize=8;endSize=8;" target="107">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="106" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#87CEEB" value="Create Django&#xa;User Account" vertex="1">
+          <mxGeometry height="60" width="220" x="100" y="500" as="geometry" />
+        </mxCell>
+        <mxCell id="CFIvyQe8cjEy0RXMd4rm-133" edge="1" parent="1" source="107" style="edgeStyle=none;curved=1;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;fontSize=12;startSize=8;endSize=8;" target="108">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="107" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#87CEEB" value="Save Employee &amp;&#xa;User Records" vertex="1">
+          <mxGeometry height="60" width="220" x="100" y="610" as="geometry" />
+        </mxCell>
+        <mxCell id="CFIvyQe8cjEy0RXMd4rm-134" edge="1" parent="1" source="108" style="edgeStyle=none;curved=1;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;fontSize=12;startSize=8;endSize=8;" target="109">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="108" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#87CEEB" value="Send Welcome&#xa;Email" vertex="1">
+          <mxGeometry height="60" width="220" x="100" y="720" as="geometry" />
+        </mxCell>
+        <mxCell id="109" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#90EE90" value="Employee Created&#xa;Redirect to Detail Page" vertex="1">
+          <mxGeometry height="60" width="220" x="100" y="830" as="geometry" />
+        </mxCell>
+        <mxCell id="110" parent="1" style="text;fontSize=20;fontStyle=1;align=center" value="LEAVE REQUEST FLOW" vertex="1">
+          <mxGeometry height="30" width="400" x="500" y="10" as="geometry" />
+        </mxCell>
+        <mxCell id="CFIvyQe8cjEy0RXMd4rm-135" edge="1" parent="1" source="111" style="edgeStyle=none;curved=1;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;fontSize=12;startSize=8;endSize=8;" target="112">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="111" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#90EE90" value="Employee Access" vertex="1">
+          <mxGeometry height="50" width="120" x="600" y="60" as="geometry" />
+        </mxCell>
+        <mxCell id="CFIvyQe8cjEy0RXMd4rm-136" edge="1" parent="1" source="112" style="edgeStyle=none;curved=1;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;fontSize=12;startSize=8;endSize=8;" target="113">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="112" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#87CEEB" value="Click Submit&#xa;Leave Request" vertex="1">
+          <mxGeometry height="60" width="180" x="570" y="150" as="geometry" />
+        </mxCell>
+        <mxCell id="CFIvyQe8cjEy0RXMd4rm-137" edge="1" parent="1" source="113" style="edgeStyle=none;curved=1;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;fontSize=12;startSize=8;endSize=8;" target="114">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="113" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#87CEEB" value="Fill Form&#xa;(Start Date, End Date, Reason)" vertex="1">
+          <mxGeometry height="60" width="260" x="530" y="260" as="geometry" />
+        </mxCell>
+        <mxCell id="CFIvyQe8cjEy0RXMd4rm-139" edge="1" parent="1" source="114" style="edgeStyle=none;curved=1;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;fontSize=12;startSize=8;endSize=8;" target="105">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="CFIvyQe8cjEy0RXMd4rm-140" edge="1" parent="1" source="114" style="edgeStyle=none;curved=1;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;fontSize=12;startSize=8;endSize=8;" target="115">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="114" parent="1" style="rhombus;whiteSpace=wrap;html=1;fillColor=#FFD700" value="Validate&#xa;Dates" vertex="1">
+          <mxGeometry height="80" width="147" x="603" y="370" as="geometry" />
+        </mxCell>
+        <mxCell id="CFIvyQe8cjEy0RXMd4rm-141" edge="1" parent="1" source="115" style="edgeStyle=none;curved=1;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;fontSize=12;startSize=8;endSize=8;" target="116">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="115" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#87CEEB" value="Save Leave Record&#xa;Status: PENDING" vertex="1">
+          <mxGeometry height="60" width="260" x="530" y="500" as="geometry" />
+        </mxCell>
+        <mxCell id="CFIvyQe8cjEy0RXMd4rm-142" edge="1" parent="1" source="116" style="edgeStyle=none;curved=1;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;fontSize=12;startSize=8;endSize=8;" target="117">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="116" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#87CEEB" value="Send Notification&#xa;to Manager" vertex="1">
+          <mxGeometry height="60" width="260" x="530" y="610" as="geometry" />
+        </mxCell>
+        <mxCell id="117" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#90EE90" value="Request Submitted&#xa;Waiting for Approval" vertex="1">
+          <mxGeometry height="60" width="260" x="530" y="720" as="geometry" />
+        </mxCell>
+        <mxCell id="118" parent="1" style="text;fontSize=20;fontStyle=1;align=center" value="DAILY ATTENDANCE FLOW" vertex="1">
+          <mxGeometry height="30" width="400" x="950" y="10" as="geometry" />
+        </mxCell>
+        <mxCell id="CFIvyQe8cjEy0RXMd4rm-143" edge="1" parent="1" source="119" style="edgeStyle=none;curved=1;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;fontSize=12;startSize=8;endSize=8;" target="120">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="119" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#90EE90" value="Admin Access" vertex="1">
+          <mxGeometry height="50" width="120" x="1050" y="60" as="geometry" />
+        </mxCell>
+        <mxCell id="CFIvyQe8cjEy0RXMd4rm-144" edge="1" parent="1" source="120" style="edgeStyle=none;curved=1;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;fontSize=12;startSize=8;endSize=8;" target="121">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="120" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#87CEEB" value="Click Daily&#xa;Attendance" vertex="1">
+          <mxGeometry height="60" width="180" x="1020" y="150" as="geometry" />
+        </mxCell>
+        <mxCell id="CFIvyQe8cjEy0RXMd4rm-145" edge="1" parent="1" source="121" style="edgeStyle=none;curved=1;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;fontSize=12;startSize=8;endSize=8;" target="122">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="121" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#87CEEB" value="Select Attendance&#xa;Date" vertex="1">
+          <mxGeometry height="60" width="200" x="1010" y="260" as="geometry" />
+        </mxCell>
+        <mxCell id="CFIvyQe8cjEy0RXMd4rm-146" edge="1" parent="1" source="122" style="edgeStyle=none;curved=1;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;fontSize=12;startSize=8;endSize=8;" target="124">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="CFIvyQe8cjEy0RXMd4rm-147" edge="1" parent="1" source="122" style="edgeStyle=none;curved=1;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;fontSize=12;startSize=8;endSize=8;" target="123">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="122" parent="1" style="rhombus;whiteSpace=wrap;html=1;fillColor=#FFD700" value="Choose Mark&#xa;Option" vertex="1">
+          <mxGeometry height="80" width="220" x="1000" y="370" as="geometry" />
+        </mxCell>
+        <mxCell id="CFIvyQe8cjEy0RXMd4rm-149" edge="1" parent="1" source="123" style="edgeStyle=none;curved=1;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;fontSize=12;startSize=8;endSize=8;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1109.8925018310547" y="610.4445152282715" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="123" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#87CEEB" value="Mark All&#xa;Present" vertex="1">
+          <mxGeometry height="60" width="140" x="900" y="500" as="geometry" />
+        </mxCell>
+        <mxCell id="CFIvyQe8cjEy0RXMd4rm-148" edge="1" parent="1" source="124" style="edgeStyle=none;curved=1;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;fontSize=12;startSize=8;endSize=8;" target="125">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="124" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#87CEEB" value="Select Individual&#xa;Employees" vertex="1">
+          <mxGeometry height="60" width="140" x="1100" y="500" as="geometry" />
+        </mxCell>
+        <mxCell id="CFIvyQe8cjEy0RXMd4rm-150" edge="1" parent="1" source="125" style="edgeStyle=none;curved=1;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;fontSize=12;startSize=8;endSize=8;" target="126">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="125" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#87CEEB" value="Save Attendance&#xa;Records" vertex="1">
+          <mxGeometry height="60" width="220" x="1000" y="610" as="geometry" />
+        </mxCell>
+        <mxCell id="CFIvyQe8cjEy0RXMd4rm-151" edge="1" parent="1" source="126" style="edgeStyle=none;curved=1;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;fontSize=12;startSize=8;endSize=8;" target="127">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="126" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#87CEEB" value="Calculate&#xa;Working Hours" vertex="1">
+          <mxGeometry height="60" width="220" x="1000" y="720" as="geometry" />
+        </mxCell>
+        <mxCell id="127" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#90EE90" value="Attendance&#xa;Recorded Successfully" vertex="1">
+          <mxGeometry height="60" width="220" x="1000" y="830" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

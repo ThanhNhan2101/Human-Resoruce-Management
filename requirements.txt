@@ -11,3 +11,6 @@ setuptools==79.0.1
 factory-boy==3.3.0
 dj-database-url==2.2.0
 whitenoise==6.4.0
+channels==4.0.0
+daphne==4.0.0
+channels-redis==4.1.0
