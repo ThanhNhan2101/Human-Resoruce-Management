@@ -1,285 +1,479 @@
-{% extends 'base.html' %} {% block title %}{{ chat_room.name }}{% endblock %} {%
-block content %}
+{% extends 'base.html' %}
+
+{% block title %}
+{{ chat_room.name }}
+{% endblock %}
+
+{% block content %}
+
 <div class="container-fluid mt-4">
-  <div class="row h-100">
-    <!-- Main Chat Area -->
-    <div class="col-md-8">
-      <div
-        class="card h-100"
-        style="min-height: 600px; display: flex; flex-direction: column"
-      >
-        <!-- Header -->
-        <div
-          class="card-header bg-primary text-white d-flex justify-content-between align-items-center"
-        >
-          <div>
-            <h5 class="mb-0">
-              {% if chat_room.is_private %}
-              <i class="fas fa-lock"></i>
-              {% else %}
-              <i class="fas fa-globe"></i>
-              {% endif %} {{ chat_room.name }}
-            </h5>
-            <small>{{ chat_room.description }}</small>
-          </div>
-          <div>
-            {% if user.is_superuser %}
-            <a href="{% url 'chat:chat_list' %}" class="btn btn-sm btn-light">
-              <i class="fas fa-arrow-left"></i> Back
-            </a>
-            {% endif %}
-          </div>
-        </div>
 
-        <!-- Messages Area -->
-        <div
-          class="card-body"
-          id="messages-container"
-          style="overflow-y: auto; flex: 1; background-color: #f8f9fa"
-        >
-          {% for message in messages %}
-          <div class="mb-3 {% if message.user == user %}text-end{% endif %}">
+    <div class="row h-100">
+
+        <!-- Main Chat Area -->
+        <div class="col-md-8">
+
             <div
-              class="d-inline-block"
-              style="max-width: 70%; background-color: {% if message.user == user %}#007bff{% else %}white{% endif %}; padding: 10px 15px; border-radius: 10px; box-shadow: 0 1px 2px rgba(0,0,0,0.1);"
+                class="card h-100"
+                style="min-height: 600px; display: flex; flex-direction: column;"
             >
-              <small
-                class="d-block {% if message.user == user %}text-white-50{% else %}text-muted{% endif %}"
-                >{{ message.user.get_full_name|default:message.user.username
-                }}</small
-              >
-              <p
-                class="mb-0 {% if message.user == user %}text-white{% endif %}"
-              >
-                {{ message.message }}
-              </p>
-              <small
-                class="d-block {% if message.user == user %}text-white-50{% else %}text-muted{% endif %}"
-                >{{ message.created_at|date:"H:i" }}</small
-              >
+
+                <!-- Header -->
+                <div
+                    class="card-header bg-primary text-white d-flex justify-content-between align-items-center"
+                >
+
+                    <div>
+
+                        <h5 class="mb-0">
+
+                            {% if chat_room.is_private %}
+                                <i class="fas fa-lock"></i>
+                            {% else %}
+                                <i class="fas fa-globe"></i>
+                            {% endif %}
+
+                            {{ chat_room.name }}
+
+                        </h5>
+
+                        <small>
+                            {{ chat_room.description }}
+                        </small>
+
+                    </div>
+
+                    <div>
+
+                        <a
+                            href="{% url 'chat:chat_list' %}"
+                            class="btn btn-sm btn-light"
+                        >
+                            <i class="fas fa-arrow-left"></i>
+                            Back
+                        </a>
+
+                    </div>
+
+                </div>
+
+                <!-- Messages -->
+                <div
+                    class="card-body"
+                    id="messages-container"
+                    style="overflow-y: auto; flex: 1; background-color: #f8f9fa;"
+                >
+
+                    {% for message in messages %}
+
+                        <div class="mb-3 {% if message.user == user %}text-end{% endif %}">
+
+                            <div
+                                class="d-inline-block"
+                                style="
+                                    max-width: 70%;
+                                    background-color: {% if message.user == user %}#007bff{% else %}white{% endif %};
+                                    padding: 10px 15px;
+                                    border-radius: 10px;
+                                    box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+                                "
+                            >
+
+                                <small
+                                    class="d-block {% if message.user == user %}text-white-50{% else %}text-muted{% endif %}"
+                                >
+                                    {{ message.user.get_full_name|default:message.user.username }}
+                                </small>
+
+                                <p
+                                    class="mb-0 {% if message.user == user %}text-white{% endif %}"
+                                >
+                                    {{ message.message }}
+                                </p>
+
+                                <small
+                                    class="d-block {% if message.user == user %}text-white-50{% else %}text-muted{% endif %}"
+                                >
+                                    {{ message.created_at|date:"H:i" }}
+                                </small>
+
+                            </div>
+
+                        </div>
+
+                    {% empty %}
+
+                        <div class="alert alert-info text-center">
+                            <i class="fas fa-comments"></i>
+                            No messages yet. Start the conversation!
+                        </div>
+
+                    {% endfor %}
+
+                </div>
+
+                <!-- Input -->
+                <div class="card-footer">
+
+                    <div class="input-group">
+
+                        <input
+                            type="text"
+                            id="message-input"
+                            class="form-control"
+                            placeholder="Type a message..."
+                        >
+
+                        <button
+                            class="btn btn-primary"
+                            type="button"
+                            id="send-btn"
+                        >
+                            <i class="fas fa-paper-plane"></i>
+                            Send
+                        </button>
+
+                    </div>
+
+                </div>
+
             </div>
-          </div>
-          {% empty %}
-          <div class="alert alert-info text-center">
-            <i class="fas fa-comments"></i> No messages yet. Start the
-            conversation!
-          </div>
-          {% endfor %}
+
         </div>
 
-        <!-- Input Area -->
-        <div class="card-footer">
-          <div class="input-group">
-            <input
-              type="text"
-              id="message-input"
-              class="form-control"
-              placeholder="Type a message..."
-            />
-            <button class="btn btn-primary" type="button" id="send-btn">
-              <i class="fas fa-paper-plane"></i> Send
-            </button>
-          </div>
+        <!-- Sidebar -->
+        <div class="col-md-4">
+
+            <div class="card">
+
+                <div class="card-header bg-secondary text-white">
+
+                    <h6 class="mb-0">
+                        <i class="fas fa-users"></i>
+                        Participants ({{ participants.count }})
+                    </h6>
+
+                </div>
+
+                <div
+                    class="card-body"
+                    style="max-height: 600px; overflow-y: auto;"
+                >
+
+                    {% for participant in participants %}
+
+                        <div
+                            class="d-flex justify-content-between align-items-center mb-3 pb-3 border-bottom"
+                        >
+
+                            <div>
+
+                                <h6 class="mb-0">
+                                    {{ participant.user.get_full_name|default:participant.user.username }}
+                                </h6>
+
+                                <small class="text-muted">
+                                    <i class="fas fa-envelope"></i>
+                                    {{ participant.user.email }}
+                                </small>
+
+                                {% if participant.user.is_superuser %}
+                                    <br>
+                                    <span class="badge bg-danger">
+                                        Admin
+                                    </span>
+                                {% endif %}
+
+                            </div>
+
+                            {% if user.is_superuser and participant.user != user %}
+
+                                <form
+                                    method="POST"
+                                    action="{% url 'chat:remove_participant' room_id=chat_room.id %}"
+                                    style="display: inline;"
+                                >
+
+                                    {% csrf_token %}
+
+                                    <input
+                                        type="hidden"
+                                        name="user_id"
+                                        value="{{ participant.user.id }}"
+                                    >
+
+                                    <button
+                                        type="submit"
+                                        class="btn btn-sm btn-danger"
+                                        title="Remove"
+                                    >
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+
+                                </form>
+
+                            {% endif %}
+
+                        </div>
+
+                    {% endfor %}
+
+                </div>
+
+                <!-- Add participant -->
+                {% if user.is_superuser %}
+
+                <div class="card-footer">
+
+                    <form
+                        method="POST"
+                        action="{% url 'chat:add_participant' room_id=chat_room.id %}"
+                    >
+
+                        {% csrf_token %}
+
+                        <select
+                            name="user_id"
+                            class="form-select form-select-sm"
+                            required
+                        >
+
+                            <option value="">
+                                Select user to add...
+                            </option>
+
+                            {% for user_option in users %}
+
+                                <option value="{{ user_option.id }}">
+                                    {{ user_option.get_full_name|default:user_option.username }}
+                                </option>
+
+                            {% endfor %}
+
+                        </select>
+
+                        <button
+                            type="submit"
+                            class="btn btn-sm btn-success w-100 mt-2"
+                        >
+                            <i class="fas fa-plus"></i>
+                            Add User
+                        </button>
+
+                    </form>
+
+                </div>
+
+                {% endif %}
+
+            </div>
+
         </div>
-      </div>
+
     </div>
 
-    <!-- Participants Sidebar -->
-    <div class="col-md-4">
-      <div class="card">
-        <div class="card-header bg-secondary text-white">
-          <h6 class="mb-0">
-            <i class="fas fa-users"></i> Participants ({{ participants.count }})
-          </h6>
-        </div>
-        <div class="card-body" style="max-height: 600px; overflow-y: auto">
-          {% for participant in participants %}
-          <div
-            class="d-flex justify-content-between align-items-center mb-3 pb-3 border-bottom"
-          >
-            <div>
-              <h6 class="mb-0">
-                {{
-                participant.user.get_full_name|default:participant.user.username
-                }}
-              </h6>
-              <small class="text-muted">
-                <i class="fas fa-envelope"></i> {{ participant.user.email }}
-              </small>
-              {% if participant.user.is_superuser %}
-              <br />
-              <span class="badge bg-danger">Admin</span>
-              {% endif %}
-            </div>
-            {% if user.is_superuser and participant.user != user %}
-            <form
-              method="POST"
-              action="{% url 'chat:remove_participant' room_id=chat_room.id %}"
-              style="display: inline"
-            >
-              {% csrf_token %}
-              <input
-                type="hidden"
-                name="user_id"
-                value="{{ participant.user.id }}"
-              />
-              <button
-                type="submit"
-                class="btn btn-sm btn-danger"
-                title="Remove"
-              >
-                <i class="fas fa-trash"></i>
-              </button>
-            </form>
-            {% endif %}
-          </div>
-          {% endfor %}
-        </div>
-
-        <!-- Add Participant (Superuser Only) -->
-        {% if user.is_superuser %}
-        <div class="card-footer">
-          <form
-            method="POST"
-            action="{% url 'chat:add_participant' room_id=chat_room.id %}"
-          >
-            {% csrf_token %}
-            <select name="user_id" class="form-select form-select-sm" required>
-              <option value="">Select user to add...</option>
-              {% for user_option in users %} {% if user_option not in
-              participants.values_list %}
-              <option value="{{ user_option.id }}">
-                {{ user_option.get_full_name|default:user_option.username }}
-              </option>
-              {% endif %} {% endfor %}
-            </select>
-            <button type="submit" class="btn btn-sm btn-success w-100 mt-2">
-              <i class="fas fa-plus"></i> Add User
-            </button>
-          </form>
-        </div>
-        {% endif %}
-      </div>
-    </div>
-  </div>
 </div>
 
 <script>
-  const roomId = "{{ chat_room.id }}";
-  const userId = "{{ user.id }}";
-  const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
-  const chatSocket = new WebSocket(
-    `${protocol}//${window.location.host}/ws/chat/${roomId}/`,
-  );
 
-  const messagesContainer = document.getElementById("messages-container");
-  const messageInput = document.getElementById("message-input");
-  const sendBtn = document.getElementById("send-btn");
+    const roomId = "{{ chat_room.id }}";
+    const userId = "{{ user.id }}";
 
-  // Auto-scroll to bottom
-  function scrollToBottom() {
-    messagesContainer.scrollTop = messagesContainer.scrollHeight;
-  }
+    const protocol =
+        window.location.protocol === "https:"
+            ? "wss:"
+            : "ws:";
 
-  // WebSocket event handlers
-  chatSocket.onopen = function (e) {
-    console.log("WebSocket connection opened");
-    scrollToBottom();
-  };
+    const chatSocket = new WebSocket(
+        `${protocol}//${window.location.host}/ws/chat/${roomId}/`
+    );
 
-  chatSocket.onmessage = function (e) {
-    const data = JSON.parse(e.data);
+    const messagesContainer =
+        document.getElementById("messages-container");
 
-    if (data.type === "chat_message") {
-      displayMessage(data);
-    } else if (data.type === "user_join") {
-      displayNotification(data, "join");
-    } else if (data.type === "user_leave") {
-      displayNotification(data, "leave");
+    const messageInput =
+        document.getElementById("message-input");
+
+    const sendBtn =
+        document.getElementById("send-btn");
+
+    // Scroll bottom
+    function scrollToBottom() {
+        messagesContainer.scrollTop =
+            messagesContainer.scrollHeight;
     }
-  };
 
-  chatSocket.onerror = function (e) {
-    console.error("WebSocket error:", e);
-  };
+    // WebSocket open
+    chatSocket.onopen = function () {
+        console.log("WebSocket connected");
+        scrollToBottom();
+    };
 
-  chatSocket.onclose = function (e) {
-    console.error("WebSocket connection closed");
-  };
+    // Receive message
+    chatSocket.onmessage = function (e) {
 
-  // Display message
-  function displayMessage(data) {
-    const isOwnMessage = parseInt(userId) === data.user_id;
-    const messageDiv = document.createElement("div");
-    messageDiv.className = `mb-3 ${isOwnMessage ? "text-end" : ""}`;
-    messageDiv.innerHTML = `
-            <div class="d-inline-block" style="max-width: 70%; background-color: ${isOwnMessage ? "#007bff" : "white"}; padding: 10px 15px; border-radius: 10px; box-shadow: 0 1px 2px rgba(0,0,0,0.1);">
-                <small class="d-block ${isOwnMessage ? "text-white-50" : "text-muted"}">${data.username}</small>
-                <p class="mb-0 ${isOwnMessage ? "text-white" : ""}">${escapeHtml(data.message)}</p>
-                <small class="d-block ${isOwnMessage ? "text-white-50" : "text-muted"}">${new Date(data.timestamp).toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" })}</small>
+        const data = JSON.parse(e.data);
+
+        if (data.type === "chat_message") {
+            displayMessage(data);
+        }
+
+        if (data.type === "user_join") {
+            displayNotification(data, "join");
+        }
+
+        if (data.type === "user_leave") {
+            displayNotification(data, "leave");
+        }
+
+    };
+
+    // Error
+    chatSocket.onerror = function (e) {
+        console.error("WebSocket error:", e);
+    };
+
+    // Closed
+    chatSocket.onclose = function () {
+        console.error("WebSocket closed");
+    };
+
+    // Display chat
+    function displayMessage(data) {
+
+        const isOwnMessage =
+            parseInt(userId) === data.user_id;
+
+        const messageDiv =
+            document.createElement("div");
+
+        messageDiv.className =
+            `mb-3 ${isOwnMessage ? "text-end" : ""}`;
+
+        messageDiv.innerHTML = `
+            <div
+                class="d-inline-block"
+                style="
+                    max-width: 70%;
+                    background-color: ${isOwnMessage ? "#007bff" : "white"};
+                    padding: 10px 15px;
+                    border-radius: 10px;
+                    box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+                "
+            >
+                <small class="d-block ${isOwnMessage ? "text-white-50" : "text-muted"}">
+                    ${escapeHtml(data.username)}
+                </small>
+
+                <p class="mb-0 ${isOwnMessage ? "text-white" : ""}">
+                    ${escapeHtml(data.message)}
+                </p>
+
+                <small class="d-block ${isOwnMessage ? "text-white-50" : "text-muted"}">
+                    ${new Date(data.timestamp).toLocaleTimeString([], {
+                        hour: "2-digit",
+                        minute: "2-digit"
+                    })}
+                </small>
             </div>
         `;
-    messagesContainer.appendChild(messageDiv);
-    scrollToBottom();
-  }
 
-  // Display notification
-  function displayNotification(data, type) {
-    const messageDiv = document.createElement("div");
-    messageDiv.className = "mb-3 text-center";
-    const icon =
-      type === "join"
-        ? "fa-sign-in-alt text-success"
-        : "fa-sign-out-alt text-danger";
-    messageDiv.innerHTML = `
+        messagesContainer.appendChild(messageDiv);
+
+        scrollToBottom();
+    }
+
+    // Notification
+    function displayNotification(data, type) {
+
+        const div = document.createElement("div");
+
+        div.className = "mb-3 text-center";
+
+        const icon =
+            type === "join"
+                ? "fa-sign-in-alt text-success"
+                : "fa-sign-out-alt text-danger";
+
+        div.innerHTML = `
             <small class="text-muted">
-                <i class="fas ${icon}"></i> ${escapeHtml(data.message)}
+                <i class="fas ${icon}"></i>
+                ${escapeHtml(data.message)}
             </small>
         `;
-    messagesContainer.appendChild(messageDiv);
-    scrollToBottom();
-  }
 
-  // Send message
-  function sendMessage() {
-    const message = messageInput.value.trim();
-    if (message) {
-      chatSocket.send(
-        JSON.stringify({
-          message: message,
-        }),
-      );
-      messageInput.value = "";
+        messagesContainer.appendChild(div);
+
+        scrollToBottom();
     }
-  }
 
-  // Event listeners
-  sendBtn.addEventListener("click", sendMessage);
-  messageInput.addEventListener("keypress", function (e) {
-    if (e.key === "Enter") {
-      sendMessage();
+    // Send message
+    function sendMessage() {
+
+        const message =
+            messageInput.value.trim();
+
+        if (!message) {
+            return;
+        }
+
+        chatSocket.send(
+            JSON.stringify({
+                message: message
+            })
+        );
+
+        messageInput.value = "";
     }
-  });
 
-  // Escape HTML to prevent XSS
-  function escapeHtml(text) {
-    const map = {
-      "&": "&amp;",
-      "<": "&lt;",
-      ">": "&gt;",
-      '"': "&quot;",
-      "'": "&#039;",
-    };
-    return text.replace(/[&<>"']/g, (m) => map[m]);
-  }
+    // Click send
+    sendBtn.addEventListener(
+        "click",
+        sendMessage
+    );
 
-  // Focus on input
-  messageInput.focus();
+    // Press enter
+    messageInput.addEventListener(
+        "keypress",
+        function (e) {
+
+            if (e.key === "Enter") {
+                sendMessage();
+            }
+
+        }
+    );
+
+    // Escape HTML
+    function escapeHtml(text) {
+
+        const map = {
+            "&": "&amp;",
+            "<": "&lt;",
+            ">": "&gt;",
+            '"': "&quot;",
+            "'": "&#039;"
+        };
+
+        return text.replace(
+            /[&<>"']/g,
+            function(m) {
+                return map[m];
+            }
+        );
+    }
+
+    // Auto focus
+    messageInput.focus();
+
 </script>
 
 <style>
-  .container-fluid {
-    padding: 0 !important;
-  }
+
+    .container-fluid {
+        padding: 0 !important;
+    }
+
 </style>
+
 {% endblock %}

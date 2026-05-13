@@ -105,17 +105,9 @@
         <li><a href="{% url 'employees:department_list' %}">Departments</a></li>
         <li><a href="{% url 'leaves:leave_list' %}">Leaves</a></li>
         <li><a href="{% url 'attendance:attendance_list' %}">Attendance</a></li>
-        <li><hr class="my-2" /></li>
-        <a href="{% url 'chat:chat_list' %}"
-            ><i class="fas fa-comments"></i> Chat</a
-          >
-        </li>
         {% endif %}
         <li>
-          <a href="{% url 'chat:chat_list' %}"
-            ><i class="fas fa-comments"></i> Chat</a
-          >
-        </li>
+          <a href="{% url 'chat:chat_list' %}"> Chat</a></li>
       </ul>
     </div>
     {% endif %}
