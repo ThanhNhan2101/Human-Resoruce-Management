@@ -99,15 +99,18 @@
     {% if user.is_authenticated %}
     <div class="sidebar" id="sidebar">
       <ul class="sidebar-menu">
-        {% if user.is_superuser %}
+        {% if user.is_staff or user.is_superuser %}
+        <!-- Admin Menu -->
         <li><a href="{% url 'employees:dashboard' %}">Dashboard</a></li>
         <li><a href="{% url 'employees:employee_list' %}">Employees</a></li>
         <li><a href="{% url 'employees:department_list' %}">Departments</a></li>
-        <li><a href="{% url 'leaves:leave_list' %}">Leaves</a></li>
+        <li><a href="{% url 'leaves:leave_list' %}">Leave Requests</a></li>
         <li><a href="{% url 'attendance:attendance_list' %}">Attendance</a></li>
+        {% else %}
+        <!-- Non-Admin Menu -->
+        <li><a href="{% url 'leaves:leave_list' %}">Leave Requests</a></li>
         {% endif %}
-        <li>
-          <a href="{% url 'chat:chat_list' %}"> Chat</a></li>
+        <li><a href="{% url 'chat:chat_list' %}">Chat</a></li>
       </ul>
     </div>
     {% endif %}

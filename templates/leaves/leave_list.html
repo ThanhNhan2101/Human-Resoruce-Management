@@ -1,107 +1,391 @@
 ﻿{% extends 'base.html' %}
+
 {% block title %}Leave Requests{% endblock %}
 
 {% block content %}
-<div class="page-header d-flex justify-content-between align-items-start flex-wrap gap-3">
-  <div>
-    <h1><i class="fas fa-calendar-check"></i> Leave Requests</h1>
-    <nav aria-label="breadcrumb">
-      <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="{% url 'employees:dashboard' %}">Dashboard</a></li>
-        <li class="breadcrumb-item active">Leave Requests</li>
-      </ol>
-    </nav>
-  </div>
-  <a href="{% url 'leaves:leave_create' %}" class="btn btn-primary">
-    <i class="fas fa-plus"></i> Request Leave
-  </a>
+
+<div
+    class="page-header d-flex justify-content-between align-items-start flex-wrap gap-3"
+>
+    <div>
+
+        <h1>
+            <i class="fas fa-calendar-check"></i>
+            Leave Requests
+        </h1>
+
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+
+                <li class="breadcrumb-item">
+                    <a href="{% url 'employees:dashboard' %}">
+                        Dashboard
+                    </a>
+                </li>
+
+                <li class="breadcrumb-item active">
+                    Leave Requests
+                </li>
+
+            </ol>
+        </nav>
+
+    </div>
+
+    <a
+        href="{% url 'leaves:leave_create' %}"
+        class="btn btn-primary"
+    >
+        <i class="fas fa-plus"></i>
+        Request Leave
+    </a>
+
 </div>
 
 <!-- Filter -->
+{% if is_admin %}
 <div class="filter-card">
-  <form method="get" class="row g-2 align-items-end">
-    <div class="col-md-5 col-sm-12">
-      <label class="form-label">Search</label>
-      <div class="input-group">
-        <span class="input-group-text"><i class="fas fa-search"></i></span>
-        <input type="text" name="search" class="form-control" placeholder="Employee name&hellip;" value="{{ search }}">
-      </div>
-    </div>
-    <div class="col-md-3 col-sm-6">
-      <label class="form-label">Status</label>
-      <select name="status" class="form-select">
-        <option value="">All Status</option>
-        {% for val, label in statuses %}
-          <option value="{{ val }}" {% if val == selected_status %}selected{% endif %}>{{ label }}</option>
-        {% endfor %}
-      </select>
-    </div>
-    <div class="col-md-4 col-sm-6 d-flex gap-2">
-      <button type="submit" class="btn btn-primary flex-fill"><i class="fas fa-search"></i> Filter</button>
-      <a href="{% url 'leaves:leave_list' %}" class="btn btn-secondary"><i class="fas fa-times"></i></a>
-    </div>
-  </form>
+
+    <form method="get" class="row g-2 align-items-end">
+
+        <!-- Search -->
+        <div class="col-md-5 col-sm-12">
+
+            <label class="form-label">
+                Search
+            </label>
+
+            <div class="input-group">
+
+                <span class="input-group-text">
+                    <i class="fas fa-search"></i>
+                </span>
+
+                <input
+                    type="text"
+                    name="search"
+                    class="form-control"
+                    placeholder="Employee name..."
+                    value="{{ search }}"
+                />
+
+            </div>
+
+        </div>
+
+        <!-- Status -->
+        <div class="col-md-3 col-sm-6">
+
+            <label class="form-label">
+                Status
+            </label>
+
+            <select name="status" class="form-select">
+
+                <option value="">
+                    All Status
+                </option>
+
+                {% for val, label in statuses %}
+                <option
+                    value="{{ val }}"
+                    {% if val == selected_status %}selected{% endif %}
+                >
+                    {{ label }}
+                </option>
+                {% endfor %}
+
+            </select>
+
+        </div>
+
+        <!-- Buttons -->
+        <div class="col-md-4 col-sm-6 d-flex gap-2">
+
+            <button
+                type="submit"
+                class="btn btn-primary flex-fill"
+            >
+                <i class="fas fa-search"></i>
+                Filter
+            </button>
+
+            <a
+                href="{% url 'leaves:leave_list' %}"
+                class="btn btn-secondary"
+            >
+                <i class="fas fa-times"></i>
+            </a>
+
+        </div>
+
+    </form>
+
 </div>
+{% endif %}
 
 <!-- Table -->
 <div class="table-wrapper">
-  <table class="table table-hover">
-    <thead>
-      <tr>
-        <th>Employee</th>
-        <th>From</th>
-        <th>To</th>
-        <th>Days</th>
-        <th>Reason</th>
-        <th>Status</th>
-        <th style="text-align:right">Actions</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for leave in leaves %}
-      <tr>
-        <td>
-          <div class="d-flex align-items-center gap-2">
-            <div style="width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,var(--primary),var(--secondary));color:#fff;display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:700;flex-shrink:0">
-              {{ leave.employee.first_name|first|upper }}{{ leave.employee.last_name|first|upper }}
-            </div>
-            <span class="fw-600" style="color:var(--gray-800)">{{ leave.employee.full_name }}</span>
-          </div>
-        </td>
-        <td style="color:var(--gray-600)">{{ leave.start_date|date:"d/m/Y" }}</td>
-        <td style="color:var(--gray-600)">{{ leave.end_date|date:"d/m/Y" }}</td>
-        <td><span class="badge bg-info">{{ leave.duration_days }}d</span></td>
-        <td style="max-width:160px;color:var(--gray-500)" title="{{ leave.reason }}">{{ leave.reason|truncatewords:5 }}</td>
-        <td><span class="status-badge status-{{ leave.status|lower }}">{{ leave.get_status_display }}</span></td>
-        <td>
-          <div class="btn-action-group justify-content-end">
-            <a href="{% url 'leaves:leave_detail' leave.pk %}" class="btn btn-info btn-sm" title="View"><i class="fas fa-eye"></i></a>
-            <a href="{% url 'leaves:leave_edit' leave.pk %}" class="btn btn-warning btn-sm" title="Edit"><i class="fas fa-edit"></i></a>
-            <a href="{% url 'leaves:leave_delete' leave.pk %}" class="btn btn-danger btn-sm" title="Delete"><i class="fas fa-trash"></i></a>
-          </div>
-        </td>
-      </tr>
-      {% empty %}
-      <tr><td colspan="7"><div class="empty-state"><i class="fas fa-calendar-times"></i><p>No leave requests found.</p></div></td></tr>
-      {% endfor %}
-    </tbody>
-  </table>
+
+    <table class="table table-hover">
+
+        <thead>
+            <tr>
+                <th>Employee</th>
+                <th>From</th>
+                <th>To</th>
+                <th>Days</th>
+                <th>Reason</th>
+                <th>Status</th>
+                <th style="text-align: right;">
+                    Actions
+                </th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+            {% for leave in leaves %}
+            <tr>
+
+                <!-- Employee -->
+                <td>
+
+                    <div class="d-flex align-items-center gap-2">
+
+                        <div
+                            style="
+                                width: 32px;
+                                height: 32px;
+                                border-radius: 8px;
+                                background: linear-gradient(
+                                    135deg,
+                                    var(--primary),
+                                    var(--secondary)
+                                );
+                                color: #fff;
+                                display: flex;
+                                align-items: center;
+                                justify-content: center;
+                                font-size: 0.75rem;
+                                font-weight: 700;
+                                flex-shrink: 0;
+                            "
+                        >
+                            {{ leave.employee.first_name|first|upper }}
+                            {{ leave.employee.last_name|first|upper }}
+                        </div>
+
+                        <span
+                            class="fw-600"
+                            style="color: var(--gray-800);"
+                        >
+                            {{ leave.employee.full_name }}
+                        </span>
+
+                    </div>
+
+                </td>
+
+                <!-- Start Date -->
+                <td style="color: var(--gray-600);">
+                    {{ leave.start_date|date:"d/m/Y" }}
+                </td>
+
+                <!-- End Date -->
+                <td style="color: var(--gray-600);">
+                    {{ leave.end_date|date:"d/m/Y" }}
+                </td>
+
+                <!-- Duration -->
+                <td>
+                    <span class="badge bg-info">
+                        {{ leave.duration_days }}d
+                    </span>
+                </td>
+
+                <!-- Reason -->
+                <td
+                    style="max-width: 160px; color: var(--gray-500);"
+                    title="{{ leave.reason }}"
+                >
+                    {{ leave.reason|truncatewords:5 }}
+                </td>
+
+                <!-- Status -->
+                <td>
+
+                    <span class="status-badge status-{{ leave.status|lower }}">
+                        {{ leave.get_status_display }}
+                    </span>
+
+                </td>
+
+                <!-- Actions -->
+                <td>
+
+                    <div class="btn-action-group justify-content-end">
+
+                        <!-- View -->
+                        <a
+                            href="{% url 'leaves:leave_detail' leave.pk %}"
+                            class="btn btn-info btn-sm"
+                            title="View"
+                        >
+                            <i class="fas fa-eye"></i>
+                        </a>
+
+                        <!-- Edit/Delete -->
+                        {% if is_admin or leave.employee.user == user %}
+
+                            {% if leave.status == 'PENDING' %}
+
+                            <!-- Edit -->
+                            <a
+                                href="{% url 'leaves:leave_edit' leave.pk %}"
+                                class="btn btn-warning btn-sm"
+                                title="Edit"
+                            >
+                                <i class="fas fa-edit"></i>
+                            </a>
+
+                            <!-- Delete -->
+                            <a
+                                href="{% url 'leaves:leave_delete' leave.pk %}"
+                                class="btn btn-danger btn-sm"
+                                title="Delete"
+                            >
+                                <i class="fas fa-trash"></i>
+                            </a>
+
+                            {% endif %}
+
+                        {% endif %}
+
+                        <!-- Approve -->
+                        {% if is_admin %}
+                        <a
+                            href="{% url 'leaves:leave_detail' leave.pk %}"
+                            class="btn btn-success btn-sm"
+                            title="Approve / Reject"
+                        >
+                            <i class="fas fa-check-circle"></i>
+                        </a>
+                        {% endif %}
+
+                    </div>
+
+                </td>
+
+            </tr>
+
+            {% empty %}
+
+            <tr>
+                <td colspan="7">
+
+                    <div class="empty-state">
+
+                        <i class="fas fa-calendar-times"></i>
+
+                        <p>
+                            No leave requests found.
+                        </p>
+
+                    </div>
+
+                </td>
+            </tr>
+
+            {% endfor %}
+
+        </tbody>
+
+    </table>
+
 </div>
 
+<!-- Pagination -->
 {% if is_paginated %}
-<nav class="mt-3"><ul class="pagination">
-  {% if page_obj.has_previous %}
-    <li class="page-item"><a class="page-link" href="?page=1"><i class="fas fa-angle-double-left"></i></a></li>
-    <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}"><i class="fas fa-angle-left"></i></a></li>
-  {% endif %}
-  {% for num in page_obj.paginator.page_range %}
-    {% if page_obj.number == num %}<li class="page-item active"><span class="page-link">{{ num }}</span></li>
-    {% else %}<li class="page-item"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>{% endif %}
-  {% endfor %}
-  {% if page_obj.has_next %}
-    <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}"><i class="fas fa-angle-right"></i></a></li>
-    <li class="page-item"><a class="page-link" href="?page={{ page_obj.paginator.num_pages }}"><i class="fas fa-angle-double-right"></i></a></li>
-  {% endif %}
-</ul></nav>
+<nav class="mt-3">
+
+    <ul class="pagination">
+
+        <!-- First + Previous -->
+        {% if page_obj.has_previous %}
+
+        <li class="page-item">
+            <a
+                class="page-link"
+                href="?page=1&search={{ search }}&status={{ selected_status }}"
+            >
+                <i class="fas fa-angle-double-left"></i>
+            </a>
+        </li>
+
+        <li class="page-item">
+            <a
+                class="page-link"
+                href="?page={{ page_obj.previous_page_number }}&search={{ search }}&status={{ selected_status }}"
+            >
+                <i class="fas fa-angle-left"></i>
+            </a>
+        </li>
+
+        {% endif %}
+
+        <!-- Page Numbers -->
+        {% for num in page_obj.paginator.page_range %}
+
+            {% if page_obj.number == num %}
+
+            <li class="page-item active">
+                <span class="page-link">
+                    {{ num }}
+                </span>
+            </li>
+
+            {% else %}
+
+            <li class="page-item">
+                <a
+                    class="page-link"
+                    href="?page={{ num }}&search={{ search }}&status={{ selected_status }}"
+                >
+                    {{ num }}
+                </a>
+            </li>
+
+            {% endif %}
+
+        {% endfor %}
+
+        <!-- Next + Last -->
+        {% if page_obj.has_next %}
+
+        <li class="page-item">
+            <a
+                class="page-link"
+                href="?page={{ page_obj.next_page_number }}&search={{ search }}&status={{ selected_status }}"
+            >
+                <i class="fas fa-angle-right"></i>
+            </a>
+        </li>
+
+        <li class="page-item">
+            <a
+                class="page-link"
+                href="?page={{ page_obj.paginator.num_pages }}&search={{ search }}&status={{ selected_status }}"
+            >
+                <i class="fas fa-angle-double-right"></i>
+            </a>
+        </li>
+
+        {% endif %}
+
+    </ul>
+
+</nav>
 {% endif %}
+
 {% endblock %}
