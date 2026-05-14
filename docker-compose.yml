@@ -57,6 +57,51 @@ services:
       - ./staticfiles:/app/staticfiles
     command: sh -c "python manage.py migrate --noinput && python manage.py collectstatic --noinput && daphne -b 0.0.0.0 -p 8000 config.asgi:application"
 
+  celery_worker:
+    build: 
+      context: .
+      dockerfile: Docker/Dockerfile
+    image: hrm_project:local
+    container_name: hrm_celery_worker
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - DB_HOST=db
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      - .:/app
+      - ./media:/app/media
+    command: celery -A config worker -l info
+
+  celery_beat:
+    build: 
+      context: .
+      dockerfile: Docker/Dockerfile
+    image: hrm_project:local
+    container_name: hrm_celery_beat
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - DB_HOST=db
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      - .:/app
+    command: celery -A config beat -l info
+
 volumes:
   postgres_data:
   redis_data:

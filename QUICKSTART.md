@@ -54,6 +54,49 @@ python manage.py runserver
 
 Server sẽ chạy tại: `http://localhost:8000`
 
+## 🔔 Bước 5: Setup Celery (Cho Email Notification)
+
+### 5.1 Khởi Động Redis
+
+```bash
+# Nếu chưa cài Redis, tải từ: https://redis.io/download
+redis-server
+```
+
+### 5.2 Chạy Celery Worker
+
+Mở terminal mới và chạy:
+
+```bash
+celery -A config worker -l info
+```
+
+### 5.3 (Optional) Chạy Celery Beat
+
+Mở terminal thứ 3 (cho periodic tasks):
+
+```bash
+celery -A config beat -l info
+```
+
+### 5.4 Cấu Hình Email (tùy chọn)
+
+Thêm vào file `.env`:
+
+```env
+EMAIL_BACKEND=django.core.mail.backends.smtp.EmailBackend
+EMAIL_HOST=smtp.gmail.com
+EMAIL_PORT=587
+EMAIL_USE_TLS=True
+EMAIL_HOST_USER=your-email@gmail.com
+EMAIL_HOST_PASSWORD=your-app-password
+DEFAULT_FROM_EMAIL=noreply@hrm.com
+```
+
+**Lưu ý**: Gmail yêu cầu App Password, tạo tại: https://myaccount.google.com/apppasswords
+
+Chi tiết xem trong: [CELERY_SETUP.md](CELERY_SETUP.md)
+
 ## 📝 Đăng Nhập
 
 Sử dụng credentials mặc định:
@@ -62,6 +105,19 @@ Sử dụng credentials mặc định:
 Username: admin
 Password: admin123
 ```
+
+## 💬 Chat System (Real-time)
+
+Tính năng chat được hỗ trợ bởi WebSocket (Channels & Daphne):
+
+- **Online Status Tracking**: Tự động theo dõi khi user online/offline
+- **Real-time Messages**: Tin nhắn được gửi tức thì
+- **Email Notifications**: Nếu user offline, sẽ nhận email thông báo tin nhắn mới
+
+**Yêu cầu**:
+
+- Redis chạy (cho WebSocket support)
+- Celery Worker chạy (cho email notification)
 
 ## 🎯 Các Tính Năng Chính
 

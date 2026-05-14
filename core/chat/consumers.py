@@ -26,6 +26,9 @@ class ChatConsumer(AsyncWebsocketConsumer):
             await self.close()
             return
 
+        # Mark user as online
+        await self.set_user_online(self.user.id, self.room_id)
+
         # Join room group
         await self.channel_layer.group_add(
             self.room_group_name,
@@ -47,6 +50,9 @@ class ChatConsumer(AsyncWebsocketConsumer):
     async def disconnect(self, close_code):
 
         if hasattr(self, 'room_group_name'):
+
+            # Mark user as offline
+            await self.set_user_offline(self.user.id)
 
             # Notify user left
             await self.channel_layer.group_send(
@@ -79,6 +85,9 @@ class ChatConsumer(AsyncWebsocketConsumer):
             self.user.id,
             message
         )
+
+        # Trigger async task to send email to offline users
+        await self.send_email_notification(chat_message.id)
 
         # Broadcast message
         await self.channel_layer.group_send(
@@ -141,3 +150,34 @@ class ChatConsumer(AsyncWebsocketConsumer):
             user_id=user_id,
             message=message
         )
+
+    @sync_to_async
+    def set_user_online(self, user_id, room_id):
+        """Mark user as online"""
+        from core.chat.models import ChatActivity
+        from django.contrib.auth.models import User
+
+        try:
+            user = User.objects.get(id=user_id)
+            ChatActivity.set_user_online(user, room_id)
+        except User.DoesNotExist:
+            pass
+
+    @sync_to_async
+    def set_user_offline(self, user_id):
+        """Mark user as offline"""
+        from core.chat.models import ChatActivity
+        from django.contrib.auth.models import User
+
+        try:
+            user = User.objects.get(id=user_id)
+            ChatActivity.set_user_offline(user)
+        except User.DoesNotExist:
+            pass
+
+    @sync_to_async
+    def send_email_notification(self, message_id):
+        """Send email notification to offline users"""
+        from core.chat.tasks import send_email_to_offline_users
+
+        send_email_to_offline_users.delay(message_id)

@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from common.base_model import BaseModel
+from django.utils import timezone
 
 
 class ChatRoom(BaseModel):
@@ -62,3 +63,47 @@ class ChatMessage(BaseModel):
 
     def __str__(self):
         return f"Message from {self.user.get_full_name()} in {self.chat_room.name}"
+
+
+class ChatActivity(models.Model):
+    """Model to track user online/offline status in chat rooms"""
+    user = models.OneToOneField(
+        User, on_delete=models.CASCADE, related_name='chat_activity')
+    is_online = models.BooleanField(default=False)
+    last_active = models.DateTimeField(auto_now=True)
+    current_room = models.ForeignKey(
+        ChatRoom, on_delete=models.SET_NULL, null=True, blank=True,
+        related_name='active_users')
+
+    class Meta:
+        db_table = 'chat_activity'
+        verbose_name = 'Chat Activity'
+        verbose_name_plural = 'Chat Activities'
+
+    def __str__(self):
+        status = "Online" if self.is_online else "Offline"
+        return f"{self.user.get_full_name()} - {status}"
+
+    @classmethod
+    def set_user_online(cls, user, room=None):
+        """Set user as online"""
+        activity, _ = cls.objects.get_or_create(user=user)
+        activity.is_online = True
+        activity.current_room = room
+        activity.last_active = timezone.now()
+        activity.save(update_fields=['is_online',
+                      'current_room', 'last_active'])
+        return activity
+
+    @classmethod
+    def set_user_offline(cls, user):
+        """Set user as offline"""
+        try:
+            activity = cls.objects.get(user=user)
+            activity.is_online = False
+            activity.current_room = None
+            activity.last_active = timezone.now()
+            activity.save(
+                update_fields=['is_online', 'current_room', 'last_active'])
+        except cls.DoesNotExist:
+            pass
