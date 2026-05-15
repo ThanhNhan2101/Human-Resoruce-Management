@@ -154,13 +154,14 @@ class ChatConsumer(AsyncWebsocketConsumer):
     @sync_to_async
     def set_user_online(self, user_id, room_id):
         """Mark user as online"""
-        from core.chat.models import ChatActivity
+        from core.chat.models import ChatActivity, ChatRoom
         from django.contrib.auth.models import User
 
         try:
             user = User.objects.get(id=user_id)
-            ChatActivity.set_user_online(user, room_id)
-        except User.DoesNotExist:
+            room = ChatRoom.objects.get(id=room_id)
+            ChatActivity.set_user_online(user, room)
+        except (User.DoesNotExist, ChatRoom.DoesNotExist):
             pass
 
     @sync_to_async
