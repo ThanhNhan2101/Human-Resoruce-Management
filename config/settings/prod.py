@@ -23,6 +23,8 @@ ALLOWED_HOSTS = env('ALLOWED_HOSTS', default='*').split(',')
 # APPLICATIONS
 # ─────────────────────────────
 INSTALLED_APPS = [
+    'daphne',
+    'channels',  # Must be first for Channels
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -33,6 +35,7 @@ INSTALLED_APPS = [
     'core.employees',
     'core.leaves',
     'core.attendance',
+    'core.chat',
     'common',
 ]
 
