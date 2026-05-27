@@ -17,7 +17,20 @@ environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 SECRET_KEY = env('SECRET_KEY')
 DEBUG =False
 
-ALLOWED_HOSTS = env('ALLOWED_HOSTS', default='*').split(',')
+ALLOWED_HOSTS = env(
+    'ALLOWED_HOSTS',
+    default='human-resoruce-management.onrender.com'
+).split(',')
+
+CSRF_TRUSTED_ORIGINS = env(
+    'CSRF_TRUSTED_ORIGINS',
+    default='https://human-resoruce-management.onrender.com'
+).split(',')
+
+SECURE_PROXY_SSL_HEADER = (
+    'HTTP_X_FORWARDED_PROTO',
+    'https'
+)
 
 # ─────────────────────────────
 # APPLICATIONS
