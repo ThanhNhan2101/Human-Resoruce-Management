@@ -12,7 +12,7 @@ class Command(BaseCommand):
 
         User = get_user_model()
 
-        username = "admin123"
+        username = "admin"
         email = "admin@hrm.local"
         password = "admin123"
 
